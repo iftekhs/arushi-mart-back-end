@@ -7,4 +7,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/auth', [AuthController::class, 'authenticate'])->name('login');
+Route::post('/auth', [AuthController::class, 'authenticate']);
+Route::post('/logout', [AuthController::class, 'logout']);
