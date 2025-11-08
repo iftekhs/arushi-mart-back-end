@@ -26,18 +26,19 @@ class AppServiceProvider extends ServiceProvider
         Model::unguard();
 
         RateLimiter::for('auth-requests', function (Request $request) {
-            $by = $request->input('email') ? $request->input('email') . '|' . $request->ip() : $request->ip();
-            return Limit::perMinute(3)->by($by);
-        });
-
-        RateLimiter::for('otp-verifies', function (Request $request) {
-            $max = config('otp.verify_max', 5);
+            $max = app()->environment('local') ? 1000 : 3;
             $by = $request->input('email') ? $request->input('email') . '|' . $request->ip() : $request->ip();
             return Limit::perMinute($max)->by($by);
         });
 
         RateLimiter::for('otp-checks', function (Request $request) {
-            $max = config('otp.request_max', 6);
+            $max = app()->environment('local') ? 1000 : config('otp.verify_max', 6);
+            $by = $request->input('email') ? $request->input('email') . '|' . $request->ip() : $request->ip();
+            return Limit::perMinute($max)->by($by);
+        });
+
+        RateLimiter::for('otp-verifies', function (Request $request) {
+            $max = app()->environment('local') ? 1000 : config('otp.verify_max', 5);
             $by = $request->input('email') ? $request->input('email') . '|' . $request->ip() : $request->ip();
             return Limit::perMinute($max)->by($by);
         });

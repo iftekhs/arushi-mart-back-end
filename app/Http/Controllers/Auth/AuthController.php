@@ -43,17 +43,11 @@ class AuthController extends Controller
             'otp' => ['required', 'string'],
         ]);
 
-        $email = strtolower($request->email);
+        $user = User::where('email', $request->email)->first();
 
-        $user = User::where('email', $email)->first();
+        if (!$user) return $this->error('Invalid code or email', 401);
 
-        if (!$user) {
-            return $this->error('Invalid code or email', 401);
-        }
-
-        if (!$user->hasValidOtp() || !$user->verifyOtp($request->otp)) {
-            return $this->error('Invalid code or email', 401);
-        }
+        if (!$user->verifyOtp($request->otp)) return $this->error('Invalid code or email', 401);
 
         Auth::login($user);
 
@@ -65,15 +59,14 @@ class AuthController extends Controller
     public function checkOtp(Request $request)
     {
         $request->validate(['email' => ['required', 'email']]);
-        $email = strtolower($request->email);
 
-        $available = User::where('email', $email)
-            ->whereNotNull('otp_code_hash')
-            ->whereNull('otp_used_at')
-            ->where('otp_expires_at', '>=', now())
-            ->exists();
-
-        return $this->successData(['available' => $available]);
+        return $this->successData([
+            'available' => User::where('email', $request->email)
+                ->whereNotNull('otp_code_hash')
+                ->whereNull('otp_used_at')
+                ->where('otp_expires_at', '>=', now())
+                ->exists()
+        ]);
     }
 
     public function logout(Request $request)
