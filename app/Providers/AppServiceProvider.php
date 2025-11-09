@@ -31,6 +31,12 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute($max)->by($by);
         });
 
+        RateLimiter::for('resend-otp', function (Request $request) {
+            $max = app()->environment('local') ? 1000 : 1;
+            $by = $request->input('email') ? $request->input('email') . '|' . $request->ip() : $request->ip();
+            return Limit::perMinute($max)->by($by);
+        });
+
         RateLimiter::for('otp-checks', function (Request $request) {
             $max = app()->environment('local') ? 1000 : config('otp.verify_max', 6);
             $by = $request->input('email') ? $request->input('email') . '|' . $request->ip() : $request->ip();

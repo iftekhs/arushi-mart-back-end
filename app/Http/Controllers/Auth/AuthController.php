@@ -31,7 +31,26 @@ class AuthController extends Controller
 
         $otp = $user->createOtp();
 
-        Mail::to($user->email)->queue(new OtpMail($otp));
+        Mail::to($user->email)->send(new OtpMail($otp));
+
+        return $this->ok('If an account exists, an email with a code has been sent');
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return $this->ok('If an account exists, an email with a code has been sent');
+        }
+
+        $otp = $user->createOtp();
+
+        Mail::to($user->email)->send(new OtpMail($otp));
 
         return $this->ok('If an account exists, an email with a code has been sent');
     }
