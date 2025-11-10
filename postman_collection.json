@@ -1,0 +1,302 @@
+{
+    "info": {
+        "_postman_id": "c1d1a1b1-2c2c-3d3d-4e4e-5f5f6g6g7h7h",
+        "name": "ArushiMart API Collection",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication (Web Routes)",
+            "item": [
+                {
+                    "name": "1. Login/Request OTP (authenticate)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test@example.com\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{root}}/auth",
+                            "host": ["{{root}}"],
+                            "path": ["auth"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "2. Resend OTP (resendOtp)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test@example.com\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{root}}/resend-otp",
+                            "host": ["{{root}}"],
+                            "path": ["resend-otp"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "3. Check OTP Availability (checkOtp)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test@example.com\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{root}}/check-otp",
+                            "host": ["{{root}}"],
+                            "path": ["check-otp"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "4. Verify OTP and Login (verify)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test@example.com\",\n    \"otp\": \"123456\"  // Replace with actual OTP\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{root}}/verify-otp",
+                            "host": ["{{root}}"],
+                            "path": ["verify-otp"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "5. Logout (logout)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{root}}/logout",
+                            "host": ["{{root}}"],
+                            "path": ["logout"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "API Routes",
+            "item": [
+                {
+                    "name": "Get Authenticated User (/user)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{api}}/user",
+                            "host": ["{{api}}"],
+                            "path": ["user"]
+                        },
+                        "description": "Requires 'auth:sanctum' authentication. If using tokens, set a Bearer Token. If using web session, ensure you've run the 'Verify OTP and Login' request first."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Products API (products)",
+            "item": [
+                {
+                    "name": "List Products (index)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{api}}/products?include=categories,images&filter[active]=true&filter[search]=shirt&sort=-price&page[number]=2&page[size]=10",
+                            "host": ["{{api}}"],
+                            "path": ["products"],
+                            "query": [
+                                {
+                                    "key": "include",
+                                    "value": "categories,images",
+                                    "description": "Allowed: categories, tags, variants, images, variants.color, variants.size, images.color",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "filter[active]",
+                                    "value": "true",
+                                    "description": "Filter by active status (true/false)",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "filter[search]",
+                                    "value": "shirt",
+                                    "description": "Filter by name, description, or sku",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "filter[price_min]",
+                                    "value": "10.00",
+                                    "description": "Filter by minimum price",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "filter[price_max]",
+                                    "value": "50.00",
+                                    "description": "Filter by maximum price",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "filter[category]",
+                                    "value": "1",
+                                    "description": "Filter by category ID",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "filter[tag]",
+                                    "value": "5",
+                                    "description": "Filter by tag ID",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "sort",
+                                    "value": "-price",
+                                    "description": "Sort by field (e.g., 'price' for ASC, '-price' for DESC). Allowed: name, price, created_at, updated_at, sku",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page[number]",
+                                    "value": "2",
+                                    "description": "Page number for pagination",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page[size]",
+                                    "value": "10",
+                                    "description": "Items per page (max 100)",
+                                    "disabled": false
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Show Single Product (show)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{api}}/products/{{product_id}}?include=variants.color",
+                            "host": ["{{api}}"],
+                            "path": ["products", "{{product_id}}"],
+                            "query": [
+                                {
+                                    "key": "include",
+                                    "value": "variants.color",
+                                    "description": "Allowed: categories, tags, variants, images, variants.color, variants.size, images.color",
+                                    "disabled": false
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "root",
+            "value": "http://localhost:8000",
+            "type": "string",
+            "description": "The base URL of the application (for web routes)."
+        },
+        {
+            "key": "api",
+            "value": "{{root}}/api",
+            "type": "string",
+            "description": "The base URL for API routes."
+        },
+        {
+            "key": "product_id",
+            "value": "1",
+            "type": "string"
+        }
+    ]
+}

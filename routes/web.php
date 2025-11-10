@@ -3,10 +3,6 @@
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::post('/auth', [AuthController::class, 'authenticate'])->name('login')->middleware('throttle:auth-requests');
 Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->middleware('throttle:otp-resend');
 Route::post('/check-otp', [AuthController::class, 'checkOtp'])->middleware('throttle:otp-checks');
