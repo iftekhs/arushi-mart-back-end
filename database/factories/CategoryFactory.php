@@ -36,6 +36,7 @@ class CategoryFactory extends Factory
             'slug' => Str::slug($name),
             'parent_id' => null,
             'description' => fake()->sentence(15),
+            'featured' => fake()->boolean(),
             'active' => true,
         ];
     }

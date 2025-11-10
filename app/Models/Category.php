@@ -16,28 +16,32 @@ class Category extends Model
         'active' => 'boolean',
     ];
 
-    /**
-     * Get the parent category.
-     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'parent_id');
     }
 
-    /**
-     * Get the child categories.
-     */
     public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id');
     }
 
-    /**
-     * Get the products that belong to this category.
-     */
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'category_product')
             ->withTimestamps();
+    }
+
+    public function scopeFilter($query, $filters)
+    {
+        $validator = validator($filters, [
+            'featured' => 'boolean',
+        ]);
+
+        if ($validator->fails()) return $query;
+
+        if (isset($filters['featured'])) $query->where('featured', $filters['featured']);
+
+        return $query;
     }
 }

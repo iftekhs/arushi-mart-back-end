@@ -10,26 +10,18 @@ use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of products.
-     */
     public function index(Request $request): JsonResponse
     {
         $query = Product::query();
 
-        // Handle includes
         $includes = $this->parseIncludes($request->input('include', ''));
         if (!empty($includes)) {
             $query->with($includes);
         }
 
-        // Handle filtering
         $this->applyFilters($query, $request);
-
-        // Handle sorting
         $this->applySorting($query, $request);
 
-        // Handle pagination
         $perPage = min((int) $request->input('page.size', 15), 100);
         $page = (int) $request->input('page.number', 1);
 
