@@ -17,9 +17,6 @@ use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         DB::transaction(function () {
@@ -182,51 +179,96 @@ class ProductSeeder extends Seeder
                 'name' => 'Embroidered Lawn 3-Piece Suit',
                 'price' => 4500.00,
                 'description' => 'Elegant embroidered lawn suit perfect for summer occasions. Features intricate embroidery work on pure lawn fabric.',
+                'featured' => true,
+                'images' =>  [
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSggVYHPc6ECK1IZsAkmcXTMp75t4qx9SvzYn2',
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSTalUJhKG9qUStJy4lZkNPraMuzv6xKLCgjQ5'
+                ],
             ],
             [
                 'name' => 'Premium Cotton Kurta',
                 'price' => 2800.00,
                 'description' => 'Comfortable cotton kurta with modern cut and traditional appeal. Ideal for casual and semi-formal events.',
+                'featured' => true,
+                'images' =>  [
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSrTzzLN7qYpjwgMK6UnovOs2xaW8T4X5hJ17k',
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUShnzEjQzYKjUInM2A76owsJ5NXgpOPRBECaSv'
+                ],
             ],
             [
                 'name' => 'Silk Dupatta Collection',
                 'price' => 3200.00,
                 'description' => 'Pure silk dupatta with beautiful patterns and premium quality fabric. Perfect complement to any outfit.',
+                'featured' => true,
+                'images' =>  [
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSru6pTI7qYpjwgMK6UnovOs2xaW8T4X5hJ17k',
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSXhmKndxhYb0tBSNd5i7jepoJwuzvALafsnOI'
+                ],
             ],
             [
                 'name' => 'Formal Blazer Premium',
                 'price' => 8900.00,
                 'description' => 'High-quality formal blazer with modern fit. Perfect for business meetings and formal occasions.',
+                'featured' => true,
+                'images' => [
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSQOK4GwzwqGf1nTu9D2YpdJxygcstAaK6jlWN',
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSz0rXk53yhYxUnpoqZ1FdwIt3fKXC8POl2WNR'
+                ],
             ],
             [
                 'name' => 'Chiffon Party Dress',
                 'price' => 6500.00,
                 'description' => 'Stunning chiffon dress with elegant design. Perfect for evening parties and special occasions.',
+                'featured' => true,
+                'images' =>  [
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUS3ivpBYSbsKJSkBDyucTpN4RemIQC7EG9AxfL',
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSlCwox6p81Qf9XSI4tj5PqnMECNcxWoskRTUu'
+                ]
             ],
             [
                 'name' => 'Traditional Kameez Shalwar',
                 'price' => 3500.00,
                 'description' => 'Classic traditional wear with comfortable fit and beautiful embroidery. Suitable for all occasions.',
+                'images' =>  [
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSQOK4GwzwqGf1nTu9D2YpdJxygcstAaK6jlWN',
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSz0rXk53yhYxUnpoqZ1FdwIt3fKXC8POl2WNR'
+                ]
             ],
             [
                 'name' => 'Linen Casual Shirt',
                 'price' => 2200.00,
                 'description' => 'Breathable linen shirt perfect for hot summer days. Comfortable and stylish.',
+                'images' =>  [
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUS3ivpBYSbsKJSkBDyucTpN4RemIQC7EG9AxfL',
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSlCwox6p81Qf9XSI4tj5PqnMECNcxWoskRTUu'
+                ]
             ],
             [
                 'name' => 'Velvet Winter Shawl',
                 'price' => 5500.00,
                 'description' => 'Luxurious velvet shawl to keep you warm in style. Premium quality fabric with elegant design.',
+                'images' =>  [
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSQOK4GwzwqGf1nTu9D2YpdJxygcstAaK6jlWN',
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSz0rXk53yhYxUnpoqZ1FdwIt3fKXC8POl2WNR'
+                ]
             ],
             [
                 'name' => 'Denim Jacket Collection',
                 'price' => 4800.00,
                 'description' => 'Trendy denim jacket with modern cuts. Perfect for casual outings and streetwear style.',
+                'images' =>  [
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUS3ivpBYSbsKJSkBDyucTpN4RemIQC7EG9AxfL',
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSlCwox6p81Qf9XSI4tj5PqnMECNcxWoskRTUu'
+                ]
             ],
             [
                 'name' => 'Designer Gown Special',
                 'price' => 12000.00,
                 'description' => 'Exclusive designer gown with intricate detailing. Perfect for weddings and grand celebrations.',
+                'images' =>  [
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSQOK4GwzwqGf1nTu9D2YpdJxygcstAaK6jlWN',
+                    'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSz0rXk53yhYxUnpoqZ1FdwIt3fKXC8POl2WNR'
+                ]
             ],
         ];
 
@@ -237,7 +279,11 @@ class ProductSeeder extends Seeder
         $types = [ProductType::STITCHED->value, ProductType::UNSTITCHED->value];
 
         foreach ($products as $index => $productData) {
-            // Create product
+            // Choose 2-4 random categories for this product and pick one as default
+            $randomCategories = $categories->random(rand(2, 4));
+            $defaultCategoryId = $randomCategories->random()->id;
+
+            // Create product with default category_id
             $product = Product::create([
                 'sku' => 'PRD-' . strtoupper(Str::random(8)),
                 'name' => $productData['name'],
@@ -245,10 +291,11 @@ class ProductSeeder extends Seeder
                 'price' => $productData['price'],
                 'description' => $productData['description'],
                 'active' => true,
+                'featured' => $productData['featured'] ?? false,
+                'category_id' => $defaultCategoryId,
             ]);
 
-            // Attach 2-4 random categories
-            $randomCategories = $categories->random(rand(2, 4));
+            // Attach the chosen categories
             $product->categories()->attach($randomCategories->pluck('id'));
 
             // Attach 2-5 random tags
@@ -257,14 +304,13 @@ class ProductSeeder extends Seeder
 
             // Select 3-4 random colors for this product
             $productColors = $colors->random(rand(3, 4));
+            $colorId = $productColors->random()->id;
 
-            // Create 3-5 images per product
-            $imageCount = rand(3, 5);
-            for ($i = 0; $i < $imageCount; $i++) {
+            foreach ($productData['images'] as $i => $imageUrl) {
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'color_id' => $i > 0 && rand(0, 1) ? $productColors->random()->id : null,
-                    'path' => 'products/' . Str::slug($product->name) . '-' . ($i + 1) . '.jpg',
+                    'color_id' => $colorId,
+                    'path' => $imageUrl,
                     'primary' => $i === 0, // First image is primary
                     'sort_order' => $i,
                 ]);
@@ -307,7 +353,7 @@ class ProductSeeder extends Seeder
                 $createdVariants++;
             }
 
-            $this->command->info("✓ Created product: {$product->name} with {$variantCount} variants and {$imageCount} images");
+            $this->command->info("✓ Created product: {$product->name} with {$variantCount} variants and images");
         }
 
         $this->command->info('✓ Created 10 products with all relationships');

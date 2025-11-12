@@ -7,44 +7,23 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): void
     {
-        $query = Product::query();
+        //
+    }
 
-        $includes = $this->parseIncludes($request->input('include', ''));
-        if (!empty($includes)) {
-            $query->with($includes);
-        }
-
-        $this->applyFilters($query, $request);
-        $this->applySorting($query, $request);
-
-        $perPage = min((int) $request->input('page.size', 15), 100);
-        $page = (int) $request->input('page.number', 1);
-
-        $products = $query->paginate($perPage, ['*'], 'page[number]', $page);
-
-        return response()->json([
-            'links' => [
-                'self' => $request->fullUrl(),
-                'first' => $products->url(1),
-                'last' => $products->url($products->lastPage()),
-                'prev' => $products->previousPageUrl(),
-                'next' => $products->nextPageUrl(),
-            ],
-            'data' => ProductResource::collection($products),
-            'meta' => [
-                'total' => $products->total(),
-                'per_page' => $products->perPage(),
-                'current_page' => $products->currentPage(),
-                'last_page' => $products->lastPage(),
-                'from' => $products->firstItem(),
-                'to' => $products->lastItem(),
-            ],
-        ]);
+    public function featured(): JsonResource
+    {
+        $products = Product::active()->featured()->with([
+            'category',
+            'primaryImage',
+            'secondaryImage'
+        ])->get();
+        return ProductResource::collection($products);
     }
 
     /**
