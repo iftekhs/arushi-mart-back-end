@@ -66,6 +66,13 @@ class Product extends Model
         return $query->where('featured', true);
     }
 
+    public function scopeWithInStock(Builder $query): Builder
+    {
+        return $query->withExists('variants as in_stock', function ($query) {
+            $query->where('stock_quantity', '>', 0);
+        });
+    }
+
     public function inStock(): bool
     {
         return $this->variants()->where('stock_quantity', '>', 0)->exists();

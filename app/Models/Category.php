@@ -42,7 +42,7 @@ class Category extends Model
 
         if ($validator->fails()) return $query;
 
-        if (isset_and_true($filters, 'featured')) $query->where('featured', $filters['featured']);
+        if (isset($filters['featured'])) $query->where('featured', $filters['featured']);
 
         return $query;
     }

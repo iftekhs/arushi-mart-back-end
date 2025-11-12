@@ -18,12 +18,13 @@ class ProductController extends Controller
 
     public function featured(): JsonResource
     {
-        $products = Product::active()->featured()->with([
-            'category',
-            'primaryImage',
-            'secondaryImage'
-        ])->get();
-        return ProductResource::collection($products);
+        return ProductResource::collection(
+            Product::active()->featured()->withInStock()->with([
+                'category',
+                'primaryImage',
+                'secondaryImage'
+            ])->get()
+        );
     }
 
     /**
