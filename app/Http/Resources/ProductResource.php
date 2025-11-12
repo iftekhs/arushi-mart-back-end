@@ -29,6 +29,7 @@ class ProductResource extends JsonResource
                 'tags' => TagResource::collection($this->whenLoaded('tags')),
                 'variants' => ProductVariantResource::collection($this->whenLoaded('variants')),
                 'images' => ProductImageResource::collection($this->whenLoaded('images')),
+                'primaryImage' => ProductImageResource::make($this->whenLoaded('primaryImage')),
             ],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
