@@ -15,10 +15,3 @@ if (!function_exists('path_to_url')) {
         return url('storage/' . $path);
     }
 }
-
-if (!function_exists('isset_and_true')) {
-    function isset_and_true(array $value, string $key): bool
-    {
-        return isset($value[$key]) && $value[$key];
-    }
-}

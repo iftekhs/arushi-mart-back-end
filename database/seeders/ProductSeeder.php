@@ -50,6 +50,7 @@ class ProductSeeder extends Seeder
                 'slug' => 'womens-clothing',
                 'description' => 'Explore our exclusive collection of women\'s clothing',
                 'active' => true,
+                'featured' => true,
                 'parent_id' => null,
             ],
             [
@@ -57,6 +58,7 @@ class ProductSeeder extends Seeder
                 'slug' => 'mens-clothing',
                 'description' => 'Premium quality men\'s fashion collection',
                 'active' => true,
+                'featured' => true,
                 'parent_id' => null,
             ],
             [
@@ -64,6 +66,7 @@ class ProductSeeder extends Seeder
                 'slug' => 'traditional-wear',
                 'description' => 'Traditional and ethnic wear for all occasions',
                 'active' => true,
+                'featured' => true,
                 'parent_id' => null,
             ],
         ];
