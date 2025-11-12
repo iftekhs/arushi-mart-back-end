@@ -72,9 +72,4 @@ class Product extends Model
             $query->where('stock_quantity', '>', 0);
         });
     }
-
-    public function inStock(): bool
-    {
-        return $this->variants()->where('stock_quantity', '>', 0)->exists();
-    }
 }
