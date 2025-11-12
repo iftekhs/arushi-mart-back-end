@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductController extends Controller
@@ -27,20 +26,11 @@ class ProductController extends Controller
         );
     }
 
-    /**
-     * Display the specified product.
-     */
-    public function show(Request $request, Product $product): JsonResponse
+    public function show(Product $product): JsonResource
     {
-        // Handle includes
-        $includes = $this->parseIncludes($request->input('include', ''));
-        if (!empty($includes)) {
-            $product->load($includes);
-        }
-
-        return response()->json([
-            'data' => new ProductResource($product),
-        ]);
+        return ProductResource::make(
+            $product->load(['category', 'images', 'variants'])
+        );
     }
 
     /**
