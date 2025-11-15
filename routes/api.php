@@ -17,5 +17,5 @@ Route::prefix('categories')->name('categories.')->group(function () {
 Route::prefix('products')->name('products.')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::get('/featured', [ProductController::class, 'featured']);
-    Route::get('/{product}', [ProductController::class, 'show'])->can('view', 'product');
+    Route::get('/{product:slug}', [ProductController::class, 'show'])->can('view', 'product');
 });

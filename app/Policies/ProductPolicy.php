@@ -18,9 +18,9 @@ class ProductPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Product $product): bool
+    public function view(?User $user, Product $product): bool
     {
-        return $product->active;
+        return true;
     }
 
     /**
