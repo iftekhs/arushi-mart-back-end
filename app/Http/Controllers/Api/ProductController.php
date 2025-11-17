@@ -29,7 +29,9 @@ class ProductController extends Controller
     public function show(Product $product): JsonResource
     {
         return ProductResource::make(
-            $product->load(['category', 'images', 'variants'])
+            $product->loadExists('variants as in_stock', function ($query) {
+                $query->where('stock_quantity', '>', 0);
+            })->load(['category', 'images', 'variants.color'])
         );
     }
 

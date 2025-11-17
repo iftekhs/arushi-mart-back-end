@@ -19,17 +19,17 @@ class ProductVariantResource extends JsonResource
             'attributes' => [
                 'sku' => $this->sku,
                 'type' => $this->type->value,
-                'stock_quantity' => $this->stock_quantity,
-                'product_id' => $this->product_id,
-                'color_id' => $this->color_id,
-                'size_id' => $this->size_id,
+                'stockQuantity' => $this->stock_quantity,
+                'productId' => $this->product_id,
+                'colorId' => $this->color_id,
+                'sizeId' => $this->size_id,
             ],
             'relationships' => [
                 'color' => new ColorResource($this->whenLoaded('color')),
                 'size' => new SizeResource($this->whenLoaded('size')),
             ],
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
         ];
     }
 }

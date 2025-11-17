@@ -16,7 +16,7 @@ class Product extends Model
     use HasFactory;
 
     protected $casts = [
-        'price' => 'decimal:2',
+        'price' => 'float',
         'active' => 'boolean',
     ];
 
