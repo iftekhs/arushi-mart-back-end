@@ -19,6 +19,7 @@ Route::prefix('products')->name('products.')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::get('/featured', [ProductController::class, 'featured']);
     Route::get('/{product:slug}', [ProductController::class, 'show'])->can('view', 'product');
+    Route::get('/{product:slug}/related', [ProductController::class, 'related']);
 });
 
 Route::prefix('variants')->group(function () {

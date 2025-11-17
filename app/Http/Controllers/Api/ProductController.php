@@ -31,8 +31,29 @@ class ProductController extends Controller
         return ProductResource::make(
             $product->loadExists('variants as in_stock', function ($query) {
                 $query->where('stock_quantity', '>', 0);
-            })->load(['category', 'images', 'variants.color'])
+            })->load(['category', 'images', 'variants.color', 'variants.size'])
         );
+    }
+
+    public function related(Product $product): JsonResource
+    {
+        $categoryIds = $product->categories->pluck('id');
+        $tagIds = $product->tags->pluck('id');
+
+        $relatedProducts = Product::active()
+            ->where('id', '!=', $product->id)
+            ->where(function ($query) use ($categoryIds, $tagIds) {
+                $query->whereHas('categories', function ($q) use ($categoryIds) {
+                    $q->whereIn('categories.id', $categoryIds);
+                })->orWhereHas('tags', function ($q) use ($tagIds) {
+                    $q->whereIn('tags.id', $tagIds);
+                });
+            })
+            ->with(['category', 'primaryImage', 'secondaryImage'])
+            ->take(10)
+            ->get();
+
+        return ProductResource::collection($relatedProducts);
     }
 
     /**

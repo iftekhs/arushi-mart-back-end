@@ -323,11 +323,14 @@ class ProductSeeder extends Seeder
 
             while ($createdVariants < $variantCount) {
                 $color = $productColors->random();
-                $size = $sizes->random();
                 $type = $types[array_rand($types)];
 
+                // Unstitched products don't have sizes
+                $size = $type === ProductType::STITCHED->value ? $sizes->random() : null;
+                $sizeId = $size ? $size->id : null;
+
                 // Create unique combination key
-                $combinationKey = $color->id . '-' . $size->id . '-' . $type;
+                $combinationKey = $color->id . '-' . $sizeId . '-' . $type;
 
                 // Skip if combination already exists
                 if (in_array($combinationKey, $variantCombinations)) {
@@ -344,7 +347,7 @@ class ProductSeeder extends Seeder
                 ProductVariant::create([
                     'product_id' => $product->id,
                     'color_id' => $color->id,
-                    'size_id' => $size->id,
+                    'size_id' => $sizeId,
                     'type' => $type,
                     'sku' => 'VAR-' . strtoupper(Str::random(10)),
                     'stock_quantity' => $stockQuantity,

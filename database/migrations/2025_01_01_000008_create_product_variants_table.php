@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('color_id')->constrained();
-            $table->foreignId('size_id')->constrained();
+            $table->foreignId('color_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('size_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('type');
             $table->string('sku')->unique();
             $table->unsignedInteger('stock_quantity')->default(0);
