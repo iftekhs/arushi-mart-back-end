@@ -26,14 +26,9 @@ class OrderItem extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function productColor(): BelongsTo
+    public function variant(): BelongsTo
     {
-        return $this->belongsTo(ProductColor::class);
-    }
-
-    public function productColorVariant(): BelongsTo
-    {
-        return $this->belongsTo(ProductColorVariant::class);
+        return $this->belongsTo(ProductVariant::class, 'variant_id');
     }
 
     public function getSnapshotTitle(): ?string
@@ -43,7 +38,7 @@ class OrderItem extends Model
 
     public function getSnapshotImage(): ?string
     {
-        return $this->product_snapshot['color']['image'] ?? null;
+        return $this->product_snapshot['image'] ?? null;
     }
 
     public function getSnapshotColorName(): ?string

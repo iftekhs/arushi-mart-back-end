@@ -49,10 +49,7 @@ class CheckoutController extends Controller
                 ]
             );
 
-            $otp = rand(100000, 999999);
-            $user->otp = $otp;
-            $user->otp_expires_at = now()->addMinutes(10);
-            $user->save();
+            $otp = $user->createOtp();
 
             Mail::to($user->email)->send(new OtpMail($otp));
 
@@ -84,7 +81,7 @@ class CheckoutController extends Controller
 
         foreach ($cartItems as $item) {
             $productId = $item['product_id'];
-            $variantId = $item['product_color_variant_id'];
+            $variantId = $item['variant_id'];
             $requestedQuantity = (int) $item['quantity'];
 
             $variant = \App\Models\ProductVariant::where('id', $variantId)

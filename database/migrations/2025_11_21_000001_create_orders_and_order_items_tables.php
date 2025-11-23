@@ -30,8 +30,7 @@ return new class extends Migration
             $table->id();
             $table->foreignUuid('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('product_color_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('product_color_variant_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('variant_id')->nullable()->constrained('product_variants')->nullOnDelete();
             $table->decimal('price', 10, 2);
             $table->integer('quantity');
             $table->decimal('subtotal', 10, 2);

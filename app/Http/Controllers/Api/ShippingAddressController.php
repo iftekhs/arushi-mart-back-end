@@ -49,6 +49,19 @@ class ShippingAddressController extends Controller
         return ShippingAddressResource::make($shippingAddress);
     }
 
+    public function setDefault(ShippingAddress $shippingAddress)
+    {
+        $user = $shippingAddress->user;
+
+        $user->shippingAddresses()->where('is_default', true)->update(['is_default' => false]);
+
+        $shippingAddress->update(['is_default' => true]);
+
+        return response()->json([
+            'message' => 'Default shipping address updated successfully',
+        ], 200);
+    }
+
     /**
      * Update the specified shipping address
      */

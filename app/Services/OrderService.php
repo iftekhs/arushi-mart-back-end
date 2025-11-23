@@ -7,7 +7,7 @@ use App\Enums\PaymentStatus;
 use App\Enums\ShippingStatus;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\ProductColorVariant;
+use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -42,22 +42,26 @@ class OrderService
             ]);
 
             foreach ($cartItems as $item) {
-                $variant = ProductColorVariant::with([
+                $variant = ProductVariant::with([
                     'product.category',
-                    'productColor.color',
-                    'productColor.images',
+                    'product.primaryImage',
+                    'color',
                     'size'
-                ])->findOrFail($item['product_color_variant_id']);
+                ])->findOrFail($item['variant_id']);
+
+                if (!$variant->product->active) {
+                    abort(422, 'Product is no longer available');
+                }
 
                 $productSnapshot = $this->buildProductSnapshot($variant);
-                $subtotal = $item['price'] * $item['quantity'];
+                $price = (float) $variant->product->price;
+                $subtotal = $price * $item['quantity'];
 
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item['product_id'],
-                    'product_color_id' => $item['product_color_id'],
-                    'product_color_variant_id' => $item['product_color_variant_id'],
-                    'price' => $item['price'],
+                    'variant_id' => $item['variant_id'],
+                    'price' => $price,
                     'quantity' => $item['quantity'],
                     'subtotal' => $subtotal,
                     'product_snapshot' => $productSnapshot,
@@ -67,30 +71,30 @@ class OrderService
                 $variant->save();
             }
 
-            return $order->load('orderItems');
+            return $order->load('items');
         });
     }
 
-    public function buildProductSnapshot(ProductColorVariant $variant): array
+    public function buildProductSnapshot(ProductVariant $variant): array
     {
         $product = $variant->product;
-        $productColor = $variant->productColor;
-        $color = $productColor->color;
+        $color = $variant->color;
         $size = $variant->size;
-        $firstImage = $productColor->images->first();
+        $primaryImage = $product->primaryImage;
 
         return [
-            'title' => $product->name ?? $product->title ?? '',
+            'title' => $product->name ?? '',
             'description' => $product->description ?? '',
             'slug' => $product->slug ?? '',
+            'sku' => $product->sku ?? '',
             'color' => [
                 'name' => $color->name ?? '',
                 'hex_code' => $color->hex_code ?? '',
-                'image' => $firstImage ? $firstImage->path : null,
             ],
             'size' => [
                 'name' => $size ? $size->name : null,
             ],
+            'image' => $primaryImage ? $primaryImage->path : null,
             'category' => [
                 'name' => $product->category->name ?? '',
                 'slug' => $product->category->slug ?? '',
@@ -109,9 +113,14 @@ class OrderService
 
     public function calculateTotal(array $cartItems, float $shipping): float
     {
-        $subtotal = array_reduce($cartItems, function ($carry, $item) {
-            return $carry + ($item['price'] * $item['quantity']);
-        }, 0);
+        $subtotal = 0;
+
+        foreach ($cartItems as $item) {
+            $variant = ProductVariant::with('product')->find($item['variant_id']);
+            if ($variant && $variant->product && $variant->product->active) {
+                $subtotal += (float) $variant->product->price * $item['quantity'];
+            }
+        }
 
         return $subtotal + $shipping;
     }

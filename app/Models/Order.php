@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OrderStatus;
+use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Enums\ShippingStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -20,6 +21,7 @@ class Order extends Model
         'total_amount' => 'decimal:2',
         'shipping_address' => 'array',
         'status' => OrderStatus::class,
+        'payment_method' => PaymentMethod::class,
         'payment_status' => PaymentStatus::class,
         'shipping_status' => ShippingStatus::class,
     ];
