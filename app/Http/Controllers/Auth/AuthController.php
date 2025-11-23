@@ -79,7 +79,7 @@ class AuthController extends Controller
     {
         $request->validate(['email' => ['required', 'email']]);
 
-        return $this->successData([
+        return $this->success([
             'available' => User::where('email', $request->email)
                 ->whereNotNull('otp_code_hash')
                 ->whereNull('otp_used_at')

@@ -34,8 +34,6 @@ class ProductResource extends JsonResource
                 'primaryImage' => ProductImageResource::make($this->whenLoaded('primaryImage')),
                 'secondaryImage' => ProductImageResource::make($this->whenLoaded('secondaryImage')),
             ],
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

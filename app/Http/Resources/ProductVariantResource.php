@@ -25,8 +25,8 @@ class ProductVariantResource extends JsonResource
                 'sizeId' => $this->size_id,
             ],
             'relationships' => [
-                'color' => new ColorResource($this->whenLoaded('color')),
-                'size' => new SizeResource($this->whenLoaded('size')),
+                'color' => ColorResource::make($this->whenLoaded('color')),
+                'size' => SizeResource::make($this->whenLoaded('size')),
             ],
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,

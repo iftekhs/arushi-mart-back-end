@@ -24,7 +24,7 @@ class ProductImageResource extends JsonResource
                 'color_id' => $this->color_id,
             ],
             'relationships' => [
-                'color' => new ColorResource($this->whenLoaded('color')),
+                'color' => ColorResource::make($this->whenLoaded('color')),
             ],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
