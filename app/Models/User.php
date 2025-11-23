@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\UserOtpUtilities;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -24,4 +25,9 @@ class User extends Authenticatable
         'otp_requested_at' => 'datetime',
         'otp_used_at' => 'datetime',
     ];
+
+    public function shippingAddresses(): HasMany
+    {
+        return $this->hasMany(ShippingAddress::class);
+    }
 }
