@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutRequest;
 use App\Http\Resources\OrderResource;
 use App\Mail\OtpMail;
-use App\Models\ShippingAddress;
+use App\Models\ProductVariant;
 use App\Models\User;
 use App\Services\OrderService;
 use App\Traits\ApiResponses;
@@ -84,7 +84,7 @@ class CheckoutController extends Controller
             $variantId = $item['variant_id'];
             $requestedQuantity = (int) $item['quantity'];
 
-            $variant = \App\Models\ProductVariant::where('id', $variantId)
+            $variant = ProductVariant::where('id', $variantId)
                 ->where('product_id', $productId)
                 ->with(['product.primaryImage', 'color', 'size'])
                 ->first();

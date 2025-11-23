@@ -49,10 +49,6 @@ class OrderService
                     'size'
                 ])->findOrFail($item['variant_id']);
 
-                if (!$variant->product->active) {
-                    abort(422, 'Product is no longer available');
-                }
-
                 $productSnapshot = $this->buildProductSnapshot($variant);
                 $price = (float) $variant->product->price;
                 $subtotal = $price * $item['quantity'];

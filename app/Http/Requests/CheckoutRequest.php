@@ -29,8 +29,8 @@ class CheckoutRequest extends FormRequest
         return [
             'email' => [Rule::requiredIf(!$isAuthenticated), 'email', 'max:255'],
             'cart_items' => ['required', 'array', 'min:1'],
-            'cart_items.*.product_id' => ['required', 'integer', 'exists:products,id,active,1'],
-            'cart_items.*.variant_id' => ['required', 'integer', 'exists:product_variants,id'],
+            'cart_items.*.product_id' => ['required', 'integer'],
+            'cart_items.*.variant_id' => ['required', 'integer'],
             'cart_items.*.quantity' => ['required', 'integer', 'min:1'],
             'shipping_address_id' => ['nullable', 'integer', 'exists:shipping_addresses,id'],
             'shipping_address' => [!$isAuthenticated ? 'required' : 'required_without:shipping_address_id', 'array'],
