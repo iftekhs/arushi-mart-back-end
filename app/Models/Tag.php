@@ -10,6 +10,12 @@ class Tag extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'slug',
+        'active',
+    ];
+
     protected $casts = [
         'active' => 'boolean',
     ];

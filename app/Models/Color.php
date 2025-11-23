@@ -10,6 +10,12 @@ class Color extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'hex_code',
+        'active',
+    ];
+
     protected $casts = [
         'active' => 'boolean',
     ];

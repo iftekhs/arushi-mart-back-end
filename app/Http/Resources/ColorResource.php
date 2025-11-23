@@ -21,6 +21,8 @@ class ColorResource extends JsonResource
                 'hex_code' => $this->hex_code,
                 'active' => $this->active,
             ],
+            'variants_count' => $this->whenCounted('variants'),
+            'images_count' => $this->whenCounted('images'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

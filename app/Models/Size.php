@@ -10,6 +10,12 @@ class Size extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'sort_order',
+        'active',
+    ];
+
     protected $casts = [
         'sort_order' => 'integer',
         'active' => 'boolean',

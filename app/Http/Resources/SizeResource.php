@@ -21,6 +21,7 @@ class SizeResource extends JsonResource
                 'sort_order' => $this->sort_order,
                 'active' => $this->active,
             ],
+            'variants_count' => $this->whenCounted('variants'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
