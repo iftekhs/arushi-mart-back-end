@@ -53,9 +53,9 @@ class ShippingAddressController extends Controller
     {
         $user = $shippingAddress->user;
 
-        $user->shippingAddresses()->where('is_default', true)->update(['is_default' => false]);
+        $user->shippingAddresses()->where('default', true)->update(['default' => false]);
 
-        $shippingAddress->update(['is_default' => true]);
+        $shippingAddress->update(['default' => true]);
 
         return response()->json([
             'message' => 'Default shipping address updated successfully',
