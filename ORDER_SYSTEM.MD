@@ -22,7 +22,7 @@ I need you to implement the following features with Laravel best practices:
 ### 1. Add JSON Columns Migration
 Create a migration to add these JSON columns:
 - `order_items.product_snapshot` (nullable) - to store product details at time of order
-- `orders.shipping_address` (nullable) - to store shipping address details at time of order
+- `orders.shipping_address_snapshot` (nullable) - to store shipping address snapshot at time of order
 
 The `product_snapshot` JSON structure should be:
 ```json
@@ -45,7 +45,7 @@ The `product_snapshot` JSON structure should be:
 }
 ```
 
-The `shipping_address` JSON structure should be:
+The `shipping_address_snapshot` JSON structure should be:
 ```json
 {
   "first_name": "John",
@@ -61,7 +61,7 @@ The `shipping_address` JSON structure should be:
 ### 2. Update Models
 Update the following models with proper relationships and JSON casting:
 
-**Order Model**: Cast `shipping_address` as array, include relationships to `orderItems` and `user`
+**Order Model**: Cast `shipping_address_snapshot` as array, include relationships to `orderItems` and `user`
 
 **OrderItem Model**: Cast `product_snapshot` as array, include relationships to `order`, `product`, `productColor`, `productColorVariant`. Add helper methods: `getSnapshotTitle()`, `getSnapshotImage()`, `getSnapshotColorName()`, `getSnapshotSizeName()`
 
@@ -95,7 +95,7 @@ Create `POST /api/checkout` route that:
 ```
 - Creates order with unique order_number (format: ORD-{TIMESTAMP}-{RANDOM})
 - Creates order items with product_snapshot JSON (fetch full product data with category, color, size, image)
-- Saves shipping_address as JSON in orders table
+- Saves shipping_address_snapshot as JSON in orders table
 - Deducts stock from `product_color_variants.stock_quantity`
 - Uses database transaction
 - Returns OrderResource with nested OrderItemResource
@@ -126,7 +126,7 @@ Create these routes and controller methods:
 
 ### 6. API Resources
 Create:
-- `OrderResource`: Include all order fields, shipping_address JSON, items (nested OrderItemResource)
+- `OrderResource`: Include all order fields, shipping_address_snapshot JSON, items (nested OrderItemResource)
 - `OrderItemResource`: Include quantity, price, subtotal, product_snapshot JSON
 - `ShippingAddressResource`: Include all address fields
 

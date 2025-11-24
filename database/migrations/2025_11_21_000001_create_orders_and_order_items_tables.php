@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('shipping_cost', 10, 2);
             $table->decimal('total_amount', 10, 2);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->json('shipping_address')->nullable();
+            $table->json('shipping_address_snapshot')->nullable();
             $table->timestamps();
 
             $table->index('order_number');

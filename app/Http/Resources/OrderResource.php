@@ -25,7 +25,7 @@ class OrderResource extends JsonResource
                 'shippingStatus' => $this->shipping_status,
                 'shippingCost' => (float) $this->shipping_cost,
                 'totalAmount' => (float) $this->total_amount,
-                'shippingAddress' => $this->shipping_address,
+                'shippingAddressSnapshot' => $this->shipping_address_snapshot,
             ],
             'relationships' => [
                 'items' => OrderItemResource::collection($this->whenLoaded('items')),

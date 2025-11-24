@@ -30,7 +30,7 @@ class OrderService
                 'shipping_cost' => $shippingCost,
                 'total_amount' => $totalAmount,
                 'user_id' => $user->id,
-                'shipping_address' => [
+                'shipping_address_snapshot' => [
                     'first_name' => $shippingAddress['first_name'],
                     'last_name' => $shippingAddress['last_name'],
                     'address' => $shippingAddress['address'],

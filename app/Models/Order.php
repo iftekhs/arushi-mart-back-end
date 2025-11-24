@@ -19,7 +19,7 @@ class Order extends Model
     protected $casts = [
         'shipping_cost' => 'decimal:2',
         'total_amount' => 'decimal:2',
-        'shipping_address' => 'array',
+        'shipping_address_snapshot' => 'array',
         'status' => OrderStatus::class,
         'payment_method' => PaymentMethod::class,
         'payment_status' => PaymentStatus::class,
