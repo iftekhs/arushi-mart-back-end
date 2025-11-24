@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->string('slug', 100)->unique();
+
             $table->foreignId('parent_id')->nullable()->constrained('categories')->cascadeOnDelete();
             $table->text('description')->nullable();
             $table->string('image')->nullable();
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->boolean('featured')->default(false);
             $table->boolean('showcased')->default(false);
+
             $table->timestamps();
         });
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -31,6 +32,20 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
+        $category->load([
+            'products' => function ($query) {
+                $query->active()
+                    ->with([
+                        'category',
+                        'primaryImage',
+                        'secondaryImage',
+                        'categories',
+                        'variants.color',
+                        'variants.size'
+                    ])->withInStock();
+            }
+        ]);
+
         return CategoryResource::make($category);
     }
 }
