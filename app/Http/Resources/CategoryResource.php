@@ -20,7 +20,9 @@ class CategoryResource extends JsonResource
                 'name' => $this->name,
                 'slug' => $this->slug,
                 'description' => $this->description,
+                'image' => $this->image,
                 'active' => $this->active,
+                'featured' => $this->featured,
             ],
             'relationships' => [
                 'products' => $this->whenLoaded('products', function () {
