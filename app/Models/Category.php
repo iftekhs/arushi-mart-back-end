@@ -38,11 +38,13 @@ class Category extends Model
     {
         $validator = validator($filters, [
             'featured' => 'boolean',
+            'showcased' => 'boolean',
         ]);
 
         if ($validator->fails()) return $query;
 
         if (isset($filters['featured'])) $query->where('featured', $filters['featured']);
+        if (isset($filters['showcased'])) $query->where('showcased', $filters['showcased']);
 
         return $query;
     }

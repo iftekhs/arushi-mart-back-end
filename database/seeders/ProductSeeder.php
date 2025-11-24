@@ -47,8 +47,10 @@ class ProductSeeder extends Seeder
                 'slug' => 'womens-clothing',
                 'description' => 'Explore our exclusive collection of women\'s clothing',
                 'image' => 'https://jazmin.pk/cdn/shop/files/Semi_Formals_Web_Tiles_02.jpg?v=1759151385&width=500',
+                'video' => 'https://jazmin.pk/cdn/shop/videos/c/vp/6b10bf4a7b9c4493a6761865d0b9de2b/6b10bf4a7b9c4493a6761865d0b9de2b.HD-1080p-2.5Mbps-45995465.mp4?v=0',
                 'active' => true,
                 'featured' => true,
+                'showcased' => true,
                 'parent_id' => null,
             ],
             [
@@ -56,8 +58,10 @@ class ProductSeeder extends Seeder
                 'slug' => 'mens-clothing',
                 'description' => 'Premium quality men\'s fashion collection',
                 'image' => 'https://jazmin.pk/cdn/shop/files/RTW_Winters_Web_Tiles.jpg?v=1759151374&width=500',
+                'video' => 'https://jazmin.pk/cdn/shop/videos/c/vp/3e444bc84a4042d3a8a51ea60a62e2ae/3e444bc84a4042d3a8a51ea60a62e2ae.HD-1080p-7.2Mbps-60219227.mp4?v=0',
                 'active' => true,
                 'featured' => true,
+                'showcased' => true,
                 'parent_id' => null,
             ],
             [
@@ -65,8 +69,10 @@ class ProductSeeder extends Seeder
                 'slug' => 'traditional-wear',
                 'description' => 'Traditional and ethnic wear for all occasions',
                 'image' => 'https://jazmin.pk/cdn/shop/files/UW_Tile.jpg?v=1759584304&width=500',
+                'video' => 'https://jazmin.pk/cdn/shop/videos/c/vp/813461518f154a84a33160d45955e7b5/813461518f154a84a33160d45955e7b5.HD-1080p-7.2Mbps-58137508.mp4?v=0',
                 'active' => true,
                 'featured' => true,
+                'showcased' => true,
                 'parent_id' => null,
             ],
         ];

@@ -18,7 +18,7 @@ class CategoryController extends Controller
 
     public function index(Request $request)
     {
-        $filters = $request->only(['featured']);
+        $filters = $request->only(['featured', 'showcased']);
 
         $categories = Cache::tags(['categories'])->remember(
             $this->getCacheKey($filters),

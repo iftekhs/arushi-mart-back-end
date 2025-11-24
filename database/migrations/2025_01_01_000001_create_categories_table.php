@@ -18,8 +18,10 @@ return new class extends Migration
             $table->foreignId('parent_id')->nullable()->constrained('categories')->cascadeOnDelete();
             $table->text('description')->nullable();
             $table->string('image')->nullable();
+            $table->string('video')->nullable();
             $table->boolean('active')->default(true);
             $table->boolean('featured')->default(false);
+            $table->boolean('showcased')->default(false);
             $table->timestamps();
         });
     }
