@@ -104,16 +104,35 @@ class ProductSeeder extends Seeder
     private function seedColors(): void
     {
         $colors = [
-            ['name' => 'Black', 'hex_code' => '#000000'],
-            ['name' => 'White', 'hex_code' => '#FFFFFF'],
-            ['name' => 'Red', 'hex_code' => '#DC143C'],
-            ['name' => 'Navy Blue', 'hex_code' => '#000080'],
-            ['name' => 'Emerald Green', 'hex_code' => '#50C878'],
-            ['name' => 'Maroon', 'hex_code' => '#800000'],
-            ['name' => 'Beige', 'hex_code' => '#F5F5DC'],
-            ['name' => 'Royal Blue', 'hex_code' => '#4169E1'],
-            ['name' => 'Mustard', 'hex_code' => '#FFDB58'],
-            ['name' => 'Pink', 'hex_code' => '#FFC0CB'],
+            // Classic Luxury Neutrals
+            ['name' => 'Ivory', 'hex_code' => '#FFFFF0'],
+            ['name' => 'Champagne', 'hex_code' => '#F7E7CE'],
+            ['name' => 'Camel', 'hex_code' => '#C19A6B'],
+            ['name' => 'Charcoal', 'hex_code' => '#36454F'],
+            ['name' => 'Midnight Black', 'hex_code' => '#0C0C0C'],
+
+            // Jewel Tones
+            ['name' => 'Emerald', 'hex_code' => '#50C878'],
+            ['name' => 'Sapphire', 'hex_code' => '#0F52BA'],
+            ['name' => 'Ruby', 'hex_code' => '#E0115F'],
+            ['name' => 'Amethyst', 'hex_code' => '#9966CC'],
+
+            // Sophisticated Colors
+            ['name' => 'Burgundy', 'hex_code' => '#800020'],
+            ['name' => 'Navy', 'hex_code' => '#000080'],
+            ['name' => 'Forest Green', 'hex_code' => '#228B22'],
+            ['name' => 'Cognac', 'hex_code' => '#9A463D'],
+            ['name' => 'Slate Blue', 'hex_code' => '#6A5ACD'],
+
+            // Elegant Pastels
+            ['name' => 'Blush', 'hex_code' => '#DE5D83'],
+            ['name' => 'Powder Blue', 'hex_code' => '#B0E0E6'],
+            ['name' => 'Sage', 'hex_code' => '#9DC183'],
+            ['name' => 'Lavender', 'hex_code' => '#E6E6FA'],
+
+            // Metallics
+            ['name' => 'Gold', 'hex_code' => '#FFD700'],
+            ['name' => 'Silver', 'hex_code' => '#C0C0C0'],
         ];
 
         foreach ($colors as $color) {
@@ -124,7 +143,7 @@ class ProductSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✓ Created 10 colors');
+        $this->command->info('✓ Created 20 luxury colors');
     }
 
     private function seedSizes(): void

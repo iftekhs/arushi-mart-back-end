@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ColorResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
+use App\Models\Color;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -42,6 +44,19 @@ class CategoryController extends Controller
             ->paginate(12);
 
         return ProductResource::collection($products);
+    }
+
+    public function colors(Category $category)
+    {
+        $colors = Color::whereHas('variants.product', function ($query) use ($category) {
+            $query->where('category_id', $category->id)
+                ->where('active', true);
+        })
+        ->where('active', true)
+        ->distinct()
+        ->get();
+
+        return ColorResource::collection($colors);
     }
 
     public function show(Request $request, Category $category)

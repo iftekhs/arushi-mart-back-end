@@ -42,6 +42,7 @@ Route::prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
     Route::get('/{category:slug}', [CategoryController::class, 'show']);
     Route::get('/{category:slug}/products', [CategoryController::class, 'products']);
+    Route::get('/{category:slug}/colors', [CategoryController::class, 'colors']);
 });
 
 Route::prefix('products')->group(function () {
