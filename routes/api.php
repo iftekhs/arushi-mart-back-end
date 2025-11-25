@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CheckoutController;
+use App\Http\Controllers\Api\ColorController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductVariantController;
@@ -40,6 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
     Route::get('/{category:slug}', [CategoryController::class, 'show']);
+    Route::get('/{category:slug}/products', [CategoryController::class, 'products']);
 });
 
 Route::prefix('products')->group(function () {
@@ -48,6 +50,8 @@ Route::prefix('products')->group(function () {
     Route::get('/{product:slug}', [ProductController::class, 'show'])->can('view', 'product');
     Route::get('/{product:slug}/related', [ProductController::class, 'related']);
 });
+
+Route::get('/colors', [ColorController::class, 'index']);
 
 Route::prefix('variants')->group(function () {
     Route::get('/{variant}', [ProductVariantController::class, 'show']);

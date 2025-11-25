@@ -30,22 +30,22 @@ class CategoryController extends Controller
         return CategoryResource::collection($categories);
     }
 
-    public function show(Category $category)
+    public function products(Request $request, Category $category)
     {
-        $category->load([
-            'products' => function ($query) {
-                $query->active()
-                    ->with([
-                        'category',
-                        'primaryImage',
-                        'secondaryImage',
-                        'categories',
-                        'variants.color',
-                        'variants.size'
-                    ])->withInStock();
-            }
-        ]);
+        $filters = $request->only(['in_stock', 'min_price', 'max_price', 'colors', 'sizes']);
 
+        $products = $category->products()
+            ->active()
+            ->filter($filters)
+            ->with(['category', 'primaryImage', 'secondaryImage', 'categories', 'variants.color', 'variants.size'])
+            ->withInStock()
+            ->paginate(12);
+
+        return ProductResource::collection($products);
+    }
+
+    public function show(Request $request, Category $category)
+    {
         return CategoryResource::make($category);
     }
 }

@@ -72,4 +72,41 @@ class Product extends Model
             $query->where('stock_quantity', '>', 0);
         });
     }
+
+    public function scopeFilter(Builder $query, array $filters): Builder
+    {
+        // Filter by stock availability
+        if (isset($filters['in_stock']) && $filters['in_stock']) {
+            $query->whereHas('variants', function ($q) {
+                $q->where('stock_quantity', '>', 0);
+            });
+        }
+
+        // Filter by price range
+        if (isset($filters['min_price'])) {
+            $query->where('price', '>=', $filters['min_price']);
+        }
+
+        if (isset($filters['max_price'])) {
+            $query->where('price', '<=', $filters['max_price']);
+        }
+
+        // Filter by colors
+        if (isset($filters['colors']) && !empty($filters['colors'])) {
+            $colorIds = is_array($filters['colors']) ? $filters['colors'] : explode(',', $filters['colors']);
+            $query->whereHas('variants.color', function ($q) use ($colorIds) {
+                $q->whereIn('colors.id', $colorIds);
+            });
+        }
+
+        // Filter by sizes
+        if (isset($filters['sizes']) && !empty($filters['sizes'])) {
+            $sizeIds = is_array($filters['sizes']) ? $filters['sizes'] : explode(',', $filters['sizes']);
+            $query->whereHas('variants.size', function ($q) use ($sizeIds) {
+                $q->whereIn('sizes.id', $sizeIds);
+            });
+        }
+
+        return $query;
+    }
 }

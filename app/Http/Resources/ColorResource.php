@@ -18,7 +18,7 @@ class ColorResource extends JsonResource
             'id' => $this->id,
             'attributes' => [
                 'name' => $this->name,
-                'hex_code' => $this->hex_code,
+                'hexCode' => $this->hex_code,
                 'active' => $this->active,
             ],
             'created_at' => $this->created_at,
