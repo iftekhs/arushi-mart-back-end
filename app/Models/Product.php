@@ -107,6 +107,28 @@ class Product extends Model
             });
         }
 
+        // Sorting
+        if (isset($filters['sort'])) {
+            switch ($filters['sort']) {
+                case 'newest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                case 'price-low':
+                    $query->orderBy('price', 'asc');
+                    break;
+                case 'price-high':
+                    $query->orderBy('price', 'desc');
+                    break;
+                default:
+                    $query->orderBy('created_at', 'desc');
+            }
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
         return $query;
     }
 }

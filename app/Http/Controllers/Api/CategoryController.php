@@ -32,7 +32,7 @@ class CategoryController extends Controller
 
     public function products(Request $request, Category $category)
     {
-        $filters = $request->only(['in_stock', 'min_price', 'max_price', 'colors', 'sizes']);
+        $filters = $request->only(['in_stock', 'min_price', 'max_price', 'colors', 'sizes', 'sort']);
 
         $products = $category->products()
             ->active()
