@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\UserRole;
+use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\ColorController;
@@ -50,6 +51,11 @@ Route::prefix('colors')->group(function () {
 
 Route::prefix('variants')->group(function () {
     Route::get('/{variant}', [ProductVariantController::class, 'show']);
+});
+
+// Admin routes
+Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole::SUPERADMIN])])->prefix('admin')->group(function () {
+    Route::get('/users', [AdminUserController::class, 'index']);
 });
 
 // Authenticated routes
