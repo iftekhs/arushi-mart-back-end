@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductVariantController;
 use App\Http\Controllers\Api\ShippingAddressController;
+use App\Http\Controllers\Api\SubscriberController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,7 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/cart/validate', [UserController::class, 'validateCart']);
 Route::post('/checkout', [CheckoutController::class, 'store']);
+Route::post('/subscribe', [SubscriberController::class, 'subscribe']);
 
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
