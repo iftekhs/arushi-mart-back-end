@@ -56,6 +56,7 @@ Route::prefix('variants')->group(function () {
 // Admin routes
 Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole::SUPERADMIN])])->prefix('admin')->group(function () {
     Route::get('/users', [AdminUserController::class, 'index']);
+    Route::get('/users/export', [AdminUserController::class, 'export']);
     Route::patch('/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus']);
 });
 

@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\UserRole;
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Maatwebsite\Excel\Excel;
+use Maatwebsite\Excel\Facades\Excel as ExcelFacade;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class UserController extends Controller
 {
-    /**
-     * Get all customers (users with role USER) for admin panel
-     */
     public function index(Request $request): JsonResource
     {
-        $perPage = $request->input('per_page', 12);
         $search = $request->input('search', '');
 
         $query = User::where('role', UserRole::USER)
@@ -30,7 +30,7 @@ class UserController extends Controller
             });
         }
 
-        $customers = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        $customers = $query->orderBy('created_at', 'desc')->paginate(12);
         $totalCustomers = User::where('role', UserRole::USER)->count();
 
         return UserResource::collection($customers)->additional([
@@ -40,21 +40,21 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * Toggle user active status
-     */
-    public function toggleStatus(User $user): JsonResource
+    public function toggleStatus(User $user): JsonResponse
     {
-        if ($user->email_verified_at) {
-            $user->update(['email_verified_at' => null]);
-        } else {
-            $user->update(['email_verified_at' => now()]);
-        }
+        $user->update([
+            'status' => !$user->status
+        ]);
 
-        // Reload the user with necessary counts for the resource
-        $user->loadCount('orders');
-        $user->loadSum('orders', 'total_amount');
+        return $this->ok('User status updated successfully.');
+    }
 
-        return new UserResource($user);
+    public function export(Request $request)
+    {
+        $format = $request->input('format', 'xlsx');
+        $extension = $format === 'csv' ? Excel::CSV : Excel::XLSX;
+        $fileName = 'customers.' . $format;
+
+        return ExcelFacade::download(new UsersExport, $fileName, $extension);
     }
 }
