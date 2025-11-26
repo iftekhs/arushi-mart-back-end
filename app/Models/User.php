@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use App\Traits\UserOtpUtilities;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -24,6 +25,7 @@ class User extends Authenticatable
         'otp_expires_at' => 'datetime',
         'otp_requested_at' => 'datetime',
         'otp_used_at' => 'datetime',
+        'role' => UserRole::class,
     ];
 
     public function shippingAddresses(): HasMany
