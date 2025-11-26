@@ -72,7 +72,9 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return $this->ok('Authenticated successfully');
+        return $this->success([
+            'redirect' => $user->getBaseRedirectUrl(),
+        ], 200);
     }
 
     public function checkOtp(Request $request)

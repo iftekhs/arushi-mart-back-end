@@ -18,13 +18,41 @@ class SizeFactory extends Factory
     public function definition(): array
     {
         $sizes = [
-            ['name' => 'S', 'sort_order' => 1],
-            ['name' => 'M', 'sort_order' => 2],
-            ['name' => 'L', 'sort_order' => 3],
-            ['name' => 'XL', 'sort_order' => 4],
-            ['name' => '2XL', 'sort_order' => 5],
-            ['name' => '3XL', 'sort_order' => 6],
-            ['name' => '4XL', 'sort_order' => 7],
+            [
+                'name' => 'Small',
+                'abbreviation' => 'S',
+                'sort_order' => 1
+            ],
+            [
+                'name' => 'Medium',
+                'abbreviation' => 'M',
+                'sort_order' => 2
+            ],
+            [
+                'name' => 'Large',
+                'abbreviation' => 'L',
+                'sort_order' => 3
+            ],
+            [
+                'name' => 'Extra Large',
+                'abbreviation' => 'XL',
+                'sort_order' => 4
+            ],
+            [
+                'name' => '2 Extra Large',
+                'abbreviation' => '2XL',
+                'sort_order' => 5
+            ],
+            [
+                'name' => '3 Extra Large',
+                'abbreviation' => '3XL',
+                'sort_order' => 6
+            ],
+            [
+                'name' => '4 Extra Large',
+                'abbreviation' => '4XL',
+                'sort_order' => 7
+            ],
         ];
 
         $size = fake()->unique()->randomElement($sizes);
@@ -32,7 +60,7 @@ class SizeFactory extends Factory
         return [
             'name' => $size['name'],
             'sort_order' => $size['sort_order'],
-            'active' => true,
+            'abbreviation' => $size['abbreviation'],
         ];
     }
 }

@@ -18,11 +18,12 @@ class SizeResource extends JsonResource
             'id' => $this->id,
             'attributes' => [
                 'name' => $this->name,
-                'sort_order' => $this->sort_order,
-                'active' => $this->active,
+                'abbreviation' => $this->abbreviation,
+                'sortOrder' => $this->sort_order,
+                'productsCount' => $this->whenCounted('variants'),
             ],
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
         ];
     }
 }

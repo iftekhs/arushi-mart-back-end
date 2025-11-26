@@ -2,6 +2,7 @@
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Api\Admin\SizeController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\ColorController;
@@ -58,6 +59,14 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
     Route::get('/users', [AdminUserController::class, 'index']);
     Route::get('/users/export', [AdminUserController::class, 'export']);
     Route::patch('/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus']);
+
+    // Sizes Management
+    Route::prefix('sizes')->group(function () {
+        Route::get('/', [SizeController::class, 'index']);
+        Route::post('/', [SizeController::class, 'store']);
+        Route::put('/{size}', [SizeController::class, 'update']);
+        Route::delete('/{size}', [SizeController::class, 'delete']);
+    });
 });
 
 // Authenticated routes

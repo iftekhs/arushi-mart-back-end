@@ -1,0 +1,71 @@
+<?php
+
+namespace App\Http\Controllers\Api\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreSizeRequest;
+use App\Http\Requests\UpdateSizeRequest;
+use App\Http\Resources\SizeResource;
+use App\Models\Size;
+use Illuminate\Http\JsonResponse;
+
+class SizeController extends Controller
+{
+    public function index(): JsonResponse
+    {
+        $sizes = Size::withCount('variants')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        return response()->json([
+            'data' => SizeResource::collection($sizes),
+        ]);
+    }
+
+    public function store(StoreSizeRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+
+        $maxSortOrder = Size::max('sort_order') ?? 0;
+        $validated['sort_order'] = $maxSortOrder + 1;
+
+        $size = Size::create($validated);
+        $size->loadCount('variants');
+
+        return response()->json([
+            'data' => new SizeResource($size),
+            'message' => 'Size created successfully',
+        ], 201);
+    }
+
+    public function update(UpdateSizeRequest $request, Size $size): JsonResponse
+    {
+        $validated = $request->validated();
+
+        $size->update($validated);
+        $size->loadCount('variants');
+
+        return response()->json([
+            'data' => new SizeResource($size),
+            'message' => 'Size updated successfully',
+        ]);
+    }
+
+    public function delete(Size $size): JsonResponse
+    {
+        $variantsCount = $size->variants()->count();
+
+        if ($variantsCount > 0) {
+            return response()->json([
+                'message' => "Cannot delete size. It is being used by {$variantsCount} product variant(s).",
+            ], 422);
+        }
+
+        $size->delete();
+
+        return response()->json([
+            'message' => 'Size deleted successfully',
+        ]);
+    }
+}

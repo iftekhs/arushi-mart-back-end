@@ -37,4 +37,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+
+    public function getBaseRedirectUrl(): string
+    {
+        return match ($this->role) {
+            UserRole::SUPERADMIN => '/admin/dashboard',
+            UserRole::USER => '/account/orders',
+            default => '/sign-in',
+        };
+    }
 }
