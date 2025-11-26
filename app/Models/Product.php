@@ -73,6 +73,18 @@ class Product extends Model
         });
     }
 
+    public function scopeSearch(Builder $query, string $searchQuery): Builder
+    {
+        return $query->where(function ($q) use ($searchQuery) {
+            $q->where('name', 'like', "%{$searchQuery}%")
+                ->orWhere('description', 'like', "%{$searchQuery}%")
+                ->orWhere('sku', 'like', "%{$searchQuery}%")
+                ->orWhereHas('tags', function ($tagQuery) use ($searchQuery) {
+                    $tagQuery->where('name', 'like', "%{$searchQuery}%");
+                });
+        });
+    }
+
     public function scopeFilter(Builder $query, array $filters): Builder
     {
         // Filter by stock availability

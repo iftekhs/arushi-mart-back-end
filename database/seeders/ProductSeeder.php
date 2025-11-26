@@ -83,7 +83,7 @@ class ProductSeeder extends Seeder
                 'video' => null,
                 'active' => true,
                 'featured' => true,
-                'showcased' => true,
+                'showcased' => false,
                 'parent_id' => null,
             ],
         ];
