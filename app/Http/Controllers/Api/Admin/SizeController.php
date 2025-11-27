@@ -8,14 +8,17 @@ use App\Http\Requests\UpdateSizeRequest;
 use App\Http\Resources\SizeResource;
 use App\Models\Size;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class SizeController extends Controller
 {
+    /**
+     * Display a listing of sizes.
+     */
     public function index(): JsonResponse
     {
         $sizes = Size::withCount('variants')
             ->orderBy('sort_order')
-            ->orderBy('name')
             ->get();
 
         return response()->json([
@@ -23,10 +26,14 @@ class SizeController extends Controller
         ]);
     }
 
+    /**
+     * Store a newly created size.
+     */
     public function store(StoreSizeRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
+        // Get the max sort_order and increment
         $maxSortOrder = Size::max('sort_order') ?? 0;
         $validated['sort_order'] = $maxSortOrder + 1;
 
@@ -39,6 +46,9 @@ class SizeController extends Controller
         ], 201);
     }
 
+    /**
+     * Update the specified size.
+     */
     public function update(UpdateSizeRequest $request, Size $size): JsonResponse
     {
         $validated = $request->validated();
@@ -52,8 +62,33 @@ class SizeController extends Controller
         ]);
     }
 
-    public function delete(Size $size): JsonResponse
+    /**
+     * Update the sort order of multiple sizes.
+     */
+    public function updateOrder(Request $request): JsonResponse
     {
+        $validated = $request->validate([
+            'sizes' => ['required', 'array'],
+            'sizes.*.id' => ['required', 'exists:sizes,id'],
+            'sizes.*.sort_order' => ['required', 'integer', 'min:0'],
+        ]);
+
+        foreach ($validated['sizes'] as $sizeData) {
+            Size::where('id', $sizeData['id'])
+                ->update(['sort_order' => $sizeData['sort_order']]);
+        }
+
+        return response()->json([
+            'message' => 'Sort order updated successfully',
+        ]);
+    }
+
+    /**
+     * Remove the specified size.
+     */
+    public function destroy(Size $size): JsonResponse
+    {
+        // Check if size is being used by any variants
         $variantsCount = $size->variants()->count();
 
         if ($variantsCount > 0) {

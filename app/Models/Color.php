@@ -10,10 +10,6 @@ class Color extends Model
 {
     use HasFactory;
 
-    protected $casts = [
-        'active' => 'boolean',
-    ];
-
     public function variants(): HasMany
     {
         return $this->hasMany(ProductVariant::class);

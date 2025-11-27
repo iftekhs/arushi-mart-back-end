@@ -126,7 +126,6 @@ class ProductSeeder extends Seeder
             Color::create([
                 'name' => $color['name'],
                 'hex_code' => $color['hex_code'],
-                'active' => true,
             ]);
         }
 
