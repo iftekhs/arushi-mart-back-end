@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Traits\UserOtpUtilities;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,6 +27,7 @@ class User extends Authenticatable
         'otp_requested_at' => 'datetime',
         'otp_used_at' => 'datetime',
         'role' => UserRole::class,
+        'status' => UserStatus::class,
     ];
 
     public function shippingAddresses(): HasMany
@@ -45,5 +47,10 @@ class User extends Authenticatable
             UserRole::USER => '/account/orders',
             default => '/sign-in',
         };
+    }
+
+    public function active(): bool
+    {
+        return $this->status === UserStatus::ACTIVE;
     }
 }

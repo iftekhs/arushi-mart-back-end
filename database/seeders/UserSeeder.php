@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -21,6 +22,7 @@ class UserSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'user@example.com',
             'role' => UserRole::USER,
+            'status' => UserStatus::ACTIVE,
             'email_verified_at' => now(),
         ]);
     }

@@ -16,14 +16,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('role');
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('status');
             $table->string('otp_code_hash')->nullable();
             $table->timestamp('otp_requested_at')->nullable();
             $table->timestamp('otp_expires_at')->nullable();
             $table->timestamp('otp_used_at')->nullable();
             $table->unsignedInteger('otp_attempts')->default(0);
             $table->rememberToken();
+            $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
         });
 

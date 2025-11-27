@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -22,12 +23,14 @@ class DatabaseSeeder extends Seeder
             'name' => 'Superadmin',
             'email' => 'superadmin@email.com',
             'role' => UserRole::SUPERADMIN,
+            'status' => UserStatus::ACTIVE,
         ]);
 
         User::factory()->create([
             'name' => 'John Doe',
             'email' => 'user@email.com',
             'role' => UserRole::USER,
+            'status' => UserStatus::ACTIVE,
         ]);
 
         // Seed products and related data

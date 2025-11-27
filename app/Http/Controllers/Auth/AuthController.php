@@ -29,6 +29,8 @@ class AuthController extends Controller
             ]);
         }
 
+        if (!$user->active()) return $this->error('Your account has been deactivated.', 403);
+
         $otp = $user->createOtp();
 
         Mail::to($user->email)->send(new OtpMail($otp));

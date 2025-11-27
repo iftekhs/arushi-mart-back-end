@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
@@ -43,7 +44,7 @@ class UserController extends Controller
     public function toggleStatus(User $user): JsonResponse
     {
         $user->update([
-            'status' => !$user->status
+            'status' => $user->status === UserStatus::ACTIVE ? UserStatus::INACTIVE : UserStatus::ACTIVE,
         ]);
 
         return $this->ok('User status updated successfully.');

@@ -24,10 +24,10 @@ class UserResource extends JsonResource
                 'name' => $this->name,
                 'email' => $this->email,
                 'role' => $this->role->value,
-                'emailVerifiedAt' => $this->email_verified_at,
                 'ordersCount' => $ordersCount,
                 'totalSpent' => $totalSpent,
                 'averageOrderValue' => round($averageOrderValue, 2),
+                'status' => $this->status,
             ],
             'createdAt' => $this->created_at,
         ];

@@ -58,12 +58,11 @@ class SizeController extends Controller
         $validated = $request->validate([
             'sizes' => ['required', 'array'],
             'sizes.*.id' => ['required', 'exists:sizes,id'],
-            'sizes.*.sort_order' => ['required', 'integer', 'min:0'],
+            'sizes.*.sortOrder' => ['required', 'integer', 'min:0'],
         ]);
 
         foreach ($validated['sizes'] as $sizeData) {
-            Size::where('id', $sizeData['id'])
-                ->update(['sort_order' => $sizeData['sort_order']]);
+            Size::where('id', $sizeData['id'])->update(['sort_order' => $sizeData['sortOrder']]);
         }
 
         return response()->json([

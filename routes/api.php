@@ -2,6 +2,7 @@
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Api\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Api\Admin\ColorController as AdminColorController;
 use App\Http\Controllers\Api\Admin\SizeController;
 use App\Http\Controllers\Api\Admin\TagController as AdminTagController;
@@ -80,6 +81,9 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
         Route::post('/sync', [AdminTagController::class, 'syncTags']);
         Route::delete('/{tag}', [AdminTagController::class, 'destroy']);
     });
+
+    // Categories Management
+    Route::apiResource('categories', AdminCategoryController::class);
 });
 
 // Authenticated routes
