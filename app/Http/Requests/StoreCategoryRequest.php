@@ -19,8 +19,8 @@ class StoreCategoryRequest extends FormRequest
             'active' => ['boolean'],
             'featured' => ['boolean'],
             'showcased' => ['boolean'],
-            'image' => ['nullable', 'string'], // Assuming URL or path for now
-            'video' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'max:5120'], // Max 5MB
+            'video' => ['nullable', 'mimetypes:video/mp4,video/mpeg,video/quicktime', 'max:51200'], // Max 50MB
             'parent_id' => ['nullable', 'exists:categories,id'],
         ];
     }

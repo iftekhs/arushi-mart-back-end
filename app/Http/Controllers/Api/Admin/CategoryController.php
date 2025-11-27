@@ -37,6 +37,14 @@ class CategoryController extends Controller
         $data = $request->validated();
         $data['slug'] = Str::slug($data['name']);
 
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('categories/images', 'public');
+        }
+
+        if ($request->hasFile('video')) {
+            $data['video'] = $request->file('video')->store('categories/videos', 'public');
+        }
+
         $category = Category::create($data);
 
         return response()->json([
@@ -50,6 +58,14 @@ class CategoryController extends Controller
         $data = $request->validated();
         if (isset($data['name'])) {
             $data['slug'] = Str::slug($data['name']);
+        }
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('categories/images', 'public');
+        }
+
+        if ($request->hasFile('video')) {
+            $data['video'] = $request->file('video')->store('categories/videos', 'public');
         }
 
         $category->update($data);
