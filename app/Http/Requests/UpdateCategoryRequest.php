@@ -22,6 +22,8 @@ class UpdateCategoryRequest extends FormRequest
             'showcased' => ['boolean'],
             'image' => ['nullable', 'image', 'max:5120'],
             'video' => ['nullable', 'mimetypes:video/mp4,video/mpeg,video/quicktime', 'max:51200'],
+            'remove_image' => ['nullable', 'boolean'],
+            'remove_video' => ['nullable', 'boolean'],
             'parent_id' => ['nullable', 'exists:categories,id', Rule::notIn([$this->category->id])], // Prevent self-parenting
         ];
     }

@@ -9,6 +9,7 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -60,13 +61,36 @@ class CategoryController extends Controller
             $data['slug'] = Str::slug($data['name']);
         }
 
+        if ($request->boolean('remove_image')) {
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
+                $data['image'] = null;
+                unset($data['remove_image']);
+            }
+        }
+
         if ($request->hasFile('image')) {
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
+            }
             $data['image'] = $request->file('image')->store('categories/images', 'public');
         }
 
+        if ($request->boolean('remove_video')) {
+            if ($category->video) {
+                Storage::disk('public')->delete($category->video);
+                $data['video'] = null;
+                unset($data['remove_video']);
+            }
+        }
+
         if ($request->hasFile('video')) {
+            if ($category->video) {
+                Storage::disk('public')->delete($category->video);
+            }
             $data['video'] = $request->file('video')->store('categories/videos', 'public');
         }
+        logger()->info('Updating category with data: ', $data);
 
         $category->update($data);
 
