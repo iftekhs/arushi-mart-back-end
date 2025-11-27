@@ -72,13 +72,13 @@ class SizeController extends Controller
 
     public function delete(Size $size): JsonResponse
     {
-        $variantsCount = $size->variants()->count();
+        // $variantsCount = $size->variants()->count();
 
-        if ($variantsCount > 0) {
-            return response()->json([
-                'message' => "Cannot delete size. It is being used by {$variantsCount} product variant(s).",
-            ], 422);
-        }
+        // if ($variantsCount > 0) {
+        //     return response()->json([
+        //         'message' => "Cannot delete size. It is being used by {$variantsCount} product variant(s).",
+        //     ], 422);
+        // }
 
         $size->delete();
 

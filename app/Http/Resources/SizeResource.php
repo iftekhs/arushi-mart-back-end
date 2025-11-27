@@ -15,7 +15,7 @@ class SizeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => (string)$this->id,
             'attributes' => [
                 'name' => $this->name,
                 'abbreviation' => $this->abbreviation,
