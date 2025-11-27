@@ -10,10 +10,6 @@ class Tag extends Model
 {
     use HasFactory;
 
-    protected $casts = [
-        'active' => 'boolean',
-    ];
-
     public function products(): MorphToMany
     {
         return $this->morphedByMany(Product::class, 'taggable');

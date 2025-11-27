@@ -12,9 +12,6 @@ use Illuminate\Http\Request;
 
 class SizeController extends Controller
 {
-    /**
-     * Display a listing of sizes.
-     */
     public function index(): JsonResponse
     {
         $sizes = Size::withCount('variants')
@@ -26,9 +23,6 @@ class SizeController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created size.
-     */
     public function store(StoreSizeRequest $request): JsonResponse
     {
         $validated = $request->validated();
@@ -46,9 +40,6 @@ class SizeController extends Controller
         ], 201);
     }
 
-    /**
-     * Update the specified size.
-     */
     public function update(UpdateSizeRequest $request, Size $size): JsonResponse
     {
         $validated = $request->validated();
@@ -62,9 +53,6 @@ class SizeController extends Controller
         ]);
     }
 
-    /**
-     * Update the sort order of multiple sizes.
-     */
     public function updateOrder(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -83,12 +71,8 @@ class SizeController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified size.
-     */
-    public function destroy(Size $size): JsonResponse
+    public function delete(Size $size): JsonResponse
     {
-        // Check if size is being used by any variants
         $variantsCount = $size->variants()->count();
 
         if ($variantsCount > 0) {

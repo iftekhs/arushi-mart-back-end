@@ -2,8 +2,9 @@
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
-use App\Http\Controllers\Api\Admin\SizeController;
 use App\Http\Controllers\Api\Admin\ColorController as AdminColorController;
+use App\Http\Controllers\Api\Admin\SizeController;
+use App\Http\Controllers\Api\Admin\TagController as AdminTagController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\ColorController;
@@ -62,11 +63,23 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
     Route::patch('/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus']);
 
     // Sizes Management
-    Route::post('/sizes/update-order', [SizeController::class, 'updateOrder']);
-    Route::apiResource('sizes', SizeController::class);
+    Route::prefix('sizes')->group(function () {
+        Route::get('/', [SizeController::class, 'index']);
+        Route::post('/', [SizeController::class, 'store']);
+        Route::post('/update-order', [SizeController::class, 'updateOrder']);
+        Route::put('/{size}', [SizeController::class, 'update']);
+        Route::delete('/{size}', [SizeController::class, 'delete']);
+    });
 
     // Colors Management
     Route::apiResource('colors', AdminColorController::class);
+
+    // Tags Management
+    Route::prefix('tags')->group(function () {
+        Route::get('/', [AdminTagController::class, 'index']);
+        Route::post('/sync', [AdminTagController::class, 'syncTags']);
+        Route::delete('/{tag}', [AdminTagController::class, 'destroy']);
+    });
 });
 
 // Authenticated routes
