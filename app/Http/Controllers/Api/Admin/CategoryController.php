@@ -38,6 +38,14 @@ class CategoryController extends Controller
         $data = $request->validated();
         $data['slug'] = Str::slug($data['name']);
 
+        if ($request->boolean('showcased')) {
+            if (Category::where('showcased', true)->count() >= 3) {
+                return response()->json([
+                    'message' => 'You can only showcase up to 3 categories.',
+                ], 422);
+            }
+        }
+
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('categories/images', 'public');
         }
@@ -59,6 +67,14 @@ class CategoryController extends Controller
         $data = $request->validated();
         if (isset($data['name'])) {
             $data['slug'] = Str::slug($data['name']);
+        }
+
+        if ($request->boolean('showcased') && !$category->showcased) {
+            if (Category::where('showcased', true)->count() >= 3) {
+                return response()->json([
+                    'message' => 'You can only showcase up to 3 categories.',
+                ], 422);
+            }
         }
 
         if ($request->boolean('remove_image')) {

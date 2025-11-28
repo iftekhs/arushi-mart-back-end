@@ -22,9 +22,9 @@ class CategoryResource extends JsonResource
                 'description' => $this->description,
                 'image' => path_to_url($this->image),
                 'video' => path_to_url($this->video),
-                'active' => $this->active,
-                'featured' => $this->featured,
-                'showcased' => $this->showcased,
+                'active' => (bool) $this->active,
+                'featured' => (bool) $this->featured,
+                'showcased' => (bool) $this->showcased,
             ],
             'relationships' => [
                 'products' => $this->whenLoaded('products', function () {
