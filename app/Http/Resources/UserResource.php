@@ -14,8 +14,8 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $ordersCount = $this->orders_count ?? 0;
-        $totalSpent = $this->orders_sum_total_amount ?? 0;
+        $ordersCount = $this->orders_count;
+        $totalSpent = (float) $this->orders_sum_total_amount;
         $averageOrderValue = $ordersCount > 0 ? $totalSpent / $ordersCount : 0;
 
         return [

@@ -5,11 +5,8 @@ namespace App\Enums;
 enum ShippingStatus: string
 {
     case PENDING = 'pending';
-    case PROCESSING = 'processing';
-    case SHIPPED = 'shipped';
-    case IN_TRANSIT = 'in_transit';
-    case OUT_FOR_DELIVERY = 'out_for_delivery';
+    case PACKAGING = 'packaging';
+    case ON_THE_WAY = 'on_the_way';
     case DELIVERED = 'delivered';
-    case FAILED = 'failed';
-    case RETURNED = 'returned';
+    case CANCELED = 'canceled';
 }
