@@ -84,6 +84,13 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
 
     // Categories Management
     Route::apiResource('categories', AdminCategoryController::class);
+
+    // Orders Management
+    Route::prefix('orders')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Api\Admin\OrderController::class, 'index']);
+        Route::get('/metrics', [\App\Http\Controllers\Api\Admin\OrderController::class, 'metrics']);
+        Route::get('/{order}', [\App\Http\Controllers\Api\Admin\OrderController::class, 'show']);
+    });
 });
 
 // Authenticated routes
