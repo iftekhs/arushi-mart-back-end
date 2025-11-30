@@ -25,6 +25,9 @@ class ProductResource extends JsonResource
                 'inStock' => $this->in_stock ?? false,
                 'active' => $this->active,
                 'totalOrders' => $this->total_orders ?? 0,
+                'totalStock' => $this->whenLoaded('variants', function () {
+                    return $this->variants->sum('stock_quantity');
+                }, 0),
             ],
             'relationships' => [
                 'category' => CategoryResource::make($this->whenLoaded('category')),
@@ -35,6 +38,7 @@ class ProductResource extends JsonResource
                 'primaryImage' => ProductImageResource::make($this->whenLoaded('primaryImage')),
                 'secondaryImage' => ProductImageResource::make($this->whenLoaded('secondaryImage')),
             ],
+            'createdAt' => $this->created_at,
         ];
     }
 }
