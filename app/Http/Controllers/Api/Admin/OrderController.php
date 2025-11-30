@@ -10,6 +10,7 @@ use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
 {
@@ -63,7 +64,7 @@ class OrderController extends Controller
         $this->authorize('cancel', $order);
 
         // Update order status to cancelled
-        $order->status = OrderStatus::CANCELLED;
+        $order->status = OrderStatus::CANCELED;
 
         // Update shipping status to canceled
         $order->shipping_status = ShippingStatus::CANCELED;
@@ -79,7 +80,7 @@ class OrderController extends Controller
     public function updateShippingStatus(Request $request, Order $order): \Illuminate\Http\JsonResponse
     {
         $request->validate([
-            'shipping_status' => ['required', 'string', 'in:pending,packaging,on_the_way,delivered']
+            'shipping_status' => ['required', 'string', Rule::in(ShippingStatus::values())]
         ]);
 
         // Authorize using policy

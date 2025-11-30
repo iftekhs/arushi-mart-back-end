@@ -4,6 +4,7 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Api\Admin\ColorController as AdminColorController;
+use App\Http\Controllers\Api\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Api\Admin\SizeController;
 use App\Http\Controllers\Api\Admin\TagController as AdminTagController;
 use App\Http\Controllers\Api\CategoryController;
@@ -87,11 +88,11 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
 
     // Orders Management
     Route::prefix('orders')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\Admin\OrderController::class, 'index']);
-        Route::get('/metrics', [\App\Http\Controllers\Api\Admin\OrderController::class, 'metrics']);
-        Route::get('/{order}', [\App\Http\Controllers\Api\Admin\OrderController::class, 'show']);
-        Route::post('/{order}/cancel', [\App\Http\Controllers\Api\Admin\OrderController::class, 'cancel']);
-        Route::patch('/{order}/shipping-status', [\App\Http\Controllers\Api\Admin\OrderController::class, 'updateShippingStatus']);
+        Route::get('/', [AdminOrderController::class, 'index']);
+        Route::get('/metrics', [AdminOrderController::class, 'metrics']);
+        Route::get('/{order}', [AdminOrderController::class, 'show']);
+        Route::post('/{order}/cancel', [AdminOrderController::class, 'cancel']);
+        Route::patch('/{order}/shipping-status', [AdminOrderController::class, 'updateShippingStatus']);
     });
 });
 
