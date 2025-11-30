@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
@@ -15,11 +16,11 @@ class DashboardController extends Controller
 {
     public function metrics(): JsonResponse
     {
-        $totalCustomers = User::where('role', 'customer')->count();
+        $totalCustomers = User::where('role', UserRole::USER)->count();
         $totalOrders = Order::count();
 
         // New customers in last 24 hours
-        $newCustomers24h = User::where('role', 'customer')
+        $newCustomers24h = User::where('role', UserRole::USER)
             ->where('created_at', '>=', now()->subDay())
             ->count();
 
