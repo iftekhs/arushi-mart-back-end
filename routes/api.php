@@ -70,6 +70,7 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
     });
 
     Route::get('/users', [AdminUserController::class, 'index']);
+    Route::get('/products', [\App\Http\Controllers\Api\Admin\ProductController::class, 'index']);
     Route::get('/users/export', [AdminUserController::class, 'export']);
     Route::patch('/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus']);
 

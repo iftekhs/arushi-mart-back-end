@@ -56,6 +56,11 @@ class Product extends Model
         return $this->hasOne(ProductImage::class)->where('primary', false)->orderBy('sort_order');
     }
 
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(\App\Models\OrderItem::class);
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);

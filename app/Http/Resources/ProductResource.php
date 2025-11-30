@@ -22,8 +22,9 @@ class ProductResource extends JsonResource
                 'slug' => $this->slug,
                 'price' => $this->price,
                 'description' => $this->description,
-                'inStock' => $this->in_stock,
+                'inStock' => $this->in_stock ?? false,
                 'active' => $this->active,
+                'totalOrders' => $this->total_orders ?? 0,
             ],
             'relationships' => [
                 'category' => CategoryResource::make($this->whenLoaded('category')),
