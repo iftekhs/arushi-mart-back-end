@@ -4,6 +4,7 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Api\Admin\ColorController as AdminColorController;
+use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Api\Admin\SizeController;
 use App\Http\Controllers\Api\Admin\TagController as AdminTagController;
@@ -60,6 +61,13 @@ Route::prefix('variants')->group(function () {
 
 // Admin routes
 Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole::SUPERADMIN])])->prefix('admin')->group(function () {
+    // Dashboard
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/metrics', [DashboardController::class, 'metrics']);
+        Route::get('/sales-overview', [DashboardController::class, 'salesOverview']);
+        Route::get('/latest-orders', [DashboardController::class, 'latestOrders']);
+    });
+
     Route::get('/users', [AdminUserController::class, 'index']);
     Route::get('/users/export', [AdminUserController::class, 'export']);
     Route::patch('/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus']);

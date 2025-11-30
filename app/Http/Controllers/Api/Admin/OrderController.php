@@ -18,7 +18,7 @@ class OrderController extends Controller
     public function index(Request $request): JsonResource
     {
         $query = Order::query()
-            ->with(['items'])
+            ->with('items')
             ->latest();
 
         if ($request->has('search')) {
