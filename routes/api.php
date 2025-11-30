@@ -66,6 +66,7 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
         Route::get('/metrics', [DashboardController::class, 'metrics']);
         Route::get('/sales-overview', [DashboardController::class, 'salesOverview']);
         Route::get('/latest-orders', [DashboardController::class, 'latestOrders']);
+        Route::get('/analytics', [DashboardController::class, 'analytics']);
     });
 
     Route::get('/users', [AdminUserController::class, 'index']);
