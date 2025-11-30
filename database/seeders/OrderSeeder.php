@@ -44,7 +44,7 @@ class OrderSeeder extends Seeder
     {
         $status = $this->getRandomStatus();
         $paymentMethod = PaymentMethod::CASH_ON_DELIVERY;
-        
+
         // Determine payment and shipping status based on order status
         $paymentStatus = match ($status) {
             OrderStatus::COMPLETED => PaymentStatus::PAID,
@@ -53,8 +53,8 @@ class OrderSeeder extends Seeder
 
         $shippingStatus = match ($status) {
             OrderStatus::COMPLETED => ShippingStatus::DELIVERED,
-            OrderStatus::PROCESSING => ShippingStatus::PROCESSING,
-            OrderStatus::CANCELLED => ShippingStatus::FAILED,
+            OrderStatus::PROCESSING => ShippingStatus::PACKAGING,
+            OrderStatus::CANCELED => ShippingStatus::DELIVERED,
             default => ShippingStatus::PENDING,
         };
 
@@ -88,7 +88,7 @@ class OrderSeeder extends Seeder
         for ($j = 0; $j < $itemCount; $j++) {
             $product = $products->random();
             $variant = $product->variants->isNotEmpty() ? $product->variants->random() : null;
-            
+
             // Skip if product has no variants (shouldn't happen with current seeder but good for safety)
             if (!$variant && $product->variants->isNotEmpty()) continue;
 
@@ -141,7 +141,7 @@ class OrderSeeder extends Seeder
             OrderStatus::PENDING,
             OrderStatus::PROCESSING,
             OrderStatus::COMPLETED,
-            OrderStatus::CANCELLED,
+            OrderStatus::CANCELED,
         ];
 
         return $statuses[array_rand($statuses)];

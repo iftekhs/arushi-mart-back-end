@@ -91,8 +91,8 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
         Route::get('/', [AdminOrderController::class, 'index']);
         Route::get('/metrics', [AdminOrderController::class, 'metrics']);
         Route::get('/{order}', [AdminOrderController::class, 'show']);
-        Route::post('/{order}/cancel', [AdminOrderController::class, 'cancel']);
-        Route::patch('/{order}/shipping-status', [AdminOrderController::class, 'updateShippingStatus']);
+        Route::post('/{order}/cancel', [AdminOrderController::class, 'cancel'])->can('cancel', 'order');
+        Route::patch('/{order}/shipping-status', [AdminOrderController::class, 'updateShippingStatus'])->can('updateShippingStatus', 'order');
     });
 });
 

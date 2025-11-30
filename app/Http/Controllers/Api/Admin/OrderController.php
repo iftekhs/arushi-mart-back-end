@@ -8,6 +8,7 @@ use App\Enums\ShippingStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Validation\Rule;
@@ -58,18 +59,12 @@ class OrderController extends Controller
         return OrderResource::make($order);
     }
 
-    public function cancel(Order $order): \Illuminate\Http\JsonResponse
+    public function cancel(Order $order): JsonResponse
     {
-        // Authorize using policy
-        $this->authorize('cancel', $order);
-
-        // Update order status to cancelled
-        $order->status = OrderStatus::CANCELED;
-
-        // Update shipping status to canceled
-        $order->shipping_status = ShippingStatus::CANCELED;
-
-        $order->save();
+        $order->update([
+            'status' => OrderStatus::CANCELED,
+            'shipping_status' => ShippingStatus::CANCELED,
+        ]);
 
         return response()->json([
             'message' => 'Order canceled successfully',
@@ -77,43 +72,33 @@ class OrderController extends Controller
         ]);
     }
 
-    public function updateShippingStatus(Request $request, Order $order): \Illuminate\Http\JsonResponse
+    public function updateShippingStatus(Request $request, Order $order): JsonResponse
     {
         $request->validate([
             'shipping_status' => ['required', 'string', Rule::in(ShippingStatus::values())]
         ]);
 
-        // Authorize using policy
-        $this->authorize('updateShippingStatus', $order);
-
         $newShippingStatus = ShippingStatus::from($request->shipping_status);
 
-        // Update shipping status
         $order->shipping_status = $newShippingStatus;
 
-        // Update order status based on shipping status
         switch ($newShippingStatus) {
             case ShippingStatus::PENDING:
-                // If shipping status is changed to pending, update order status to pending
                 $order->status = OrderStatus::PENDING;
                 break;
 
             case ShippingStatus::DELIVERED:
-                // If shipping status is delivered, mark order as completed
                 $order->status = OrderStatus::COMPLETED;
-
-                // If delivered and completed, mark payment as paid
                 $order->payment_status = PaymentStatus::PAID;
                 break;
 
             case ShippingStatus::PACKAGING:
             case ShippingStatus::ON_THE_WAY:
-                // For packaging or on_the_way, set order status to processing
                 $order->status = OrderStatus::PROCESSING;
                 break;
         }
 
-        $order->save();
+        $order->update();
 
         return response()->json([
             'message' => 'Shipping status updated successfully',
