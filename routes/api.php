@@ -90,6 +90,8 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
         Route::get('/', [\App\Http\Controllers\Api\Admin\OrderController::class, 'index']);
         Route::get('/metrics', [\App\Http\Controllers\Api\Admin\OrderController::class, 'metrics']);
         Route::get('/{order}', [\App\Http\Controllers\Api\Admin\OrderController::class, 'show']);
+        Route::post('/{order}/cancel', [\App\Http\Controllers\Api\Admin\OrderController::class, 'cancel']);
+        Route::patch('/{order}/shipping-status', [\App\Http\Controllers\Api\Admin\OrderController::class, 'updateShippingStatus']);
     });
 });
 
