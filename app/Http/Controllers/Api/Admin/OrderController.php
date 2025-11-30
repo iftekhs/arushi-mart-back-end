@@ -33,6 +33,14 @@ class OrderController extends Controller
             $query->where('status', $request->input('status'));
         }
 
+        if ($request->has('payment_status')) {
+            $query->where('payment_status', $request->input('payment_status'));
+        }
+
+        if ($request->has('shipping_status')) {
+            $query->where('shipping_status', $request->input('shipping_status'));
+        }
+
         $orders = $query->paginate(10);
 
         return OrderResource::collection($orders);
