@@ -4,6 +4,7 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Api\Admin\ColorController as AdminColorController;
+use App\Http\Controllers\Api\Admin\CustomizationController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Api\Admin\SizeController;
@@ -104,6 +105,9 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
         Route::post('/{order}/cancel', [AdminOrderController::class, 'cancel'])->can('cancel', 'order');
         Route::patch('/{order}/shipping-status', [AdminOrderController::class, 'updateShippingStatus'])->can('updateShippingStatus', 'order');
     });
+
+    // Customizations Management
+    Route::get('/customizations', [CustomizationController::class, 'index']);
 });
 
 // Authenticated routes
