@@ -29,23 +29,22 @@ class OrderSeeder extends Seeder
         }
 
         DB::transaction(function () use ($users, $products) {
-            // --- Logic for Seeding Across the Current Month ---
+            // --- Logic for Seeding Across the Last 30 Days ---
             $currentDate = Carbon::now();
-            $startOfMonth = $currentDate->copy()->startOfMonth();
-            $daysInMonth = $currentDate->daysInMonth; // Or $currentDate->day to seed up to today
+            $thirtyDaysAgo = $currentDate->copy()->subDays(30);
 
-            $this->command->info("Seeding orders across the days of {$currentDate->format('F Y')}");
+            $this->command->info("Seeding orders across the last 30 days (from {$thirtyDaysAgo->format('Y-m-d')} to {$currentDate->format('Y-m-d')})");
 
-            // Iterate through each day of the current month (or up to today)
-            for ($d = 1; $d <= $daysInMonth; $d++) {
-                $seedingDate = $startOfMonth->copy()->day($d);
+            // Iterate through each day of the last 30 days
+            for ($d = 0; $d < 30; $d++) {
+                $seedingDate = $thirtyDaysAgo->copy()->addDays($d);
 
                 // Determine the number of users who will place orders on this day
                 // (e.g., 5% to 15% of total users)
                 $activeUserCount = rand(ceil($users->count() * 0.05), ceil($users->count() * 0.15));
-                
+
                 // Ensure we don't try to select more users than available
-                $activeUserCount = min($activeUserCount, $users->count()); 
+                $activeUserCount = min($activeUserCount, $users->count());
 
                 // Get a random subset of users
                 $activeUsers = $users->random($activeUserCount);
