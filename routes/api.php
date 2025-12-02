@@ -97,7 +97,7 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
     Route::prefix('tags')->group(function () {
         Route::get('/', [AdminTagController::class, 'index']);
         Route::post('/sync', [AdminTagController::class, 'syncTags']);
-        Route::delete('/{tag}', [AdminTagController::class, 'destroy']);
+        Route::delete('/{tag}', [AdminTagController::class, 'delete']);
     });
 
     // Categories Management

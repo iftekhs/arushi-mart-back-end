@@ -7,10 +7,12 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -51,7 +53,6 @@ class ProductController extends Controller
 
         return DB::transaction(function () use ($validated) {
 
-            // Separate the core product fields from the nested arrays
             $productData = [
                 'name' => $validated['name'],
                 'price' => $validated['price'],
@@ -82,7 +83,6 @@ class ProductController extends Controller
 
                     $path = $uploadedFile->store('products', 'public');
 
-                    // Prepare the data for ProductImage creation
                     $imagesToCreate[] = [
                         'color_id' => $colorId,
                         'path' => $path,
@@ -91,11 +91,17 @@ class ProductController extends Controller
                 }
             }
 
-            // --- 4. CREATE VARIANTS AND IMAGES ---
             $product->variants()->createMany($variantsToCreate);
             $product->images()->createMany($imagesToCreate);
 
-            // --- 5. RETURN RESPONSE ---
+            if (!empty($validated['categories'])) {
+                $product->categories()->sync($validated['categories']);
+            }
+
+            $product->tags()->sync(collect($validated['tags'] ?? [])->map(function ($tagName) {
+                return Tag::firstOrCreate(['slug' => Str::slug($tagName)], ['name' => $tagName])->id;
+            }));
+
             return new ProductResource($product);
         });
     }
@@ -104,6 +110,8 @@ class ProductController extends Controller
     {
         $product->load([
             'category',
+            'categories',
+            'tags',
             'variants.color',
             'variants.size',
             'images.color',
@@ -215,6 +223,21 @@ class ProductController extends Controller
                     Storage::disk('public')->delete($image->path);
                 }
                 $image->delete();
+            }
+
+            // Sync additional categories
+            if (isset($validated['categories'])) {
+                $product->categories()->sync($validated['categories']);
+            }
+
+            // Sync tags
+            if (isset($validated['tags'])) {
+                $tagIds = [];
+                foreach ($validated['tags'] as $tagName) {
+                    $tag = Tag::firstOrCreate(['name' => $tagName]);
+                    $tagIds[] = $tag->id;
+                }
+                $product->tags()->sync($tagIds);
             }
 
             // Reload relationships

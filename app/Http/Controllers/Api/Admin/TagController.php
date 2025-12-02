@@ -7,7 +7,6 @@ use App\Http\Requests\SyncTagsRequest;
 use App\Http\Resources\TagResource;
 use App\Models\Tag;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
 
 class TagController extends Controller
 {
@@ -34,7 +33,6 @@ class TagController extends Controller
                 if ($tag) {
                     $tag->update([
                         'name' => $tagData['name'],
-                        'slug' => Str::slug($tagData['name']),
                     ]);
                     $tagIds[] = $tag->id;
                 }
@@ -42,7 +40,6 @@ class TagController extends Controller
                 // Create new tag
                 $tag = Tag::create([
                     'name' => $tagData['name'],
-                    'slug' => Str::slug($tagData['name']),
                 ]);
                 $tagIds[] = $tag->id;
             }
@@ -60,16 +57,8 @@ class TagController extends Controller
         ]);
     }
 
-    public function destroy(Tag $tag): JsonResponse
+    public function delete(Tag $tag): JsonResponse
     {
-        $productsCount = $tag->products()->count();
-
-        if ($productsCount > 0) {
-            return response()->json([
-                'message' => "Cannot delete tag. It is being used by {$productsCount} product(s).",
-            ], 422);
-        }
-
         $tag->delete();
 
         return response()->json([

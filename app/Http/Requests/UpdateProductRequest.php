@@ -34,6 +34,12 @@ class UpdateProductRequest extends FormRequest
             'featured' => ['required', 'boolean'],
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where(fn($query) => $query->where('active', true))],
 
+            'categories' => ['nullable', 'array'],
+            'categories.*' => ['integer', Rule::exists('categories', 'id')->where(fn($query) => $query->where('active', true))],
+
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'max:50'],
+
             'variants' => ['required', 'array', 'min:1'],
             'variants.*.id' => ['nullable', 'integer', 'exists:product_variants,id'],
             'variants.*.color.id' => ['required', 'integer', 'exists:colors,id'],

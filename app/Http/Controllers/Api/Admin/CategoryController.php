@@ -116,7 +116,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function destroy(Category $category): JsonResponse
+    public function delete(Category $category): JsonResponse
     {
         $productsCount = $category->products()->count();
         $childrenCount = $category->children()->count();

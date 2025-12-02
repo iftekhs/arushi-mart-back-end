@@ -47,7 +47,7 @@ class ColorController extends Controller
     public function update(UpdateColorRequest $request, Color $color): JsonResponse
     {
         $validated = $request->validated();
-        
+
         $color->update($validated);
         $color->loadCount('variants');
 
@@ -60,12 +60,12 @@ class ColorController extends Controller
     /**
      * Remove the specified color.
      */
-    public function destroy(Color $color): JsonResponse
+    public function delete(Color $color): JsonResponse
     {
         // Check if color is being used by any variants or images
         $variantsCount = $color->variants()->count();
         $imagesCount = $color->images()->count();
-        
+
         if ($variantsCount > 0 || $imagesCount > 0) {
             $usageMessage = [];
             if ($variantsCount > 0) {
@@ -74,7 +74,7 @@ class ColorController extends Controller
             if ($imagesCount > 0) {
                 $usageMessage[] = "{$imagesCount} product image(s)";
             }
-            
+
             return response()->json([
                 'message' => "Cannot delete color. It is being used by " . implode(' and ', $usageMessage) . ".",
             ], 422);

@@ -32,6 +32,12 @@ class StoreProductRequest extends FormRequest
             'featured' => ['required', 'boolean'],
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where(fn($query) => $query->where('active', true))],
 
+            'categories' => ['nullable', 'array'],
+            'categories.*' => ['integer', Rule::exists('categories', 'id')->where(fn($query) => $query->where('active', true))],
+
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'max:50'],
+
             'variants' => ['required', 'array', 'min:1'],
             'variants.*.color.id' => ['required', 'integer', 'exists:colors,id'],
 
@@ -49,6 +55,8 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'variants.required' => 'At least one product variant is required.',
+            'variants.*.sku.unique' => 'The SKU :input is already in use. Please choose a different SKU.',
             'variants.*.color.images.*.file.size.regex' => 'The file size format is invalid. It should be in the format X.XXXKB or X.XXXMB, etc.',
         ];
     }
