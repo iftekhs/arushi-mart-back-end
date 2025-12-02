@@ -75,6 +75,8 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
     Route::prefix('products')->group(function () {
         Route::get('/', [AdminProductController::class, 'index']);
         Route::post('/', [AdminProductController::class, 'store']);
+        Route::get('/{product}', [AdminProductController::class, 'show']);
+        Route::put('/{product}', [AdminProductController::class, 'update']);
     });
     Route::get('/users/export', [AdminUserController::class, 'export']);
     Route::patch('/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus']);
