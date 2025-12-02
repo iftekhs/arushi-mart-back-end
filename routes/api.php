@@ -108,6 +108,7 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
 
     // Customizations Management
     Route::get('/customizations', [CustomizationController::class, 'index']);
+    Route::post('/customizations', [CustomizationController::class, 'update']);
 });
 
 // Authenticated routes

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('key')->unique();
             $table->string('label');
+            $table->json('fields')->nullable();
             $table->json('value')->nullable();
             $table->timestamps();
         });

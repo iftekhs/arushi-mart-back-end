@@ -14,8 +14,44 @@ class CustomizationSeeder extends Seeder
     public function run(): void
     {
         Customization::create([
-            'key' => 'home_page',
-            'label' => 'Home Page',
+            'key' => 'carousel_items',
+            'label' => 'Carousel Items',
+            'fields' => [
+                [
+                    'label' => 'Carousel Items',
+                    'key' => 'carousel_items',
+                    'type' => 'array',
+                    'rules' => ['required', 'array', 'min:1'],
+                    'fields' => [
+                        [
+                            'label' => 'Caption',
+                            'key' => 'caption',
+                            'type' => 'text',
+                            'rules' => ['required', 'string', 'max:255'],
+                        ],
+                    ],
+                ],
+            ],
+            'value' => null,
+        ]);
+
+        Customization::create([
+            'key' => 'about_section',
+            'label' => 'About Section',
+            'fields' => [
+                [
+                    'label' => 'Title',
+                    'key' => 'title',
+                    'type' => 'text',
+                    'rules' => ['required', 'string', 'max:255'],
+                ],
+                [
+                    'label' => 'Description',
+                    'key' => 'description',
+                    'type' => 'text',
+                    'rules' => ['required', 'string', 'max:255'],
+                ],
+            ],
             'value' => null,
         ]);
     }

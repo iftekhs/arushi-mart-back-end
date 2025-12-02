@@ -19,6 +19,7 @@ class CustomizationResource extends JsonResource
             'attributes' => [
                 'key' => $this->key,
                 'label' => $this->label,
+                'fields' => $this->fields,
                 'value' => $this->value,
             ],
         ];
