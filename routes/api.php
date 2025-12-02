@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\ColorController as AdminColorController;
 use App\Http\Controllers\Api\Admin\CustomizationController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Api\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Api\Admin\SizeController;
 use App\Http\Controllers\Api\Admin\TagController as AdminTagController;
 use App\Http\Controllers\Api\CategoryController;
@@ -71,7 +72,10 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
     });
 
     Route::get('/users', [AdminUserController::class, 'index']);
-    Route::get('/products', [\App\Http\Controllers\Api\Admin\ProductController::class, 'index']);
+    Route::prefix('products')->group(function () {
+        Route::get('/', [AdminProductController::class, 'index']);
+        Route::post('/', [AdminProductController::class, 'store']);
+    });
     Route::get('/users/export', [AdminUserController::class, 'export']);
     Route::patch('/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus']);
 

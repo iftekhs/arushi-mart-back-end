@@ -2,9 +2,10 @@
 
 namespace App\Enums;
 
-enum ProductType: string
+enum ProductVariantType: string
 {
+    use EnumUtilities;
+
     case STITCHED = 'stitched';
     case UNSTITCHED = 'unstitched';
 }
-

@@ -327,7 +327,6 @@ class ProductSeeder extends Seeder
 
             // Create product with default category_id
             $product = Product::create([
-                'sku' => 'PRD-' . strtoupper(Str::random(8)),
                 'name' => $productData['name'],
                 'slug' => Str::slug($productData['name']) . '-' . ($index + 1),
                 'price' => $productData['price'],

@@ -15,17 +15,11 @@ class ProductImage extends Model
         'sort_order' => 'integer',
     ];
 
-    /**
-     * Get the product that owns this image.
-     */
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
-
-    /**
-     * Get the color associated with this image.
-     */
+    
     public function color(): BelongsTo
     {
         return $this->belongsTo(Color::class);

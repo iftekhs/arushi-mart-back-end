@@ -38,10 +38,8 @@ class ProductFactory extends Factory
         ];
 
         $name = fake()->unique()->randomElement($productNames);
-        $sku = 'PRD-' . strtoupper(Str::random(8));
 
         return [
-            'sku' => $sku,
             'name' => $name,
             'slug' => Str::slug($name) . '-' . strtolower(Str::random(4)),
             'price' => fake()->randomFloat(2, 1500, 15000),
