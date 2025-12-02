@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Customization;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -25,7 +26,6 @@ class UpdateCustomizationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'integer', 'exists:customizations,id'],
             'data' => ['nullable', 'array'],
         ];
     }
@@ -35,25 +35,14 @@ class UpdateCustomizationRequest extends FormRequest
      */
     public function validateWithFieldDefinitions(): array
     {
-        $customizationId = $this->input('id');
-        $customization = Customization::find($customizationId);
+        $customization = $this->route('customization');
 
-        if (!$customization) {
-            throw ValidationException::withMessages([
-                'id' => "Customization not found."
-            ]);
-        }
+        $data = $this->mergeFilesIntoData($this->input('data', []));
 
         $fields = $customization->fields ?? [];
-        $data = $this->input('data', []);
 
-        // Merge files into data structure
-        $data = $this->mergeFilesIntoData($data);
-
-        // Build dynamic validation rules from field definitions
         $rules = $this->buildValidationRules($fields, $data);
 
-        // Validate the data
         $validator = validator($data, $rules);
 
         if ($validator->fails()) {
@@ -62,11 +51,15 @@ class UpdateCustomizationRequest extends FormRequest
             ]);
         }
 
-        // Process file uploads and handle old file deletion
+        logger('data', [
+            'data' => $this->mergeFilesIntoData($this->input('data', [])),
+        ]);
+        dd('yes');
+
         $processedData = $this->processFileUploads($validator->validated(), $fields, $customization->value);
 
         return [
-            'id' => $customizationId,
+
             'data' => $processedData,
         ];
     }
@@ -86,6 +79,7 @@ class UpdateCustomizationRequest extends FormRequest
             // Parse the key to extract the structure
             // Example: "data[carousel_items][0][image]" or "data[image]"
             if (preg_match("/^data\[([^\]]+)\](?:\[(\d+)\]\[([^\]]+)\])?$/", $key, $matches)) {
+
                 if (isset($matches[3])) {
                     // Array field with subfield: carousel_items[0][image]
                     $fieldKey = $matches[1];
@@ -106,6 +100,7 @@ class UpdateCustomizationRequest extends FormRequest
                 }
             }
         }
+
 
         return $data;
     }
@@ -180,116 +175,123 @@ class UpdateCustomizationRequest extends FormRequest
         return $rules;
     }
 
-    /**
-     * Process file uploads and handle old file deletion
-     */
     private function processFileUploads(array $data, array $fields, ?array $oldValue): array
+    {
+        $data = $this->processFields($data, $fields, $oldValue);
+
+        logger('data', [
+            'data' => $data,
+        ]);
+        dd('yes');
+
+        return $data;
+    }
+
+    private function processFields(array $data, array $fields, ?array $oldValue): array
     {
         foreach ($fields as $field) {
             $key = $field['key'] ?? null;
             $type = $field['type'] ?? 'text';
 
-            if (!$key) {
-                continue;
-            }
+            if (!$key) continue;
 
-            // Handle array fields with image subfields
             if ($type === 'array' && isset($field['fields'])) {
-                // First, delete images from removed array items
-                if (isset($oldValue[$key]) && is_array($oldValue[$key])) {
-                    $newItemCount = isset($data[$key]) ? count($data[$key]) : 0;
-                    $oldItemCount = count($oldValue[$key]);
-                    
-                    // If items were removed, delete their images
-                    if ($newItemCount < $oldItemCount) {
-                        for ($i = $newItemCount; $i < $oldItemCount; $i++) {
-                            if (isset($oldValue[$key][$i])) {
-                                // Find image fields and delete them
-                                foreach ($field['fields'] as $subField) {
-                                    $subKey = $subField['key'] ?? null;
-                                    $subType = $subField['type'] ?? 'text';
-                                    
-                                    if ($subKey && $subType === 'image' && isset($oldValue[$key][$i][$subKey])) {
-                                        Storage::disk('public')->delete($oldValue[$key][$i][$subKey]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Process existing items
-                if (isset($data[$key])) {
-                    foreach ($data[$key] as $index => &$item) {
-                        foreach ($field['fields'] as $subField) {
-                            $subKey = $subField['key'] ?? null;
-                            $subType = $subField['type'] ?? 'text';
-
-                            if ($subKey && $subType === 'image') {
-                                // Check if value is explicitly null (image removed)
-                                if (array_key_exists($subKey, $item) && $item[$subKey] === null) {
-                                    // Delete old file if exists
-                                    if (isset($oldValue[$key][$index][$subKey])) {
-                                        Storage::disk('public')->delete($oldValue[$key][$index][$subKey]);
-                                    }
-                                    // Keep the null value to indicate removal
-                                    $item[$subKey] = null;
-                                }
-                                // Check if the value is an UploadedFile instance (new upload)
-                                elseif (isset($item[$subKey]) && $item[$subKey] instanceof \Illuminate\Http\UploadedFile) {
-                                    $file = $item[$subKey];
-
-                                    // Delete old file if exists
-                                    if (isset($oldValue[$key][$index][$subKey])) {
-                                        Storage::disk('public')->delete($oldValue[$key][$index][$subKey]);
-                                    }
-
-                                    // Store new file
-                                    $path = $file->store('customizations', 'public');
-                                    $item[$subKey] = $path;
-                                } else {
-                                    // Keep old value if no new file uploaded and not removed
-                                    if (isset($oldValue[$key][$index][$subKey])) {
-                                        $item[$subKey] = $oldValue[$key][$index][$subKey];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            // Handle simple image fields
-            elseif ($type === 'image') {
-                // Check if value is explicitly null (image removed)
-                if (array_key_exists($key, $data) && $data[$key] === null) {
-                    // Delete old file if exists
-                    if (isset($oldValue[$key])) {
-                        Storage::disk('public')->delete($oldValue[$key]);
-                    }
-                    // Keep the null value to indicate removal
-                    $data[$key] = null;
-                }
-                // Check if the value is an UploadedFile instance
-                elseif (isset($data[$key]) && $data[$key] instanceof \Illuminate\Http\UploadedFile) {
-                    $file = $data[$key];
-
-                    // Delete old file if exists
-                    if (isset($oldValue[$key])) {
-                        Storage::disk('public')->delete($oldValue[$key]);
-                    }
-
-                    // Store new file
-                    $path = $file->store('customizations', 'public');
-                    $data[$key] = $path;
-                } else {
-                    // Keep old value if no new file uploaded and not removed
-                    if (isset($oldValue[$key])) {
-                        $data[$key] = $oldValue[$key];
-                    }
-                }
+                $data[$key] = $this->processArrayField(
+                    $data[$key] ?? [],
+                    $field['fields'],
+                    $oldValue[$key] ?? []
+                );
+            } elseif ($type === 'image') {
+                $data[$key] = $this->processImageField(
+                    $data[$key] ?? null,
+                    $oldValue[$key] ?? null
+                );
             }
         }
 
         return $data;
+    }
+
+    private function processArrayField(array $data, array $subFields, array $oldValue): array
+    {
+        // Delete images from removed array items
+        $this->deleteRemovedArrayItems($data, $subFields, $oldValue);
+
+        // Process each item recursively
+        foreach ($data as $index => &$item) {
+            if (is_array($item)) {
+                $item = $this->processFields(
+                    $item,
+                    $subFields,
+                    $oldValue[$index] ?? []
+                );
+            }
+        }
+
+        return $data;
+    }
+
+    private function deleteRemovedArrayItems(array $newData, array $fields, array $oldData): void
+    {
+        $newItemCount = count($newData);
+        $oldItemCount = count($oldData);
+
+        if ($newItemCount >= $oldItemCount) {
+            return;
+        }
+
+        // Delete images from removed items
+        for ($i = $newItemCount; $i < $oldItemCount; $i++) {
+            if (!isset($oldData[$i])) {
+                continue;
+            }
+
+            $this->deleteImagesFromItem($oldData[$i], $fields);
+        }
+    }
+
+    private function deleteImagesFromItem(array $item, array $fields): void
+    {
+        foreach ($fields as $field) {
+            $key = $field['key'] ?? null;
+            $type = $field['type'] ?? 'text';
+
+            if (!$key || !isset($item[$key])) {
+                continue;
+            }
+
+            if ($type === 'image') {
+                Storage::disk('public')->delete($item[$key]);
+            } elseif ($type === 'array' && isset($field['fields']) && is_array($item[$key])) {
+                // Recursively delete images from nested arrays
+                foreach ($item[$key] as $nestedItem) {
+                    if (is_array($nestedItem)) {
+                        $this->deleteImagesFromItem($nestedItem, $field['fields']);
+                    }
+                }
+            }
+        }
+    }
+
+    private function processImageField($newValue, ?string $oldValue): ?string
+    {
+        // Image explicitly removed
+        if ($newValue === null) {
+            if ($oldValue) {
+                Storage::disk('public')->delete($oldValue);
+            }
+            return null;
+        }
+
+        // New image uploaded
+        if ($newValue instanceof UploadedFile) {
+            if ($oldValue) {
+                Storage::disk('public')->delete($oldValue);
+            }
+            return $newValue->store('customizations', 'public');
+        }
+
+        // No change - keep old value
+        return $oldValue;
     }
 }
