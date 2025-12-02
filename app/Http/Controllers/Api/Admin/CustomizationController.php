@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateCustomizationRequest;
 use App\Http\Resources\CustomizationResource;
 use App\Models\Customization;
+use Illuminate\Http\UploadedFile;
 
 class CustomizationController extends Controller
 {
@@ -19,20 +20,18 @@ class CustomizationController extends Controller
         // Validate data against field definitions
         $validated = $request->validateWithFieldDefinitions();
 
-        // Update each customization
-        foreach ($validated as $item) {
-            $customization = Customization::where('key', $item['key'])->first();
-            
-            if ($customization) {
-                $customization->update([
-                    'value' => $item['data']
-                ]);
-            }
+        // Update the customization
+        $customization = Customization::find($validated['id']);
+
+        if ($customization) {
+            $customization->update([
+                'value' => $validated['data']
+            ]);
         }
 
         return response()->json([
-            'message' => 'Customizations updated successfully',
-            'data' => CustomizationResource::collection(Customization::all())
+            'message' => 'Customization updated successfully',
+            'data' => new CustomizationResource($customization)
         ]);
     }
 }

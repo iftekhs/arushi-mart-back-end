@@ -24,10 +24,28 @@ class CustomizationSeeder extends Seeder
                     'rules' => ['required', 'array', 'min:1'],
                     'fields' => [
                         [
+                            'label' => 'Image',
+                            'key' => 'image',
+                            'type' => 'image',
+                            'rules' => ['required', 'image', 'max:1024'],
+                        ],
+                        [
                             'label' => 'Caption',
                             'key' => 'caption',
                             'type' => 'text',
                             'rules' => ['required', 'string', 'max:255'],
+                        ],
+                        [
+                            'label' => 'Button Text',
+                            'key' => 'button_text',
+                            'type' => 'text',
+                            'rules' => ['required', 'string', 'max:255'],
+                        ],
+                        [
+                            'label' => 'Button URL',
+                            'key' => 'button_url',
+                            'type' => 'text',
+                            'rules' => ['required', 'url', 'max:255'],
                         ],
                     ],
                 ],
