@@ -198,26 +198,28 @@ class ProductController extends Controller
 
             // Create new variants
             if (!empty($variantsToCreate)) {
-                $product->variants()->createMany($variantsToCreate);
+                foreach ($variantsToCreate as $variantData) {
+                    $newVariant = $product->variants()->create($variantData);
+                    $submittedVariantIds[] = $newVariant->id; // Track newly created variant IDs
+                }
             }
 
-            // Create new images
+            // Create new images and track their IDs
             if (!empty($imagesToCreate)) {
-                $product->images()->createMany($imagesToCreate);
+                foreach ($imagesToCreate as $imageData) {
+                    $newImage = $product->images()->create($imageData);
+                    $submittedImageIds[] = $newImage->id;
+                }
             }
 
             // Delete variants that were removed
-            $variantsToDelete = $product->variants()
-                ->whereNotIn('id', $submittedVariantIds)
-                ->get();
+            $variantsToDelete = $product->variants()->whereNotIn('id', $submittedVariantIds)->get();
             foreach ($variantsToDelete as $variant) {
                 $variant->delete();
             }
 
             // Delete images that were removed and their files from storage
-            $imagesToDelete = $product->images()
-                ->whereNotIn('id', $submittedImageIds)
-                ->get();
+            $imagesToDelete = $product->images()->whereNotIn('id', $submittedImageIds)->get();
             foreach ($imagesToDelete as $image) {
                 if ($image->path) {
                     Storage::disk('public')->delete($image->path);
