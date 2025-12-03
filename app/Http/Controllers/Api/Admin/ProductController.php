@@ -251,4 +251,13 @@ class ProductController extends Controller
             return new ProductResource($product);
         });
     }
+
+    public function toggleActive(Product $product)
+    {
+        $product->update([
+            'active' => !$product->active,
+        ]);
+
+        return new ProductResource($product);
+    }
 }
