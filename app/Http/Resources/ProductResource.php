@@ -23,6 +23,7 @@ class ProductResource extends JsonResource
                 'description' => $this->description,
                 'inStock' => $this->in_stock ?? false,
                 'active' => $this->active,
+                'featured' => $this->featured,
                 'totalOrders' => $this->total_orders ?? 0,
                 'totalStock' => $this->whenLoaded('variants', function () {
                     return $this->variants->sum('stock_quantity');

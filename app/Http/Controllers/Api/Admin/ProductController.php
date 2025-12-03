@@ -117,7 +117,7 @@ class ProductController extends Controller
             'images.color',
         ]);
 
-        return new ProductResource($product);
+        return ProductResource::make($product);
     }
 
     public function update(UpdateProductRequest $request, Product $product)
