@@ -84,7 +84,6 @@ class Product extends Model
         return $query->where(function ($q) use ($searchQuery) {
             $q->where('name', 'like', "%{$searchQuery}%")
                 ->orWhere('description', 'like', "%{$searchQuery}%")
-                ->orWhere('sku', 'like', "%{$searchQuery}%")
                 ->orWhereHas('tags', function ($tagQuery) use ($searchQuery) {
                     $tagQuery->where('name', 'like', "%{$searchQuery}%");
                 });
