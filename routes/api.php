@@ -107,6 +107,7 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
     // Orders Management
     Route::prefix('orders')->group(function () {
         Route::get('/', [AdminOrderController::class, 'index']);
+        Route::post('/', [AdminOrderController::class, 'store']);
         Route::get('/metrics', [AdminOrderController::class, 'metrics']);
         Route::get('/{order}', [AdminOrderController::class, 'show']);
         Route::post('/{order}/cancel', [AdminOrderController::class, 'cancel'])->can('cancel', 'order');

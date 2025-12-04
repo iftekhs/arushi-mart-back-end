@@ -108,9 +108,47 @@ class OrderController extends Controller
 
         $order->update();
 
-        return response()->json([
-            'message' => 'Shipping status updated successfully',
-            'data' => OrderResource::make($order->load(['items']))
+    }
+
+    public function store(Request $request): JsonResource
+    {
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'cart_items' => 'required|array|min:1',
+            'cart_items.*.product_id' => 'required|integer|exists:products,id',
+            'cart_items.*.variant_id' => 'required|integer|exists:product_variants,id',
+            'cart_items.*.quantity' => 'required|integer|min:1',
+            'shipping_address' => 'required|array',
+            'shipping_address.first_name' => 'required|string|max:255',
+            'shipping_address.last_name' => 'required|string|max:255',
+            'shipping_address.address' => 'required|string|max:500',
+            'shipping_address.apartment' => 'nullable|string|max:255',
+            'shipping_address.city' => 'required|string|max:255',
+            'shipping_address.postal_code' => 'required|string|max:20',
+            'shipping_address.phone' => 'required|string|max:20',
+            'payment_method' => 'required|string|in:cod,online',
+            'shipping_method' => 'required|string|in:standard,express',
         ]);
+
+        // Find or create user by email
+        $user = \App\Models\User::firstOrCreate(
+            ['email' => $validated['email']],
+            [
+                'name' => $validated['shipping_address']['first_name'] . ' ' . $validated['shipping_address']['last_name'],
+                'password' => bcrypt(\Illuminate\Support\Str::random(32)),
+            ]
+        );
+
+        // Create order using OrderService
+        $orderService = app(\App\Services\OrderService::class);
+        $order = $orderService->createOrder(
+            $user,
+            $validated['cart_items'],
+            $validated['shipping_address'],
+            $validated['payment_method'],
+            $validated['shipping_method']
+        );
+
+        return OrderResource::make($order);
     }
 }
