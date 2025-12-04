@@ -47,7 +47,14 @@ class StoreProductRequest extends FormRequest
 
             'variants.*.size_id' => ['required', 'integer', 'exists:sizes,id'],
             'variants.*.type' => ['required', 'string', Rule::in(ProductVariantType::values())],
-            'variants.*.sku' => ['required', 'string', 'max:50', 'unique:product_variants,sku'],
+            'variants.*.auto_generate_sku' => ['nullable', 'boolean'],
+            'variants.*.sku' => [
+                'required_if:variants.*.auto_generate_sku,false',
+                'nullable',
+                'string',
+                'max:50',
+                'unique:product_variants,sku'
+            ],
             'variants.*.stock_quantity' => ['required', 'integer', 'min:0'],
         ];
     }

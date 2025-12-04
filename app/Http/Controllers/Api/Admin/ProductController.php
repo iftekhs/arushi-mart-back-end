@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\Tag;
+use App\Models\Color;
+use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
@@ -69,12 +71,25 @@ class ProductController extends Controller
 
             foreach ($validated['variants'] as $variant) {
                 $colorId = $variant['color']['id'];
+                
+                // Generate SKU if auto_generate_sku is true
+                $sku = $variant['sku'];
+                if ($variant['auto_generate_sku'] ?? false) {
+                    $color = Color::find($colorId);
+                    $size = Size::find($variant['size_id']);
+                    
+                    $sku = Str::slug($product->name) . '-' . 
+                           Str::slug($color->name) . '-' . 
+                           Str::slug($size->name) . '-' . 
+                           Str::slug($variant['type']);
+                    $sku = strtoupper($sku);
+                }
 
                 $variantsToCreate[] = [
                     'color_id' => $colorId,
                     'size_id' => $variant['size_id'],
                     'type' => $variant['type'],
-                    'sku' => $variant['sku'],
+                    'sku' => $sku,
                     'stock_quantity' => $variant['stock_quantity'],
                 ];
 
@@ -149,22 +164,47 @@ class ProductController extends Controller
                 if ($variantId) {
                     $variant = $product->variants()->find($variantId);
                     if ($variant) {
+                        // Generate SKU if auto_generate_sku is true
+                        $sku = $variantData['sku'];
+                        if ($variantData['auto_generate_sku'] ?? false) {
+                            $color = Color::find($colorId);
+                            $size = Size::find($variantData['size_id']);
+                            
+                            $sku = Str::slug($product->name) . '-' . 
+                                   Str::slug($color->name) . '-' . 
+                                   Str::slug($size->name) . '-' . 
+                                   Str::slug($variantData['type']);
+                            $sku = strtoupper($sku);
+                        }
+                        
                         $variant->update([
                             'color_id' => $colorId,
                             'size_id' => $variantData['size_id'],
                             'type' => $variantData['type'],
-                            'sku' => $variantData['sku'],
+                            'sku' => $sku,
                             'stock_quantity' => $variantData['stock_quantity'],
                         ]);
                         $submittedVariantIds[] = $variantId;
                     }
                 } else {
                     // Create new variant
+                    $sku = $variantData['sku'];
+                    if ($variantData['auto_generate_sku'] ?? false) {
+                        $color = Color::find($colorId);
+                        $size = Size::find($variantData['size_id']);
+                        
+                        $sku = Str::slug($product->name) . '-' . 
+                               Str::slug($color->name) . '-' . 
+                               Str::slug($size->name) . '-' . 
+                               Str::slug($variantData['type']);
+                        $sku = strtoupper($sku);
+                    }
+                    
                     $variantsToCreate[] = [
                         'color_id' => $colorId,
                         'size_id' => $variantData['size_id'],
                         'type' => $variantData['type'],
-                        'sku' => $variantData['sku'],
+                        'sku' => $sku,
                         'stock_quantity' => $variantData['stock_quantity'],
                     ];
                 }

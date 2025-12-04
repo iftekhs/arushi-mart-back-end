@@ -51,8 +51,10 @@ class UpdateProductRequest extends FormRequest
 
             'variants.*.size_id' => ['required', 'integer', 'exists:sizes,id'],
             'variants.*.type' => ['required', 'string', Rule::in(ProductVariantType::values())],
+            'variants.*.auto_generate_sku' => ['nullable', 'boolean'],
             'variants.*.sku' => [
-                'required',
+                'required_if:variants.*.auto_generate_sku,false',
+                'nullable',
                 'string',
                 'max:50',
                 Rule::unique('product_variants', 'sku')->ignore($productId, 'product_id')
