@@ -122,7 +122,7 @@ class DashboardController extends Controller
         $topProducts = OrderItem::select('product_id', DB::raw('SUM(quantity) as total_sold'))
             ->groupBy('product_id')
             ->orderByDesc('total_sold')
-            ->take(6)
+            ->take(3)
             ->with(['product' => function ($query) {
                 $query->select('id', 'name', 'price')->with('primaryImage');
             }])
@@ -140,8 +140,8 @@ class DashboardController extends Controller
         // Mini chart data (last 28 days)
         $chartData = [];
         for ($i = 27; $i >= 0; $i--) {
-            $date = now()->subDays($i)->format('Y-m-d');
-            $dailySales = Order::where('payment_status', 'paid')
+                $date = now()->subDays($i)->format('Y-m-d');
+                $dailySales = Order::where('payment_status', 'paid')
                 ->whereDate('created_at', $date)
                 ->sum('total_amount');
             $chartData[] = (float) $dailySales;

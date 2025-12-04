@@ -19,10 +19,15 @@ class UserController extends Controller
     public function index(Request $request): JsonResource
     {
         $search = $request->input('search', '');
+        $status = $request->input('status', '');
 
         $query = User::where('role', UserRole::USER)
             ->withCount('orders')
             ->withSum('orders', 'total_amount');
+
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
 
         if ($search) {
             $query->where(function ($q) use ($search) {
