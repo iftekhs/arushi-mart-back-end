@@ -8,7 +8,7 @@ if (!function_exists('to_object')) {
 }
 
 if (!function_exists('path_to_url')) {
-    function path_to_url(?string $path)
+    function path_to_url(?string $path): string|null
     {
         if (!$path) return null;
         if (str_starts_with($path, 'http')) return $path;
