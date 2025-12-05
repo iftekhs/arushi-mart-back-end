@@ -41,8 +41,8 @@ class CheckoutRequest extends FormRequest
             'shipping_address.city' => ['required_with:shipping_address', 'string', 'max:255'],
             'shipping_address.postal_code' => ['required_with:shipping_address', 'string', 'max:20'],
             'shipping_address.phone' => ['required_with:shipping_address', 'string', 'max:20'],
-            'payment_method' => ['required', 'string', Rule::in(PaymentMethod::values())],
-            'shipping_method' => ['required', 'string', Rule::in(ShippingMethod::values())],
+            'payment_method' => ['required', 'string', Rule::in(PaymentMethod::valuesForUser())],
+            'shipping_method' => ['required', 'string', Rule::in(ShippingMethod::valuesForUser())],
         ];
     }
 }

@@ -101,9 +101,10 @@ class OrderService
     public function calculateShipping(string $method): float
     {
         return match ($method) {
-            'express' => 100.00,
-            'standard' => 50.00,
-            default => 50.00,
+            'on_site' => 0.00,
+            'inside_dhaka' => 0.00,
+            'outside_dhaka' => 120.00,
+            default => 0.00,
         };
     }
 

@@ -3,14 +3,19 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\OrderStatus;
+use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
+use App\Enums\ShippingMethod;
 use App\Enums\ShippingStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Models\User;
+use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
@@ -108,39 +113,37 @@ class OrderController extends Controller
 
         $order->update();
 
+        return $this->ok('Shipping status updated successfully');
     }
 
-    public function store(Request $request): JsonResource
+    public function store(Request $request, OrderService $orderService): JsonResource
     {
         $validated = $request->validate([
-            'email' => 'required|email',
-            'cart_items' => 'required|array|min:1',
-            'cart_items.*.product_id' => 'required|integer|exists:products,id',
-            'cart_items.*.variant_id' => 'required|integer|exists:product_variants,id',
-            'cart_items.*.quantity' => 'required|integer|min:1',
-            'shipping_address' => 'required|array',
-            'shipping_address.first_name' => 'required|string|max:255',
-            'shipping_address.last_name' => 'required|string|max:255',
-            'shipping_address.address' => 'required|string|max:500',
-            'shipping_address.apartment' => 'nullable|string|max:255',
-            'shipping_address.city' => 'required|string|max:255',
-            'shipping_address.postal_code' => 'required|string|max:20',
-            'shipping_address.phone' => 'required|string|max:20',
-            'payment_method' => 'required|string|in:cod,online',
-            'shipping_method' => 'required|string|in:standard,express',
+            'email' => ['required', 'email'],
+            'cart_items' => ['required', 'array', 'min:1'],
+            'cart_items.*.product_id' => ['required', 'integer', 'exists:products,id'],
+            'cart_items.*.variant_id' => ['required', 'integer', 'exists:product_variants,id'],
+            'cart_items.*.quantity' => ['required', 'integer', 'min:1'],
+            'shipping_address' => ['required', 'array'],
+            'shipping_address.first_name' => ['required', 'string', 'max:255'],
+            'shipping_address.last_name' => ['required', 'string', 'max:255'],
+            'shipping_address.address' => ['required', 'string', 'max:500'],
+            'shipping_address.apartment' => ['nullable', 'string', 'max:255'],
+            'shipping_address.city' => ['required', 'string', 'max:255'],
+            'shipping_address.postal_code' => ['required', 'string', 'max:20'],
+            'shipping_address.phone' => ['required', 'string', 'max:20'],
+            'payment_method' => ['required', 'string', Rule::in(PaymentMethod::values())],
+            'shipping_method' => ['required', 'string', Rule::in(ShippingMethod::values())],
         ]);
 
-        // Find or create user by email
-        $user = \App\Models\User::firstOrCreate(
+        $user = User::firstOrCreate(
             ['email' => $validated['email']],
             [
                 'name' => $validated['shipping_address']['first_name'] . ' ' . $validated['shipping_address']['last_name'],
-                'password' => bcrypt(\Illuminate\Support\Str::random(32)),
+                'password' => bcrypt(Str::random(32)),
             ]
         );
 
-        // Create order using OrderService
-        $orderService = app(\App\Services\OrderService::class);
         $order = $orderService->createOrder(
             $user,
             $validated['cart_items'],
