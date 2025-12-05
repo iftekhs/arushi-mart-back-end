@@ -261,7 +261,7 @@ class UpdateCustomizationRequest extends FormRequest
             }
 
             if ($type === 'image') {
-                Storage::disk('public')->delete($item[$key]);
+                Storage::delete($item[$key]);
             } elseif ($type === 'array' && isset($field['fields']) && is_array($item[$key])) {
                 // Recursively delete images from nested arrays
                 foreach ($item[$key] as $nestedItem) {
@@ -278,7 +278,7 @@ class UpdateCustomizationRequest extends FormRequest
         // Image explicitly removed
         if ($newValue === null) {
             if ($oldValue) {
-                Storage::disk('public')->delete($oldValue);
+                Storage::delete($oldValue);
             }
             return null;
         }
@@ -286,7 +286,7 @@ class UpdateCustomizationRequest extends FormRequest
         // New image uploaded
         if ($newValue instanceof UploadedFile) {
             if ($oldValue) {
-                Storage::disk('public')->delete($oldValue);
+                Storage::delete($oldValue);
             }
             return $newValue->store('customizations', 'public');
         }

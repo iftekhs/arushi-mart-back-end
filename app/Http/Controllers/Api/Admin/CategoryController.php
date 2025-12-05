@@ -47,11 +47,11 @@ class CategoryController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('categories/images', 'public');
+            $data['image'] = $request->file('image')->store('categories/images');
         }
 
         if ($request->hasFile('video')) {
-            $data['video'] = $request->file('video')->store('categories/videos', 'public');
+            $data['video'] = $request->file('video')->store('categories/videos');
         }
 
         $category = Category::create($data);
@@ -79,7 +79,7 @@ class CategoryController extends Controller
 
         if ($request->boolean('remove_image')) {
             if ($category->image) {
-                Storage::disk('public')->delete($category->image);
+                Storage::delete($category->image);
                 $data['image'] = null;
                 unset($data['remove_image']);
             }
@@ -87,14 +87,14 @@ class CategoryController extends Controller
 
         if ($request->hasFile('image')) {
             if ($category->image) {
-                Storage::disk('public')->delete($category->image);
+                Storage::delete($category->image);
             }
             $data['image'] = $request->file('image')->store('categories/images', 'public');
         }
 
         if ($request->boolean('remove_video')) {
             if ($category->video) {
-                Storage::disk('public')->delete($category->video);
+                Storage::delete($category->video);
                 $data['video'] = null;
                 unset($data['remove_video']);
             }
@@ -102,7 +102,7 @@ class CategoryController extends Controller
 
         if ($request->hasFile('video')) {
             if ($category->video) {
-                Storage::disk('public')->delete($category->video);
+                Storage::delete($category->video);
             }
             $data['video'] = $request->file('video')->store('categories/videos', 'public');
         }

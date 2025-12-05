@@ -265,7 +265,7 @@ class ProductController extends Controller
             $imagesToDelete = $product->images()->whereNotIn('id', $submittedImageIds)->get();
             foreach ($imagesToDelete as $image) {
                 if ($image->path) {
-                    Storage::disk('public')->delete($image->path);
+                    Storage::delete($image->path);
                 }
                 $image->delete();
             }
