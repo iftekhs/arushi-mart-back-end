@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Enums\OrderStatus;
+use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
+use App\Enums\ShippingMethod;
 use App\Enums\ShippingStatus;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -13,32 +15,39 @@ use Illuminate\Support\Str;
 
 class OrderService
 {
-    public function createOrder($user, array $cartItems, array $shippingAddress, string $paymentMethod, string $shippingMethod): Order
+    public function createOrder($user, array $cartItems, ?array $shippingAddress, PaymentMethod $paymentMethod, ShippingMethod $shippingMethod): Order
     {
         return DB::transaction(function () use ($user, $cartItems, $shippingAddress, $paymentMethod, $shippingMethod) {
             $shippingCost = $this->calculateShipping($shippingMethod);
             $totalAmount = $this->calculateTotal($cartItems, $shippingCost);
             $orderNumber = 'ORD-' . now()->format('YmdHis') . '-' . strtoupper(Str::random(4));
+            $shippingAddressSnapshot = $this->generateShippingAddressSnapshot($shippingMethod, $shippingAddress);
+
+            // Determine payment status based on payment method
+            $paymentStatus = $paymentMethod === PaymentMethod::CASH
+                ? PaymentStatus::PAID
+                : PaymentStatus::PENDING;
+
+            // Determine shipping status and order status based on shipping method
+            $shippingStatus = $shippingMethod === ShippingMethod::ON_SITE
+                ? ShippingStatus::DELIVERED
+                : ShippingStatus::PENDING;
+
+            $orderStatus = $shippingMethod === ShippingMethod::ON_SITE
+                ? OrderStatus::COMPLETED
+                : OrderStatus::PENDING;
 
             $order = Order::create([
                 'order_number' => $orderNumber,
-                'status' => OrderStatus::PENDING,
+                'status' => $orderStatus,
                 'payment_method' => $paymentMethod,
-                'payment_status' => PaymentStatus::PENDING,
+                'payment_status' => $paymentStatus,
                 'shipping_method' => $shippingMethod,
-                'shipping_status' => ShippingStatus::PENDING,
+                'shipping_status' => $shippingStatus,
                 'shipping_cost' => $shippingCost,
                 'total_amount' => $totalAmount,
                 'user_id' => $user->id,
-                'shipping_address_snapshot' => [
-                    'first_name' => $shippingAddress['first_name'],
-                    'last_name' => $shippingAddress['last_name'],
-                    'address' => $shippingAddress['address'],
-                    'apartment' => $shippingAddress['apartment'] ?? null,
-                    'city' => $shippingAddress['city'],
-                    'postal_code' => $shippingAddress['postal_code'],
-                    'phone' => $shippingAddress['phone'],
-                ],
+                'shipping_address_snapshot' => $shippingAddressSnapshot,
             ]);
 
             foreach ($cartItems as $item) {
@@ -98,17 +107,32 @@ class OrderService
         ];
     }
 
-    public function calculateShipping(string $method): float
+    private function generateShippingAddressSnapshot(ShippingMethod $shippingMethod, ?array $shippingAddress): ?array
+    {
+        if ($shippingMethod === ShippingMethod::ON_SITE) return null;
+
+        return $shippingAddress ? [
+            'first_name' => $shippingAddress['first_name'],
+            'last_name' => $shippingAddress['last_name'],
+            'address' => $shippingAddress['address'],
+            'apartment' => $shippingAddress['apartment'] ?? null,
+            'city' => $shippingAddress['city'],
+            'postal_code' => $shippingAddress['postal_code'],
+            'phone' => $shippingAddress['phone'],
+        ] : null;
+    }
+
+    private function calculateShipping(ShippingMethod $method): float
     {
         return match ($method) {
-            'on_site' => 0.00,
-            'inside_dhaka' => 0.00,
-            'outside_dhaka' => 120.00,
+            ShippingMethod::ON_SITE => 0.00,
+            ShippingMethod::INSIDE_DHAKA => 0.00,
+            ShippingMethod::OUTSIDE_DHAKA => 120.00,
             default => 0.00,
         };
     }
 
-    public function calculateTotal(array $cartItems, float $shipping): float
+    private function calculateTotal(array $cartItems, float $shipping): float
     {
         $subtotal = 0;
 

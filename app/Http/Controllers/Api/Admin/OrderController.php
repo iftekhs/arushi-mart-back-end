@@ -118,20 +118,22 @@ class OrderController extends Controller
 
     public function store(Request $request, OrderService $orderService): JsonResource
     {
+        $isOnSite = $request->input('shipping_method') === 'on_site';
+
         $validated = $request->validate([
             'email' => ['required', 'email'],
             'cart_items' => ['required', 'array', 'min:1'],
             'cart_items.*.product_id' => ['required', 'integer', 'exists:products,id'],
             'cart_items.*.variant_id' => ['required', 'integer', 'exists:product_variants,id'],
             'cart_items.*.quantity' => ['required', 'integer', 'min:1'],
-            'shipping_address' => ['required', 'array'],
-            'shipping_address.first_name' => ['required', 'string', 'max:255'],
-            'shipping_address.last_name' => ['required', 'string', 'max:255'],
-            'shipping_address.address' => ['required', 'string', 'max:500'],
+            'shipping_address' => [$isOnSite ? 'nullable' : 'required', 'array'],
+            'shipping_address.first_name' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:255'],
+            'shipping_address.last_name' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:255'],
+            'shipping_address.address' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:500'],
             'shipping_address.apartment' => ['nullable', 'string', 'max:255'],
-            'shipping_address.city' => ['required', 'string', 'max:255'],
-            'shipping_address.postal_code' => ['required', 'string', 'max:20'],
-            'shipping_address.phone' => ['required', 'string', 'max:20'],
+            'shipping_address.city' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:255'],
+            'shipping_address.postal_code' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:20'],
+            'shipping_address.phone' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:20'],
             'payment_method' => ['required', 'string', Rule::in(PaymentMethod::values())],
             'shipping_method' => ['required', 'string', Rule::in(ShippingMethod::values())],
         ]);
@@ -139,8 +141,8 @@ class OrderController extends Controller
         $user = User::firstOrCreate(
             ['email' => $validated['email']],
             [
-                'name' => $validated['shipping_address']['first_name'] . ' ' . $validated['shipping_address']['last_name'],
-                'password' => bcrypt(Str::random(32)),
+                'name' => $isOnSite ? explode('@', $validated['email'])[0] : $validated['shipping_address']['first_name'] . ' ' . $validated['shipping_address']['last_name'],
+                'password' => bcrypt(str()->random(16)),
             ]
         );
 
@@ -148,8 +150,8 @@ class OrderController extends Controller
             $user,
             $validated['cart_items'],
             $validated['shipping_address'],
-            $validated['payment_method'],
-            $validated['shipping_method']
+            PaymentMethod::from($validated['payment_method']),
+            ShippingMethod::from($validated['shipping_method'])
         );
 
         return OrderResource::make($order);
