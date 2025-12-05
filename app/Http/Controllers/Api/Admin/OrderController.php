@@ -7,6 +7,8 @@ use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Enums\ShippingMethod;
 use App\Enums\ShippingStatus;
+use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
@@ -142,8 +144,11 @@ class OrderController extends Controller
             ['email' => $validated['email']],
             [
                 'name' => $isOnSite ? explode('@', $validated['email'])[0] : $validated['shipping_address']['first_name'] . ' ' . $validated['shipping_address']['last_name'],
+                'role' => UserRole::USER,
+                'status' => UserStatus::ACTIVE,
                 'password' => bcrypt(str()->random(16)),
             ]
+
         );
 
         $order = $orderService->createOrder(

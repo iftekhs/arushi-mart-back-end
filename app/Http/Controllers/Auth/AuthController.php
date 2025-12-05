@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -25,6 +27,8 @@ class AuthController extends Controller
             $user = User::create([
                 'email' => $email,
                 'name' => explode('@', $email)[0],
+                'role' => UserRole::USER,
+                'status' => UserStatus::ACTIVE,
                 'password' => bcrypt(str()->random(16)),
             ]);
         }
