@@ -9,12 +9,15 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\Tag;
 use App\Models\Color;
+use App\Models\ProductVariant;
 use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ProductController extends Controller
 {
@@ -71,17 +74,17 @@ class ProductController extends Controller
 
             foreach ($validated['variants'] as $variant) {
                 $colorId = $variant['color']['id'];
-                
+
                 // Generate SKU if auto_generate_sku is true
                 $sku = $variant['sku'];
                 if ($variant['auto_generate_sku'] ?? false) {
                     $color = Color::find($colorId);
                     $size = Size::find($variant['size_id']);
-                    
-                    $sku = Str::slug($product->name) . '-' . 
-                           Str::slug($color->name) . '-' . 
-                           Str::slug($size->name) . '-' . 
-                           Str::slug($variant['type']);
+
+                    $sku = Str::slug($product->name) . '-' .
+                        Str::slug($color->name) . '-' .
+                        Str::slug($size->name) . '-' .
+                        Str::slug($variant['type']);
                     $sku = strtoupper($sku);
                 }
 
@@ -169,14 +172,14 @@ class ProductController extends Controller
                         if ($variantData['auto_generate_sku'] ?? false) {
                             $color = Color::find($colorId);
                             $size = Size::find($variantData['size_id']);
-                            
-                            $sku = Str::slug($product->name) . '-' . 
-                                   Str::slug($color->name) . '-' . 
-                                   Str::slug($size->name) . '-' . 
-                                   Str::slug($variantData['type']);
+
+                            $sku = Str::slug($product->name) . '-' .
+                                Str::slug($color->name) . '-' .
+                                Str::slug($size->name) . '-' .
+                                Str::slug($variantData['type']);
                             $sku = strtoupper($sku);
                         }
-                        
+
                         $variant->update([
                             'color_id' => $colorId,
                             'size_id' => $variantData['size_id'],
@@ -192,14 +195,14 @@ class ProductController extends Controller
                     if ($variantData['auto_generate_sku'] ?? false) {
                         $color = Color::find($colorId);
                         $size = Size::find($variantData['size_id']);
-                        
-                        $sku = Str::slug($product->name) . '-' . 
-                               Str::slug($color->name) . '-' . 
-                               Str::slug($size->name) . '-' . 
-                               Str::slug($variantData['type']);
+
+                        $sku = Str::slug($product->name) . '-' .
+                            Str::slug($color->name) . '-' .
+                            Str::slug($size->name) . '-' .
+                            Str::slug($variantData['type']);
                         $sku = strtoupper($sku);
                     }
-                    
+
                     $variantsToCreate[] = [
                         'color_id' => $colorId,
                         'size_id' => $variantData['size_id'],
@@ -290,8 +293,25 @@ class ProductController extends Controller
                 'images.color',
             ]);
 
-            return new ProductResource($product);
+            return ProductResource::make($product);
         });
+    }
+
+    public function searchBySku(Request $request): JsonResponse|JsonResource
+    {
+        $request->validate([
+            'sku' => ['required', 'string'],
+        ]);
+
+        $variant = ProductVariant::whereSku($request->sku)
+            ->with(['product.primaryImage', 'color', 'size'])
+            ->first();
+
+        if (!$variant || !$variant->product->active) {
+            return $this->error('Product variant not found with SKU: ' . $request->input('sku'), 404);
+        }
+
+        return ProductResource::make($variant->product);
     }
 
     public function toggleActive(Product $product)

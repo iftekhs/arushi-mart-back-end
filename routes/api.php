@@ -74,6 +74,7 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
     Route::get('/users', [AdminUserController::class, 'index']);
     Route::prefix('products')->group(function () {
         Route::get('/', [AdminProductController::class, 'index']);
+        Route::get('/search-by-sku', [AdminProductController::class, 'searchBySku']);
         Route::post('/', [AdminProductController::class, 'store']);
         Route::get('/{product}', [AdminProductController::class, 'show']);
         Route::post('/{product}', [AdminProductController::class, 'update']);
