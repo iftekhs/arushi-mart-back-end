@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\SubscriberController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Middleware\CheckUserRole;
 use App\Http\Resources\AuthUserResource;
+use App\Http\Controllers\Api\CustomizationController as PublicCustomizationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,8 @@ Route::prefix('search')->group(function () {
     Route::get('/preview', [SearchController::class, 'preview']);
     Route::get('/suggestions', [SearchController::class, 'suggestions']);
 });
+
+Route::get('/customizations/{key}', [PublicCustomizationController::class, 'show']);
 
 Route::prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
