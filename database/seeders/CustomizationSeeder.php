@@ -32,7 +32,7 @@ class CustomizationSeeder extends Seeder
                             'key' => 'image',
                             'label' => 'Image',
                             'type' => 'image',
-                            'rules' => ['nullable', 'image', 'max:2048'],
+                            'rules' => ['required', 'image', 'max:2048'],
                         ],
                     ],
                 ],

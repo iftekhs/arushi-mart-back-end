@@ -47,14 +47,65 @@ class CustomizationService
                     }
 
                     $itemRules = $itemField['rules'] ?? [];
+                    
+                    // For image fields, allow '-1' for removal
+                    if ($itemField['type'] === 'image') {
+                        $itemRules = $this->adjustImageRules($itemRules);
+                    }
+                    
                     $rules["{$fullKey}.*.{$itemKey}"] = $itemRules;
                 }
             } else {
                 // Simple field - use rules directly
-                $rules[$fullKey] = $field['rules'] ?? ['nullable'];
+                $fieldRules = $field['rules'] ?? ['nullable'];
+                
+                // For image fields, allow '-1' for removal
+                if ($field['type'] === 'image') {
+                    $fieldRules = $this->adjustImageRules($fieldRules);
+                }
+                
+                $rules[$fullKey] = $fieldRules;
             }
         }
 
+        return $rules;
+    }
+
+    /**
+     * Adjust image validation rules to allow '-1' for removal
+     */
+    private function adjustImageRules(array $rules): array
+    {
+        // Check if 'image' rule exists
+        $hasImageRule = in_array('image', $rules);
+        
+        if ($hasImageRule) {
+            // Remove 'image' rule and add custom rule that accepts image or '-1'
+            $rules = array_filter($rules, fn($rule) => $rule !== 'image');
+            
+            // Add custom validation: must be image file OR string '-1'
+            $rules[] = function ($attribute, $value, $fail) {
+                if ($value === '-1') {
+                    return; // Allow '-1' for removal
+                }
+                
+                if (!($value instanceof \Illuminate\Http\UploadedFile)) {
+                    $fail("The {$attribute} field must be an image.");
+                    return;
+                }
+                
+                // Validate as image
+                $validator = validator(
+                    [$attribute => $value],
+                    [$attribute => 'image']
+                );
+                
+                if ($validator->fails()) {
+                    $fail($validator->errors()->first($attribute));
+                }
+            };
+        }
+        
         return $rules;
     }
 }
