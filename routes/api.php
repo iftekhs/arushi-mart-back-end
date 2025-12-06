@@ -21,12 +21,13 @@ use App\Http\Controllers\Api\ShippingAddressController;
 use App\Http\Controllers\Api\SubscriberController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Middleware\CheckUserRole;
+use App\Http\Resources\AuthUserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
 Route::get('/user', function (Request $request) {
-    return $request->user();
+    return AuthUserResource::make($request->user());
 })->middleware('auth:sanctum');
 
 Route::post('/cart/validate', [UserController::class, 'validateCart']);

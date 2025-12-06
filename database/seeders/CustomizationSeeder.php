@@ -23,31 +23,34 @@ class CustomizationSeeder extends Seeder
                     'rules' => ['array'],
                     'items' => [
                         [
-                            'key' => 'caption',
-                            'label' => 'Caption',
-                            'type' => 'text',
-                            'rules' => ['required', 'string', 'max:255'],
-                        ],
-                        [
                             'key' => 'image',
                             'label' => 'Image',
                             'type' => 'image',
                             'rules' => ['required', 'image', 'max:2048'],
                         ],
+                        [
+                            'key' => 'title',
+                            'label' => 'Title',
+                            'type' => 'text',
+                            'rules' => ['required', 'string', 'max:100'],
+                        ],
+                        [
+                            'key' => 'button_text',
+                            'label' => 'Button Text',
+                            'type' => 'text',
+                            'rules' => ['required', 'string', 'max:50'],
+                        ],
+                        [
+                            'key' => 'button_url',
+                            'label' => 'Button URL',
+                            'type' => 'text',
+                            'rules' => ['required', 'string', 'url', 'max:1024'],
+                        ],
                     ],
                 ],
             ],
             'value' => [
-                'carousel_items' => [
-                    [
-                        'caption' => 'Welcome to Arushi Mart',
-                        'image' => '/storage/carousel/slide1.jpg',
-                    ],
-                    [
-                        'caption' => 'New Collection 2024',
-                        'image' => '/storage/carousel/slide2.jpg',
-                    ],
-                ],
+                'carousel_items' => [],
             ],
         ]);
     }
