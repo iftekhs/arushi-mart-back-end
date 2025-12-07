@@ -37,13 +37,13 @@ class ProductFactory extends Factory
             'Modern Kurta Set',
         ];
 
-        $name = $this->faker->unique()->randomElement($productNames);
+        $name = fake()->unique()->randomElement($productNames);
 
         return [
             'name' => $name,
             'slug' => Str::slug($name) . '-' . strtolower(Str::random(4)),
-            'price' => $this->faker->randomFloat(2, 1500, 15000),
-            'description' => $this->faker->paragraph(4),
+            'price' => fake()->randomFloat(2, 1500, 15000),
+            'description' => fake()->paragraph(4),
             'active' => true,
             'category_id' => Category::factory(),
         ];

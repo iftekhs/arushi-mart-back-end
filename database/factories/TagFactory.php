@@ -36,7 +36,7 @@ class TagFactory extends Factory
             'Summer Special',
         ];
 
-        $name = $this->faker->unique()->randomElement($tags);
+        $name = fake()->unique()->randomElement($tags);
 
         return [
             'name' => $name,
