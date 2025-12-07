@@ -26,9 +26,9 @@ class ProductVariantFactory extends Factory
             'product_id' => Product::factory(),
             'color_id' => Color::inRandomOrder()->first()->id ?? Color::factory(),
             'size_id' => Size::inRandomOrder()->first()->id ?? Size::factory(),
-            'type' => fake()->randomElement([ProductType::STITCHED->value, ProductType::UNSTITCHED->value]),
+            'type' => $this->faker->randomElement([ProductType::STITCHED->value, ProductType::UNSTITCHED->value]),
             'sku' => 'VAR-' . strtoupper(Str::random(10)),
-            'stock_quantity' => fake()->numberBetween(0, 100),
+            'stock_quantity' => $this->faker->numberBetween(0, 100),
         ];
     }
 
@@ -38,7 +38,7 @@ class ProductVariantFactory extends Factory
     public function inStock(): static
     {
         return $this->state(fn(array $attributes) => [
-            'stock_quantity' => fake()->numberBetween(10, 100),
+            'stock_quantity' => $this->faker->numberBetween(10, 100),
         ]);
     }
 

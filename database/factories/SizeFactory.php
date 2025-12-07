@@ -55,7 +55,7 @@ class SizeFactory extends Factory
             ],
         ];
 
-        $size = fake()->unique()->randomElement($sizes);
+        $size = $this->faker->unique()->randomElement($sizes);
 
         return [
             'name' => $size['name'],

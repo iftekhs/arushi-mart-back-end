@@ -30,7 +30,7 @@ class ColorFactory extends Factory
             ['name' => 'Brown', 'hex_code' => '#A52A2A'],
         ];
 
-        $color = fake()->unique()->randomElement($colors);
+        $color = $this->faker->unique()->randomElement($colors);
 
         return [
             'name' => $color['name'],

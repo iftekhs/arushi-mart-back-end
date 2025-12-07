@@ -18,7 +18,7 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->unique()->randomElement([
+        $name = $this->faker->unique()->randomElement([
             'Women\'s Clothing',
             'Men\'s Clothing',
             'Kids Clothing',
@@ -35,8 +35,8 @@ class CategoryFactory extends Factory
             'name' => $name,
             'slug' => Str::slug($name),
             'parent_id' => null,
-            'description' => fake()->sentence(15),
-            'featured' => fake()->boolean(),
+            'description' => $this->faker->sentence(15),
+            'featured' => $this->faker->boolean(),
             'active' => true,
         ];
     }

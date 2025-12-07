@@ -21,10 +21,10 @@ class ProductImageFactory extends Factory
     {
         return [
             'product_id' => Product::factory(),
-            'color_id' => fake()->boolean(60) ? (Color::inRandomOrder()->first()->id ?? null) : null,
-            'path' => 'products/' . fake()->uuid() . '.jpg',
+            'color_id' => $this->faker->boolean(60) ? (Color::inRandomOrder()->first()->id ?? null) : null,
+            'path' => 'products/' . $this->faker->uuid() . '.jpg',
             'primary' => false,
-            'sort_order' => fake()->numberBetween(0, 10),
+            'sort_order' => $this->faker->numberBetween(0, 10),
         ];
     }
 

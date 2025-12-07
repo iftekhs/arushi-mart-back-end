@@ -26,9 +26,9 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => fake()->optional(0.8)->dateTimeBetween('-1 year', 'now'), // 80% verified
+            'name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'email_verified_at' => $this->faker->optional(0.8)->dateTimeBetween('-1 year', 'now'), // 80% verified
             'password' => static::$password ??= Hash::make('password'),
             'role' => UserRole::USER,
             'status' => UserStatus::ACTIVE,
