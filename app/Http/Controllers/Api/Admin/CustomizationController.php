@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Enums\CacheKey;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CustomizationResource;
 use App\Models\Customization;
 use App\Services\CustomizationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class CustomizationController extends Controller
@@ -40,6 +42,8 @@ class CustomizationController extends Controller
         $customization->update([
             'value' => $processedData,
         ]);
+
+        Cache::tags(CacheKey::CUSTOMIZATION_SHOW->value)->flush();
 
         return CustomizationResource::make($customization);
     }
