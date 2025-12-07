@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
+
 if (!function_exists('to_object')) {
     function to_object(array $array)
     {
@@ -12,6 +14,6 @@ if (!function_exists('path_to_url')) {
     {
         if (!$path) return null;
         if (str_starts_with($path, 'http')) return $path;
-        return url('storage/' . $path);
+        return Storage::url($path);
     }
 }

@@ -24,7 +24,7 @@ class CustomizationSeeder extends Seeder
                     'items' => [
                         [
                             'key' => 'image',
-                            'label' => 'Image',
+                            'label' => 'Image (2304 x 4920 px)',
                             'type' => 'image',
                             'rules' => ['required', 'image', 'max:2048'],
                         ],
@@ -48,9 +48,74 @@ class CustomizationSeeder extends Seeder
                         ],
                     ],
                 ],
+                [
+                    'key' => 'marquee_items',
+                    'label' => 'Marquee Items',
+                    'type' => 'array',
+                    'rules' => ['array'],
+                    'items' => [
+                        [
+                            'key' => 'label',
+                            'label' => 'Label',
+                            'type' => 'text',
+                            'rules' => ['required', 'string', 'max:100'],
+                        ]
+                    ]
+                ],
+                [
+                    'key' => 'posts',
+                    'label' => 'Posts',
+                    'type' => 'array',
+                    'rules' => ['array'],
+                    'items' => [
+                        [
+                            'key' => 'label',
+                            'label' => 'Label',
+                            'type' => 'text',
+                            'rules' => ['required', 'string', 'max:100'],
+                        ]
+                    ]
+                ],
             ],
             'value' => [
                 'carousel_items' => [],
+                'marquee_items' => [],
+            ],
+        ]);
+
+        Customization::create([
+            'key' => 'product_page',
+            'label' => 'Product Page',
+            'fields' => [
+                [
+                    'key' => 'accordion_items',
+                    'label' => 'Accordion Items',
+                    'type' => 'array',
+                    'rules' => ['array'],
+                    'items' => [
+                        [
+                            'key' => 'icon',
+                            'label' => 'Icon',
+                            'type' => 'text',
+                            'rules' => ['required', 'string', 'max:50'],
+                        ],
+                        [
+                            'key' => 'title',
+                            'label' => 'Title',
+                            'type' => 'text',
+                            'rules' => ['required', 'string', 'max:100'],
+                        ],
+                        [
+                            'key' => 'content',
+                            'label' => 'Content',
+                            'type' => 'text',
+                            'rules' => ['required', 'string', 'max:1024'],
+                        ],
+                    ],
+                ],
+            ],
+            'value' => [
+                'accordion_items' => [],
             ],
         ]);
     }

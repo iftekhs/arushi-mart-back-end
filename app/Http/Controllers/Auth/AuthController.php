@@ -74,7 +74,7 @@ class AuthController extends Controller
 
         if (!$user->verifyOtp($request->otp)) return $this->error('Invalid code or email', 401);
 
-        Auth::login($user);
+        Auth::login($user, true);
 
         $request->session()->regenerate();
 
