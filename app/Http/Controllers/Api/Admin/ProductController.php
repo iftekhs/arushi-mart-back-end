@@ -315,6 +315,26 @@ class ProductController extends Controller
         return ProductVariantResource::make($variant);
     }
 
+    public function searchVariants(Request $request): AnonymousResourceCollection
+    {
+        $request->validate([
+            'query' => ['required', 'string', 'min:1'],
+        ]);
+
+        $query = $request->input('query');
+
+        $variants = ProductVariant::query()
+            ->with(['product', 'color', 'size'])
+            ->where('sku', 'like', "%{$query}%")
+            ->orWhereHas('product', function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%");
+            })
+            ->limit(20)
+            ->get();
+
+        return ProductVariantResource::collection($variants);
+    }
+
     public function toggleActive(Product $product)
     {
         $product->update([

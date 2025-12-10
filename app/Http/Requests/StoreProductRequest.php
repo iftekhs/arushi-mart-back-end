@@ -43,7 +43,7 @@ class StoreProductRequest extends FormRequest
 
             'variants.*.color.images' => ['required', 'array', 'min:1'],
             'variants.*.color.images.*.primary' => ['required', 'boolean'],
-            'variants.*.color.images.*.file' => ['required', 'image', 'max:1024'],
+            'variants.*.color.images.*.file' => ['required', 'image', 'max:2048'],
 
             'variants.*.size_id' => ['required', 'integer', 'exists:sizes,id'],
             'variants.*.type' => ['required', 'string', Rule::in(ProductVariantType::values())],
