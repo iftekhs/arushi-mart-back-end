@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductVariantResource;
 use App\Models\Product;
 use App\Models\Tag;
 use App\Models\Color;
@@ -311,7 +312,7 @@ class ProductController extends Controller
             return $this->error('Product variant not found with SKU: ' . $request->input('sku'), 404);
         }
 
-        return ProductResource::make($variant->product);
+        return ProductVariantResource::make($variant);
     }
 
     public function toggleActive(Product $product)
