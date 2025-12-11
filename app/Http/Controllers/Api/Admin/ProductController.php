@@ -68,7 +68,7 @@ class ProductController extends Controller
     {
         $validated = $request->validated();
 
-        return DB::transaction(function () use ($validated) {
+        return DB::transaction(function () use ($validated, $request) {
 
             $productData = [
                 'name' => $validated['name'],
@@ -157,7 +157,7 @@ class ProductController extends Controller
     {
         $validated = $request->validated();
 
-        return DB::transaction(function () use ($validated, $product) {
+        return DB::transaction(function () use ($validated, $product, $request) {
             // Update basic product fields
             $updateData = [
                 'name' => $validated['name'],
@@ -168,7 +168,7 @@ class ProductController extends Controller
                 'category_id' => $validated['category_id'],
             ];
 
-             if ($request->hasFile('size_guide')) {
+            if ($request->hasFile('size_guide')) {
                 // Delete old size_guide if exists
                 if ($product->size_guide) {
                     Storage::disk('public')->delete($product->size_guide);
