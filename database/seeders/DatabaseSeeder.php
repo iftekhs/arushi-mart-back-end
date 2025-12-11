@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Superadmin',
-            'email' => 'superadmin@email.com',
+            'email' => 'arushimart0@gmail.com',
             'role' => UserRole::SUPERADMIN,
             'status' => UserStatus::ACTIVE,
         ]);
