@@ -53,6 +53,17 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
+    private function generateSku($productName, $colorName, $variantId)
+    {
+        $initials = collect(explode(' ', $productName))
+            ->map(fn($segment) => strtoupper(substr($segment, 0, 1)))
+            ->join('');
+
+        $colorInitial = strtoupper(substr($colorName, 0, 1));
+
+        return "AM-{$initials}{$colorInitial}-{$variantId}";
+    }
+
     public function store(StoreProductRequest $request)
     {
         $validated = $request->validated();
@@ -70,32 +81,32 @@ class ProductController extends Controller
 
             $product = Product::create($productData);
 
-            $variantsToCreate = [];
             $imagesToCreate = [];
 
             foreach ($validated['variants'] as $variant) {
                 $colorId = $variant['color']['id'];
 
-                // Generate SKU if auto_generate_sku is true
+                // Handle SKU generation
                 $sku = $variant['sku'];
-                if ($variant['auto_generate_sku'] ?? false) {
-                    $color = Color::find($colorId);
-                    $size = Size::find($variant['size_id']);
+                $isAutoSku = $variant['auto_generate_sku'] ?? false;
 
-                    $sku = Str::slug($product->name) . '-' .
-                        Str::slug($color->name) . '-' .
-                        Str::slug($size->name) . '-' .
-                        Str::slug($variant['type']);
-                    $sku = strtoupper($sku);
+                if ($isAutoSku) {
+                    $sku = (string) Str::uuid(); // Temp SKU
                 }
 
-                $variantsToCreate[] = [
+                $newVariant = $product->variants()->create([
                     'color_id' => $colorId,
                     'size_id' => $variant['size_id'],
                     'type' => $variant['type'],
                     'sku' => $sku,
                     'stock_quantity' => $variant['stock_quantity'],
-                ];
+                ]);
+
+                if ($isAutoSku) {
+                    $color = Color::find($colorId);
+                    $finalSku = $this->generateSku($product->name, $color->name, $newVariant->id);
+                    $newVariant->update(['sku' => $finalSku]);
+                }
 
                 foreach ($variant['color']['images'] as $image) {
                     $uploadedFile = $image['file'];
@@ -110,7 +121,6 @@ class ProductController extends Controller
                 }
             }
 
-            $product->variants()->createMany($variantsToCreate);
             $product->images()->createMany($imagesToCreate);
 
             if (!empty($validated['categories'])) {
@@ -157,7 +167,6 @@ class ProductController extends Controller
             // Track submitted variant IDs and image IDs
             $submittedVariantIds = [];
             $submittedImageIds = [];
-            $variantsToCreate = [];
             $imagesToCreate = [];
 
             foreach ($validated['variants'] as $variantData) {
@@ -168,17 +177,17 @@ class ProductController extends Controller
                 if ($variantId) {
                     $variant = $product->variants()->find($variantId);
                     if ($variant) {
-                        // Generate SKU if auto_generate_sku is true
                         $sku = $variantData['sku'];
+
+                        // If auto-generating, regenerate using existing ID (if desired behavior?)
+                        // User request: "when creating the product variant". 
+                        // But usually updates shouldn't change SKU unless requested.
+                        // However, if the user explicitly sends auto_generate_sku=true in update, likely they want it regenerated.
+                        // Given the ID pattern, the ID won't change, but Product Name or Color might have changed.
+
                         if ($variantData['auto_generate_sku'] ?? false) {
                             $color = Color::find($colorId);
-                            $size = Size::find($variantData['size_id']);
-
-                            $sku = Str::slug($product->name) . '-' .
-                                Str::slug($color->name) . '-' .
-                                Str::slug($size->name) . '-' .
-                                Str::slug($variantData['type']);
-                            $sku = strtoupper($sku);
+                            $sku = $this->generateSku($product->name, $color->name, $variant->id);
                         }
 
                         $variant->update([
@@ -193,24 +202,27 @@ class ProductController extends Controller
                 } else {
                     // Create new variant
                     $sku = $variantData['sku'];
-                    if ($variantData['auto_generate_sku'] ?? false) {
-                        $color = Color::find($colorId);
-                        $size = Size::find($variantData['size_id']);
+                    $isAutoSku = $variantData['auto_generate_sku'] ?? false;
 
-                        $sku = Str::slug($product->name) . '-' .
-                            Str::slug($color->name) . '-' .
-                            Str::slug($size->name) . '-' .
-                            Str::slug($variantData['type']);
-                        $sku = strtoupper($sku);
+                    if ($isAutoSku) {
+                        $sku = (string) Str::uuid(); // Temp SKU
                     }
 
-                    $variantsToCreate[] = [
+                    $newVariant = $product->variants()->create([
                         'color_id' => $colorId,
                         'size_id' => $variantData['size_id'],
                         'type' => $variantData['type'],
                         'sku' => $sku,
                         'stock_quantity' => $variantData['stock_quantity'],
-                    ];
+                    ]);
+
+                    if ($isAutoSku) {
+                        $color = Color::find($colorId);
+                        $finalSku = $this->generateSku($product->name, $color->name, $newVariant->id);
+                        $newVariant->update(['sku' => $finalSku]);
+                    }
+
+                    $submittedVariantIds[] = $newVariant->id;
                 }
 
                 // Handle images for this color
@@ -237,14 +249,6 @@ class ProductController extends Controller
                             'primary' => $imageData['primary'],
                         ];
                     }
-                }
-            }
-
-            // Create new variants
-            if (!empty($variantsToCreate)) {
-                foreach ($variantsToCreate as $variantData) {
-                    $newVariant = $product->variants()->create($variantData);
-                    $submittedVariantIds[] = $newVariant->id; // Track newly created variant IDs
                 }
             }
 
