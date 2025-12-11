@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\PaymentMethod;
+use App\Enums\ShippingMethod;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutRequest;
 use App\Http\Resources\OrderResource;
@@ -14,6 +16,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Mail\OrderConfirmationMail;
+use App\Mail\NewOrderNotificationMail;
 
 class CheckoutController extends Controller
 {
@@ -67,9 +71,12 @@ class CheckoutController extends Controller
             $user,
             $request->cart_items,
             $shippingAddress,
-            $request->payment_method,
-            $request->shipping_method
+            PaymentMethod::from($request->payment_method),
+            ShippingMethod::from($request->shipping_method)
         );
+
+        Mail::to($user->email)->send(new OrderConfirmationMail($order));
+        Mail::to(config('app.admin.email'))->send(new NewOrderNotificationMail($order));
 
         return OrderResource::make($order);
     }
