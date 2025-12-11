@@ -123,7 +123,7 @@ class OrderController extends Controller
         $isOnSite = $request->input('shipping_method') === 'on_site';
 
         $validated = $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['nullable', 'string', 'email'],
             'cart_items' => ['required', 'array', 'min:1'],
             'cart_items.*.product_id' => ['required', 'integer', 'exists:products,id'],
             'cart_items.*.variant_id' => ['required', 'integer', 'exists:product_variants,id'],
@@ -140,19 +140,21 @@ class OrderController extends Controller
             'shipping_method' => ['required', 'string', Rule::in(ShippingMethod::values())],
         ]);
 
-        $user = User::firstOrCreate(
-            ['email' => $validated['email']],
-            [
-                'name' => $isOnSite ? explode('@', $validated['email'])[0] : $validated['shipping_address']['first_name'] . ' ' . $validated['shipping_address']['last_name'],
-                'role' => UserRole::USER,
-                'status' => UserStatus::ACTIVE,
-                'password' => bcrypt(str()->random(16)),
-            ]
+        if ($validated['email']) {
+            $user = User::firstOrCreate(
+                ['email' => $validated['email']],
+                [
+                    'name' => $isOnSite ? explode('@', $validated['email'])[0] : $validated['shipping_address']['first_name'] . ' ' . $validated['shipping_address']['last_name'],
+                    'role' => UserRole::USER,
+                    'status' => UserStatus::ACTIVE,
+                    'password' => bcrypt(str()->random(16)),
+                ]
 
-        );
+            );
+        }
 
         $order = $orderService->createOrder(
-            $user,
+            isset($user) ? $user : null,
             $validated['cart_items'],
             $validated['shipping_address'],
             PaymentMethod::from($validated['payment_method']),

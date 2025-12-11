@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('shipping_method');
             $table->decimal('shipping_cost', 10, 2);
             $table->decimal('total_amount', 10, 2);
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
             $table->json('shipping_address_snapshot')->nullable();
             $table->timestamps();
 

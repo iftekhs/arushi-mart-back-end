@@ -10,12 +10,13 @@ use App\Enums\ShippingStatus;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ProductVariant;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class OrderService
 {
-    public function createOrder($user, array $cartItems, ?array $shippingAddress, PaymentMethod $paymentMethod, ShippingMethod $shippingMethod): Order
+    public function createOrder(User|null $user, array $cartItems, ?array $shippingAddress, PaymentMethod $paymentMethod, ShippingMethod $shippingMethod): Order
     {
         return DB::transaction(function () use ($user, $cartItems, $shippingAddress, $paymentMethod, $shippingMethod) {
             $shippingCost = $this->calculateShipping($shippingMethod);
@@ -46,7 +47,7 @@ class OrderService
                 'shipping_status' => $shippingStatus,
                 'shipping_cost' => $shippingCost,
                 'total_amount' => $totalAmount,
-                'user_id' => $user->id,
+                'user_id' => $user?->id,
                 'shipping_address_snapshot' => $shippingAddressSnapshot,
             ]);
 
