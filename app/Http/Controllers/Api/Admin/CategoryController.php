@@ -106,7 +106,6 @@ class CategoryController extends Controller
             }
             $data['video'] = $request->file('video')->store('categories/videos');
         }
-        logger()->info('Updating category with data: ', $data);
 
         $category->update($data);
 
