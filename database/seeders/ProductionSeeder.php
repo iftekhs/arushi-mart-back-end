@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class ProductionSeeder extends Seeder
 {
@@ -14,11 +15,12 @@ class ProductionSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
+        User::create([
             'name' => 'Superadmin',
             'email' => 'arushimart0@gmail.com',
             'role' => UserRole::SUPERADMIN,
             'status' => UserStatus::ACTIVE,
+            'password' => Hash::make('arushimart0@gmail.com')
         ]);
 
         $this->call([
