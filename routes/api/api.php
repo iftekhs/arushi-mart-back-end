@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ColorController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductVariantController;
 use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SubscriberController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Resources\AuthUserResource;
@@ -29,6 +30,7 @@ Route::prefix('search')->group(function () {
 });
 
 Route::get('/customizations/{key}', [PublicCustomizationController::class, 'show']);
+Route::get('/settings/{key}', [SettingController::class, 'show']);
 
 Route::prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);

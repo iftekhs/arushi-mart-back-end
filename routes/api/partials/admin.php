@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\ColorController as AdminColorController;
 use App\Http\Controllers\Api\Admin\CustomizationController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Api\Admin\SettingController;
 use App\Http\Controllers\Api\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Api\Admin\SizeController;
 use App\Http\Controllers\Api\Admin\TagController as AdminTagController;
@@ -69,5 +70,11 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
     Route::prefix('customizations')->group(function () {
         Route::get('/', [CustomizationController::class, 'index']);
         Route::post('/{customization}', [CustomizationController::class, 'update']);
+    });
+
+    Route::prefix('settings')->group(function () {
+        Route::get('/', [SettingController::class, 'index']);
+        Route::get('/{setting}', [SettingController::class, 'show']);
+        Route::put('/{setting}', [SettingController::class, 'update']);
     });
 });

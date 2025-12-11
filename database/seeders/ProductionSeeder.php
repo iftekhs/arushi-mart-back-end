@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ProductionSeeder extends Seeder
@@ -24,6 +23,7 @@ class ProductionSeeder extends Seeder
 
         $this->call([
             CustomizationSeeder::class,
+            SettingSeeder::class,
         ]);
     }
 }

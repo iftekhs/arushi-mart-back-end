@@ -10,6 +10,7 @@ use App\Enums\ShippingStatus;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ProductVariant;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -125,10 +126,13 @@ class OrderService
 
     private function calculateShipping(ShippingMethod $method): float
     {
+        $setting = Setting::where('key', 'business')->first();
+        $value = $setting?->value ?? [];
+
         return match ($method) {
-            ShippingMethod::ON_SITE => 0.00,
-            ShippingMethod::INSIDE_DHAKA => 0.00,
-            ShippingMethod::OUTSIDE_DHAKA => 120.00,
+            ShippingMethod::ON_SITE => $value['on_site_fee'] ?? 0.00,
+            ShippingMethod::INSIDE_DHAKA => $value['inside_dhaka_fee'] ?? 60.00,
+            ShippingMethod::OUTSIDE_DHAKA => $value['outside_dhaka_fee'] ?? 120.00,
             default => 0.00,
         };
     }
