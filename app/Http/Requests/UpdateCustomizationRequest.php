@@ -288,7 +288,7 @@ class UpdateCustomizationRequest extends FormRequest
             if ($oldValue) {
                 Storage::delete($oldValue);
             }
-            return $newValue->store('customizations', 'public');
+            return $newValue->store('customizations');
         }
 
         // No change - keep old value

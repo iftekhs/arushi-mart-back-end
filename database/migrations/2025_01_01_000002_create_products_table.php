@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->boolean('featured')->default(false);
             $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('size_guide')->nullable();
             $table->timestamps();
         });
     }

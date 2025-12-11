@@ -334,6 +334,7 @@ class ProductSeeder extends Seeder
                 'active' => true,
                 'featured' => $productData['featured'] ?? false,
                 'category_id' => $defaultCategoryId,
+                'size_guide' => 'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSQOK4GwzwqGf1nTu9D2YpdJxygcstAaK6jlWN'
             ]);
 
             // Attach the chosen categories

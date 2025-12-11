@@ -79,6 +79,10 @@ class ProductController extends Controller
                 'category_id' => $validated['category_id'],
             ];
 
+            if ($request->hasFile('size_guide')) {
+                $productData['size_guide'] = $request->file('size_guide')->store('size-guides');
+            }
+
             $product = Product::create($productData);
 
             $imagesToCreate = [];
@@ -111,7 +115,7 @@ class ProductController extends Controller
                 foreach ($variant['color']['images'] as $image) {
                     $uploadedFile = $image['file'];
 
-                    $path = $uploadedFile->store('products', 'public');
+                    $path = $uploadedFile->store('products');
 
                     $imagesToCreate[] = [
                         'color_id' => $colorId,
@@ -155,14 +159,24 @@ class ProductController extends Controller
 
         return DB::transaction(function () use ($validated, $product) {
             // Update basic product fields
-            $product->update([
+            $updateData = [
                 'name' => $validated['name'],
                 'price' => $validated['price'],
                 'description' => $validated['description'],
                 'active' => $validated['active'],
                 'featured' => $validated['featured'],
                 'category_id' => $validated['category_id'],
-            ]);
+            ];
+
+             if ($request->hasFile('size_guide')) {
+                // Delete old size_guide if exists
+                if ($product->size_guide) {
+                    Storage::disk('public')->delete($product->size_guide);
+                }
+                $updateData['size_guide'] = $request->file('size_guide')->store('size-guides');
+            }
+
+            $product->update($updateData);
 
             // Track submitted variant IDs and image IDs
             $submittedVariantIds = [];
@@ -241,7 +255,7 @@ class ProductController extends Controller
                     } else if (isset($imageData['file'])) {
                         // Upload new image
                         $uploadedFile = $imageData['file'];
-                        $path = $uploadedFile->store('products', 'public');
+                        $path = $uploadedFile->store('products');
 
                         $imagesToCreate[] = [
                             'color_id' => $colorId,

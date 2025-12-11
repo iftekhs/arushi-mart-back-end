@@ -89,7 +89,7 @@ class CategoryController extends Controller
             if ($category->image) {
                 Storage::delete($category->image);
             }
-            $data['image'] = $request->file('image')->store('categories/images', 'public');
+            $data['image'] = $request->file('image')->store('categories/images');
         }
 
         if ($request->boolean('remove_video')) {
@@ -104,7 +104,7 @@ class CategoryController extends Controller
             if ($category->video) {
                 Storage::delete($category->video);
             }
-            $data['video'] = $request->file('video')->store('categories/videos', 'public');
+            $data['video'] = $request->file('video')->store('categories/videos');
         }
         logger()->info('Updating category with data: ', $data);
 

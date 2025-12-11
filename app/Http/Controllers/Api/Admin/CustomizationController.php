@@ -67,7 +67,7 @@ class CustomizationController extends Controller
 
                                 if ($value instanceof UploadedFile) {
                                     // New upload - store the file
-                                    $path = $value->store('customizations', 'public');
+                                    $path = $value->store('customizations');
                                     $data[$key][$index][$itemKey] = '/' . $path;
                                 } elseif ($value === '-1') {
                                     // Remove image
@@ -85,7 +85,7 @@ class CustomizationController extends Controller
 
                 if ($value instanceof UploadedFile) {
                     // New upload - store the file
-                    $path = $value->store('customizations', 'public');
+                    $path = $value->store('customizations');
                     $data[$key] = '/' . $path;
                 } elseif ($value === '-1') {
                     // Remove image

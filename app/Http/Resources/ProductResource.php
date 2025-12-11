@@ -21,6 +21,7 @@ class ProductResource extends JsonResource
                 'slug' => $this->slug,
                 'price' => $this->price,
                 'description' => $this->description,
+                'sizeGuideUrl' => path_to_url($this->size_guide),
                 'inStock' => $this->in_stock ?? false,
                 'active' => $this->active,
                 'featured' => $this->featured,
