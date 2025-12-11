@@ -49,37 +49,35 @@ class CustomizationSeeder extends Seeder
                     ],
                 ],
                 [
-                    'key' => 'marquee_items',
-                    'label' => 'Marquee Items',
+                    'key' => 'testimonials',
+                    'label' => 'Testimonials',
                     'type' => 'array',
                     'rules' => ['array'],
                     'items' => [
+                        [
+                            'key' => 'image',
+                            'label' => 'Image (260 x 260 px)',
+                            'type' => 'image',
+                            'rules' => ['required', 'image', 'max:2048'],
+                        ],
                         [
                             'key' => 'label',
                             'label' => 'Label',
                             'type' => 'text',
                             'rules' => ['required', 'string', 'max:100'],
-                        ]
-                    ]
-                ],
-                [
-                    'key' => 'posts',
-                    'label' => 'Posts',
-                    'type' => 'array',
-                    'rules' => ['array'],
-                    'items' => [
+                        ],
                         [
-                            'key' => 'label',
-                            'label' => 'Label',
+                            'key' => 'url',
+                            'label' => 'URL',
                             'type' => 'text',
-                            'rules' => ['required', 'string', 'max:100'],
+                            'rules' => ['nullable', 'string', 'url', 'max:1024'],
                         ]
                     ]
-                ],
+                ]
             ],
             'value' => [
                 'carousel_items' => [],
-                'marquee_items' => [],
+                'testimonials' => [],
             ],
         ]);
 
@@ -116,6 +114,22 @@ class CustomizationSeeder extends Seeder
             ],
             'value' => [
                 'accordion_items' => [],
+            ],
+        ]);
+
+        Customization::create([
+            'key' => 'footer',
+            'label' => 'Footer',
+            'fields' => [
+                [
+                    'key' => 'about',
+                    'label' => 'About',
+                    'type' => 'text',
+                    'rules' => ['nullable', 'string', 'max:1024'],
+                ],
+            ],
+            'value' => [
+                'about' => '',
             ],
         ]);
     }

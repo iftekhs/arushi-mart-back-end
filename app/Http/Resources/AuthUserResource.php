@@ -20,6 +20,7 @@ class AuthUserResource extends JsonResource
                 'name' => $this->name,
                 'email' => $this->email,
                 'role' => $this->role->value,
+                'baseUrl' => $this->getBaseRedirectUrl()
             ],
         ];
     }
