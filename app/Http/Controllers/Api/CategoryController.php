@@ -48,19 +48,23 @@ class CategoryController extends Controller
 
     public function colors(Category $category)
     {
-        $colors = Color::whereHas('variants.product', function ($query) use ($category) {
-            $query->where('category_id', $category->id)
-                ->where('active', true);
-        })
-        ->where('active', true)
-        ->distinct()
-        ->get();
+        return cache()->remember("category.colors.{$category->id}", 3600, function () use ($category) {
+            $colors = Color::whereHas('variants.product', function ($query) use ($category) {
+                $query->where('category_id', $category->id)
+                    ->where('active', true);
+            })
+                ->where('active', true)
+                ->distinct()
+                ->get();
 
-        return ColorResource::collection($colors);
+            return ColorResource::collection($colors);
+        });
     }
 
-    public function show(Request $request, Category $category)
+    public function show(Category $category)
     {
-        return CategoryResource::make($category);
+        return cache()->remember("category.show.{$category->id}", 3600, function () use ($category) {
+            return CategoryResource::make($category);
+        });
     }
 }

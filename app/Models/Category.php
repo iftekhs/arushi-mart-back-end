@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
 
 class Category extends Model
 {
@@ -45,5 +46,26 @@ class Category extends Model
         if (isset($filters['showcased'])) $query->where('showcased', $filters['showcased']);
 
         return $query;
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function () {
+            Cache::tags(['categories'])->flush();
+        });
+
+        static::updated(function ($category) {
+            cache()->forget("category.show.{$category->id}");
+            cache()->forget("category.colors.{$category->id}");
+            Cache::tags(['categories'])->flush();
+        });
+
+        static::deleted(function ($category) {
+            cache()->forget("category.show.{$category->id}");
+            cache()->forget("category.colors.{$category->id}");
+            Cache::tags(['categories'])->flush();
+        });
     }
 }
