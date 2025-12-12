@@ -148,4 +148,13 @@ class Product extends Model
 
         return $query;
     }
+
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::updated(function ($product) {
+            cache()->forget("product.show.{$product->id}");
+        });
+    }
 }
