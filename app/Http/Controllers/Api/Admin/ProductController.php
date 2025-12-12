@@ -363,4 +363,28 @@ class ProductController extends Controller
 
         return new ProductResource($product);
     }
+
+    public function destroy(Product $product)
+    {
+        return DB::transaction(function () use ($product) {
+            // Delete all product images from storage
+            foreach ($product->images as $image) {
+                if ($image->path) {
+                    Storage::delete($image->path);
+                }
+            }
+
+            // Delete size guide if exists
+            if ($product->size_guide) {
+                Storage::disk('public')->delete($product->size_guide);
+            }
+
+            // Delete the product (cascades to variants, images, etc. via database constraints)
+            $product->delete();
+
+            return response()->json([
+                'message' => 'Product deleted successfully'
+            ]);
+        });
+    }
 }

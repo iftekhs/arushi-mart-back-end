@@ -32,6 +32,7 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
         Route::get('/{product}', [AdminProductController::class, 'show']);
         Route::post('/{product}', [AdminProductController::class, 'update']);
         Route::patch('/{product}/toggle-active', [AdminProductController::class, 'toggleActive']);
+        Route::delete('/{product}', [AdminProductController::class, 'destroy']);
     });
 
     Route::prefix('users')->group(function () {
