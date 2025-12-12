@@ -106,8 +106,8 @@ class CustomizationSeeder extends Seeder
                             [
                                 'key' => 'content',
                                 'label' => 'Content',
-                                'type' => 'long_text',
-                                'rules' => ['required', 'string', 'max:1024'],
+                                'type' => 'markdown',
+                                'rules' => ['required', 'string', 'max:5120'],
                             ],
                         ],
                     ],

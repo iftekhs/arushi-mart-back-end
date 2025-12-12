@@ -386,13 +386,17 @@ class ProductSeeder extends Seeder
                     ? rand(20, 100)
                     : rand(0, 80);
 
-                ProductVariant::create([
+                $variant = ProductVariant::create([
                     'product_id' => $product->id,
                     'color_id' => $color->id,
                     'size_id' => $sizeId,
                     'type' => $type,
-                    'sku' => 'VAR-' . strtoupper(Str::random(10)),
+                    'sku' => Str::uuid(),
                     'stock_quantity' => $stockQuantity,
+                ]);
+
+                $variant->update([
+                    'sku' => $this->generateSku($product->name, $color->name, $variant->id)
                 ]);
 
                 $createdVariants++;
@@ -402,5 +406,16 @@ class ProductSeeder extends Seeder
         }
 
         $this->command->info('✓ Created 10 products with all relationships');
+    }
+
+    private function generateSku($productName, $colorName, $variantId)
+    {
+        $initials = collect(explode(' ', $productName))
+            ->map(fn($segment) => strtoupper(substr($segment, 0, 1)))
+            ->join('');
+
+        $colorInitial = strtoupper(substr($colorName, 0, 1));
+
+        return "AM-{$initials}{$colorInitial}-{$variantId}";
     }
 }
