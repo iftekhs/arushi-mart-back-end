@@ -149,7 +149,7 @@ class CustomizationSeeder extends Seeder
                     [
                         'key' => 'content',
                         'label' => 'Content',
-                        'type' => 'long_text',
+                        'type' => 'markdown',
                         'rules' => ['nullable', 'string', 'max:2048'],
                     ],
                     [
@@ -161,7 +161,7 @@ class CustomizationSeeder extends Seeder
                     [
                         'key' => 'block_content',
                         'label' => 'Block Content',
-                        'type' => 'long_text',
+                        'type' => 'markdown',
                         'rules' => ['nullable', 'string', 'max:1024'],
                     ],
                 ],
@@ -206,7 +206,7 @@ class CustomizationSeeder extends Seeder
                     [
                         'key' => 'about',
                         'label' => 'About',
-                        'type' => 'long_text',
+                        'type' => 'markdown',
                         'rules' => ['nullable', 'string', 'max:1024'],
                     ],
                     [
