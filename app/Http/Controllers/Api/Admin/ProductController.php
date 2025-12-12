@@ -239,29 +239,31 @@ class ProductController extends Controller
                     $submittedVariantIds[] = $newVariant->id;
                 }
 
-                // Handle images for this color
-                foreach ($variantData['color']['images'] as $imageData) {
-                    $imageId = $imageData['id'] ?? null;
+                // Handle images for this color (if provided)
+                if (isset($variantData['color']['images'])) {
+                    foreach ($variantData['color']['images'] as $imageData) {
+                        $imageId = $imageData['id'] ?? null;
 
-                    // If image has an ID, keep it and update primary status
-                    if ($imageId) {
-                        $image = $product->images()->find($imageId);
-                        if ($image) {
-                            $image->update([
+                        // If image has an ID, keep it and update primary status
+                        if ($imageId) {
+                            $image = $product->images()->find($imageId);
+                            if ($image) {
+                                $image->update([
+                                    'primary' => $imageData['primary'],
+                                ]);
+                                $submittedImageIds[] = $imageId;
+                            }
+                        } else if (isset($imageData['file'])) {
+                            // Upload new image
+                            $uploadedFile = $imageData['file'];
+                            $path = $uploadedFile->store('products');
+
+                            $imagesToCreate[] = [
+                                'color_id' => $colorId,
+                                'path' => $path,
                                 'primary' => $imageData['primary'],
-                            ]);
-                            $submittedImageIds[] = $imageId;
+                            ];
                         }
-                    } else if (isset($imageData['file'])) {
-                        // Upload new image
-                        $uploadedFile = $imageData['file'];
-                        $path = $uploadedFile->store('products');
-
-                        $imagesToCreate[] = [
-                            'color_id' => $colorId,
-                            'path' => $path,
-                            'primary' => $imageData['primary'],
-                        ];
                     }
                 }
             }
