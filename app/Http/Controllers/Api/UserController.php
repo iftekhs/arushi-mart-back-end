@@ -73,7 +73,7 @@ class UserController extends Controller
                     'name' => $variant->product->name,
                     'slug' => $variant->product->slug,
                     'sku' => $variant->product->sku,
-                    'image' => $variant->product->primaryImage?->path ?? null,
+                    'image' => path_to_url($variant->product->primaryImage?->path) ?? null,
                 ],
                 'variant' => [
                     'id' => $variant->id,
