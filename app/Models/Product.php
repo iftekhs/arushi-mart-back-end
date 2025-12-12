@@ -156,5 +156,8 @@ class Product extends Model
         static::updated(function ($product) {
             cache()->forget("product.show.{$product->id}");
         });
+         static::deleted(function ($product) {
+            cache()->forget("product.show.{$product->id}");
+        });
     }
 }

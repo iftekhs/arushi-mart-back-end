@@ -410,8 +410,15 @@ class ProductSeeder extends Seeder
 
     private function generateSku($productName, $colorName, $variantId)
     {
-        $initials = collect(explode(' ', $productName))
-            ->map(fn($segment) => strtoupper(substr($segment, 0, 1)))
+        $words = array_filter(
+            explode(' ', $productName),
+            fn($word) => preg_match('/^[a-zA-Z]/', $word)
+        );
+
+        $initials = collect($words)
+            ->map(fn($word) => strtoupper(preg_replace('/[^a-zA-Z]/', '', substr($word, 0, 1))))
+            ->filter()
+            ->take(5)
             ->join('');
 
         $colorInitial = strtoupper(substr($colorName, 0, 1));
