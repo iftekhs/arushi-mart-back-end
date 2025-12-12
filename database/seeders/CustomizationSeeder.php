@@ -106,7 +106,7 @@ class CustomizationSeeder extends Seeder
                             [
                                 'key' => 'content',
                                 'label' => 'Content',
-                                'type' => 'text',
+                                'type' => 'long_text',
                                 'rules' => ['required', 'string', 'max:1024'],
                             ],
                         ],
@@ -149,7 +149,7 @@ class CustomizationSeeder extends Seeder
                     [
                         'key' => 'content',
                         'label' => 'Content',
-                        'type' => 'text',
+                        'type' => 'long_text',
                         'rules' => ['nullable', 'string', 'max:2048'],
                     ],
                     [
@@ -161,7 +161,7 @@ class CustomizationSeeder extends Seeder
                     [
                         'key' => 'block_content',
                         'label' => 'Block Content',
-                        'type' => 'text',
+                        'type' => 'long_text',
                         'rules' => ['nullable', 'string', 'max:1024'],
                     ],
                 ],
@@ -206,7 +206,7 @@ class CustomizationSeeder extends Seeder
                     [
                         'key' => 'about',
                         'label' => 'About',
-                        'type' => 'text',
+                        'type' => 'long_text',
                         'rules' => ['nullable', 'string', 'max:1024'],
                     ],
                     [
@@ -260,7 +260,7 @@ class CustomizationSeeder extends Seeder
         ];
 
         foreach ($customizations as $customization) {
-            Customization::firstOrCreate(
+            Customization::updateOrCreate(
                 ['key' => $customization['key']],
                 $customization
             );
