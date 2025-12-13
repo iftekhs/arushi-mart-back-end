@@ -72,10 +72,18 @@ class CustomizationService
     }
 
     /**
-     * Adjust image validation rules to allow '-1' for removal
+     * Adjust image validation rules to allow '-1' for removal and make nullable
      */
     private function adjustImageRules(array $rules): array
     {
+        // Remove 'required' rule for image fields (they should be nullable on update)
+        $rules = array_filter($rules, fn($rule) => $rule !== 'required');
+        
+        // Ensure 'nullable' is present
+        if (!in_array('nullable', $rules)) {
+            array_unshift($rules, 'nullable');
+        }
+        
         // Check if 'image' rule exists
         $hasImageRule = in_array('image', $rules);
         
