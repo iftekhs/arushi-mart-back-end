@@ -47,7 +47,7 @@ class SettingController extends Controller
             ],
             'application' => [
                 'maintenance_mode' => ['required', 'boolean'],
-                'scripts' => ['required', 'array'],
+                'scripts' => ['array'],
                 'scripts.*' => ['required', 'string'],
             ],
             default => [],
