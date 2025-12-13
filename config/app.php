@@ -123,6 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'trusted-client-secret' => env('TRUSTED_CLIENT_SECRET'),
+
     'admin' => [
         'email' => env('APP_ADMIN_EMAIL')
     ]

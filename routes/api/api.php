@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\SubscriberController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Resources\AuthUserResource;
 use App\Http\Controllers\Api\CustomizationController as PublicCustomizationController;
+use App\Http\Middleware\TrustedClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,7 @@ Route::prefix('search')->group(function () {
 
 Route::get('/customizations/{key}', [PublicCustomizationController::class, 'show']);
 Route::get('/settings/{key}', [SettingController::class, 'show']);
+Route::get('/settings/secure/{key}', [SettingController::class, 'showSecure'])->middleware(TrustedClient::class);
 
 Route::prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);

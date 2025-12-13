@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Enums\CacheKey;
+use App\Enums\SettingKey;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SettingResource;
 use App\Models\Setting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class SettingController extends Controller
 {
@@ -24,28 +23,28 @@ class SettingController extends Controller
     public function update(Request $request, Setting $setting)
     {
         $rules = $this->getValidationRules($setting->key);
-        
+
         $validated = $request->validate($rules);
 
         $setting->update([
             'value' => $validated,
         ]);
 
-        // Flush settings cache
-        Cache::tags(CacheKey::SETTING_SHOW->value)->flush();
+        cache()->forget("settings.{$setting->key->value}");
+        cache()->put("settings.{$setting->key->value}", $setting, 60 * 60);
 
         return SettingResource::make($setting);
     }
 
-    private function getValidationRules(string $key): array
+    private function getValidationRules(SettingKey $key): array
     {
         return match ($key) {
-            'business' => [
+            SettingKey::BUSINESS => [
                 'on_site_fee' => ['required', 'numeric', 'min:0'],
                 'inside_dhaka_fee' => ['required', 'numeric', 'min:0'],
                 'outside_dhaka_fee' => ['required', 'numeric', 'min:0'],
             ],
-            'application' => [
+            SettingKey::APPLICATION => [
                 'maintenance_mode' => ['required', 'boolean'],
                 'scripts' => ['array'],
                 'scripts.*' => ['required', 'string'],
