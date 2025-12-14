@@ -12,29 +12,21 @@ class SettingSeeder extends Seeder
      */
     public function run(): void
     {
-        $settings = [
+        Setting::updateOrCreate(
+            ['key' => 'app_settings'],
             [
-                'key' => 'business',
                 'value' => [
-                    'on_site_fee' => 0,
-                    'inside_dhaka_fee' => 60,
-                    'outside_dhaka_fee' => 120,
+                    'business' => [
+                        'on_site_fee' => 0,
+                        'inside_dhaka_fee' => 60,
+                        'outside_dhaka_fee' => 120,
+                    ],
+                    'application' => [
+                        'maintenance_mode' => false,
+                        'scripts' => [],
+                    ],
                 ],
-            ],
-            [
-                'key' => 'application',
-                'value' => [
-                    'maintenance_mode' => false,
-                    'scripts' => [],
-                ],
-            ],
-        ];
-
-        foreach ($settings as $setting) {
-            Setting::firstOrCreate(
-                ['key' => $setting['key']],
-                $setting
-            );
-        }
+            ]
+        );
     }
 }

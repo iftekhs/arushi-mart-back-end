@@ -31,8 +31,11 @@ Route::prefix('search')->group(function () {
 });
 
 Route::get('/customizations/{key}', [PublicCustomizationController::class, 'show']);
-Route::get('/settings/{key}', [SettingController::class, 'show']);
-Route::get('/settings/secure/{key}', [SettingController::class, 'showSecure'])->middleware(TrustedClient::class);
+
+Route::prefix('settings')->group(function () {
+    Route::get('/{key}', [SettingController::class, 'show']);
+    Route::get('/secure/{key}', [SettingController::class, 'showSecure'])->middleware(TrustedClient::class);
+});
 
 Route::prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);

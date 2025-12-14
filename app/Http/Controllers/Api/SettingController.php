@@ -2,68 +2,55 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\SettingKey;
 use App\Http\Controllers\Controller;
+use App\Services\SettingService;
 use Illuminate\Http\JsonResponse;
 
 class SettingController extends Controller
 {
+  public function __construct(
+    private SettingService $settingService
+  ) {}
+
   public function show(string $key): JsonResponse
   {
-    $settingKey = $this->getSettingKey($key);
+    $data = $this->formatSettingData($key);
 
-    if (!$settingKey) return $this->error('Invalid setting key', 404);
-
-    $setting = cache()->get("settings.{$settingKey->value}");
-
-    if (!$setting) return $this->error('Setting not found', 404);
-
-    $data = $this->formatSettingData($key, (object)$setting->value);
+    if ($data === null) {
+      return $this->error('Setting not found', 404);
+    }
 
     return $this->success($data);
   }
 
   public function showSecure(string $key): JsonResponse
   {
-    $settingKey = $this->getSettingKey($key);
+    $data = $this->formatSecureSettingData($key);
 
-    if (!$settingKey) return $this->error('Invalid setting key', 404);
-
-    $setting = cache()->get("settings.show.{$settingKey->value}");
-
-    if (!$setting) return $this->error('Setting not found', 404);
-
-    $data = $this->formatSecureSettingData($key, (object)$setting->value);
+    if ($data === null) {
+      return $this->error('Setting not found', 404);
+    }
 
     return $this->success($data);
   }
 
-  private function getSettingKey(string $key): ?SettingKey
-  {
-    return match ($key) {
-      'shipping-fees' => SettingKey::BUSINESS,
-      'scripts', 'maintenance_mode' => SettingKey::APPLICATION,
-      default => null
-    };
-  }
-
-  private function formatSettingData(string $key, object $value): ?array
+  private function formatSettingData(string $key): ?array
   {
     return match ($key) {
       'shipping-fees' => [
-        'on_site' => $value->on_site_fee ?? null,
-        'inside_dhaka_fee' => $value->inside_dhaka_fee ?? null,
-        'outside_dhaka_fee' => $value->outside_dhaka_fee ?? null,
+        'on_site_fee' => $this->settingService->get('business.on_site_fee'),
+        'inside_dhaka_fee' => $this->settingService->get('business.inside_dhaka_fee'),
+        'outside_dhaka_fee' => $this->settingService->get('business.outside_dhaka_fee'),
       ],
       default => null
     };
   }
 
-  private function formatSecureSettingData(string $key, object $value): mixed
+  private function formatSecureSettingData(string $key): mixed
   {
     return match ($key) {
-      'scripts' => $value->scripts ?? null,
-      'maintenance_mode' => $value->maintenance_mode ?? null,
+      'scripts' => $this->settingService->get('application.scripts'),
+      'maintenance-mode' => $this->settingService->get('application.maintenance_mode'),
       default => null
     };
   }
