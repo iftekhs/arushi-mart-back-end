@@ -235,10 +235,65 @@ class CustomizationSeeder extends Seeder
                             ],
                         ]
                     ],
+                    [
+                        'key' => 'link_sections',
+                        'label' => 'Link Sections',
+                        'type' => 'array',
+                        'rules' => ['array'],
+                        'items' => [
+                            [
+                                'key' => 'title',
+                                'label' => 'Section Title',
+                                'type' => 'text',
+                                'rules' => ['required', 'string', 'max:100'],
+                            ],
+                            [
+                                'key' => 'links',
+                                'label' => 'Links',
+                                'type' => 'array',
+                                'rules' => ['array'],
+                                'items' => [
+                                    [
+                                        'key' => 'label',
+                                        'label' => 'Link Label',
+                                        'type' => 'text',
+                                        'rules' => ['required', 'string', 'max:100'],
+                                    ],
+                                    [
+                                        'key' => 'url',
+                                        'label' => 'Link URL',
+                                        'type' => 'text',
+                                        'rules' => ['required', 'string', 'max:1024'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
                 ],
                 'value' => [
                     'about' => null,
                     'copyright' => '© 2025 - ArushiMart - Bangladesh',
+                    'link_sections' => [
+                        [
+                            'title' => 'Shop',
+                            'links' => [
+                                ['label' => 'Women', 'url' => '/collections/women-1'],
+                                ['label' => 'Men', 'url' => '/collections/men-1'],
+                                ['label' => 'Small Leather Goods', 'url' => '/collections/small-leather-goods'],
+                                ['label' => 'Collaboration', 'url' => '/collections/le-mini-dalia'],
+                            ],
+                        ],
+                        [
+                            'title' => 'Information',
+                            'links' => [
+                                ['label' => 'About us', 'url' => '/pages/about-us'],
+                                ['label' => 'Contact us', 'url' => '/pages/contact'],
+                                ['label' => 'FAQ', 'url' => '/pages/faq-new'],
+                                ['label' => 'Privacy Policy', 'url' => '/privacy-policy'],
+                                ['label' => 'Terms & Conditions', 'url' => '/terms-conditions'],
+                            ],
+                        ],
+                    ],
                     'social_links' => []
                 ],
             ],
@@ -260,10 +315,69 @@ class CustomizationSeeder extends Seeder
         ];
 
         foreach ($customizations as $customization) {
-            Customization::updateOrCreate(
-                ['key' => $customization['key']],
-                $customization
-            );
+            $existing = Customization::where('key', $customization['key'])->first();
+
+            if ($existing) {
+                // Update label and fields
+                $existing->update([
+                    'label' => $customization['label'],
+                    'fields' => $customization['fields'],
+                ]);
+
+                // Merge values: only add new keys or update null/empty values
+                $existingValue = is_array($existing->value) ? $existing->value : [];
+                $newValue = $this->mergeValues($existingValue, $customization['value']);
+
+                $existing->update(['value' => $newValue]);
+            } else {
+                // Create new customization
+                Customization::create($customization);
+            }
         }
+    }
+
+    private function mergeValues(array $existing, array $new): array
+    {
+        foreach ($new as $key => $value) {
+            if (!array_key_exists($key, $existing)) {
+                // Key doesn't exist, add it
+                $existing[$key] = $value;
+            } elseif ($this->isEmpty($existing[$key])) {
+                // Key exists but is empty/null, update it
+                $existing[$key] = $value;
+            } elseif (is_array($value) && is_array($existing[$key]) && !$this->isSequentialArray($value)) {
+                // Both are associative arrays, merge recursively
+                $existing[$key] = $this->mergeValues($existing[$key], $value);
+            }
+            // Otherwise keep existing value (don't overwrite non-empty values)
+        }
+
+        return $existing;
+    }
+
+    private function isEmpty($value): bool
+    {
+        if (is_null($value)) {
+            return true;
+        }
+
+        if (is_string($value) && trim($value) === '') {
+            return true;
+        }
+
+        if (is_array($value) && empty($value)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function isSequentialArray(array $arr): bool
+    {
+        if (empty($arr)) {
+            return true;
+        }
+
+        return array_keys($arr) === range(0, count($arr) - 1);
     }
 }
