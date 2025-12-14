@@ -50,6 +50,12 @@ class CustomizationSeeder extends Seeder
                         ],
                     ],
                     [
+                        'key' => 'testimonials_title',
+                        'label' => 'Testimonials Title',
+                        'type' => 'text',
+                        'rules' => ['nullable', 'string', 'max:100'],
+                    ],
+                    [
                         'key' => 'testimonials',
                         'label' => 'Testimonials',
                         'type' => 'array',
@@ -78,7 +84,30 @@ class CustomizationSeeder extends Seeder
                 ],
                 'value' => [
                     'carousel_items' => [],
+                    'testimonials_title' => '❤️ LOVED BY,',
                     'testimonials' => [],
+                ],
+            ],
+            [
+                'key' => 'featured_product_page',
+                'label' => 'Featured Product Page',
+                'fields' => [
+                    [
+                        'key' => 'label',
+                        'label' => 'Label',
+                        'type' => 'text',
+                        'rules' => ['nullable', 'string', 'max:100'],
+                    ],
+                    [
+                        'key' => 'title',
+                        'label' => 'Title',
+                        'type' => 'text',
+                        'rules' => ['nullable', 'string', 'max:100'],
+                    ],
+                ],
+                'value' => [
+                    'label' => 'TRENDING',
+                    'title' => 'THIS WEEK TOP 5',
                 ],
             ],
             [
