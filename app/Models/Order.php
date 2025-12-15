@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
+use App\Enums\ShippingMethod;
 use App\Enums\ShippingStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,6 +23,7 @@ class Order extends Model
         'shipping_address_snapshot' => 'array',
         'status' => OrderStatus::class,
         'payment_method' => PaymentMethod::class,
+        'shipping_method' => ShippingMethod::class,
         'payment_status' => PaymentStatus::class,
         'shipping_status' => ShippingStatus::class,
     ];

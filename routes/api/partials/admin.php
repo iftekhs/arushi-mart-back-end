@@ -22,6 +22,7 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
         Route::get('/sales-overview', [DashboardController::class, 'salesOverview']);
         Route::get('/latest-orders', [DashboardController::class, 'latestOrders']);
         Route::get('/analytics', [DashboardController::class, 'analytics']);
+        Route::get('/export-report', [DashboardController::class, 'exportReport']);
     });
 
     Route::prefix('products')->group(function () {

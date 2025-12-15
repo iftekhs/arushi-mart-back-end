@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\UserRole;
+use App\Exports\DashboardReportExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
@@ -10,7 +11,10 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -160,5 +164,38 @@ class DashboardController extends Controller
             ],
             'top_products' => $topProductsList,
         ]);
+    }
+
+    public function exportReport(Request $request)
+    {
+        $request->validate([
+            'month' => 'nullable|date_format:Y-m',
+            'start_date' => 'nullable|required_without:month|date',
+            'end_date' => 'nullable|required_without:month|date|after_or_equal:start_date',
+            'format' => 'nullable|in:xlsx,csv',
+        ]);
+
+        if ($request->has('month')) {
+            // Monthly report
+            $date = Carbon::parse($request->month);
+            $startDate = $date->copy()->startOfMonth();
+            $endDate = $date->copy()->endOfMonth();
+        } else {
+            // Custom date range
+            $startDate = Carbon::parse($request->start_date);
+            $endDate = Carbon::parse($request->end_date);
+        }
+
+        $format = $request->input('format', 'xlsx');
+        $extension = $format === 'csv' ? 'csv' : 'xlsx';
+        $filename = 'dashboard-report-' . $startDate->format('Y-m-d') . '-to-' . $endDate->format('Y-m-d') . '.' . $extension;
+
+        $export = new DashboardReportExport($startDate, $endDate);
+
+        if ($format === 'csv') {
+            return Excel::download($export, $filename, \Maatwebsite\Excel\Excel::CSV);
+        }
+
+        return Excel::download($export, $filename);
     }
 }
