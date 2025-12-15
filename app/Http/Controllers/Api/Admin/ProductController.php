@@ -33,6 +33,10 @@ class ProductController extends Controller
             $query->search($request->input('search'));
         }
 
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
         if ($request->has('sort')) {
             $sort = $request->input('sort');
             if ($sort === 'price_asc') {
