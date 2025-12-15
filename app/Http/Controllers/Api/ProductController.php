@@ -21,14 +21,15 @@ class ProductController extends Controller
             Product::active()->featured()->withInStock()->with([
                 'category',
                 'primaryImage',
-                'secondaryImage'
+                'secondaryImage',
+                'variants.color',
+                'variants.size'
             ])->get()
         );
     }
 
     public function show(Product $product): JsonResource
     {
-        // cache()->forget("product.show.{$product->id}");
         return cache()->remember("product.show.{$product->id}", 3600, function () use ($product) {
             return ProductResource::make(
                 $product->loadExists('variants as in_stock', function ($query) {
@@ -40,7 +41,6 @@ class ProductController extends Controller
 
     public function related(Product $product): JsonResource
     {
-        // cache()->forget("product.related.{$product->id}");
         return cache()->remember("product.related.{$product->id}", 3600, function () use ($product) {
             $categoryIds = $product->categories->pluck('id');
             $tagIds = $product->tags->pluck('id');
