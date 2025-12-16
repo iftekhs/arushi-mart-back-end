@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Enums\ProductType;
 use App\Models\Color;
 use App\Models\Product;
 use App\Models\ProductVariant;
@@ -26,7 +25,6 @@ class ProductVariantFactory extends Factory
             'product_id' => Product::factory(),
             'color_id' => Color::inRandomOrder()->first()->id ?? Color::factory(),
             'size_id' => Size::inRandomOrder()->first()->id ?? Size::factory(),
-            'type' => fake()->randomElement([ProductType::STITCHED->value, ProductType::UNSTITCHED->value]),
             'sku' => 'VAR-' . strtoupper(Str::random(10)),
             'stock_quantity' => fake()->numberBetween(0, 100),
         ];

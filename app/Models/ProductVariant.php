@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\ProductType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +11,6 @@ class ProductVariant extends Model
     use HasFactory;
 
     protected $casts = [
-        'type' => ProductType::class,
         'stock_quantity' => 'integer',
     ];
 

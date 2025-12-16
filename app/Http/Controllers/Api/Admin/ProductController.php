@@ -112,7 +112,6 @@ class ProductController extends Controller
                 $newVariant = $product->variants()->create([
                     'color_id' => $colorId,
                     'size_id' => $variant['size_id'],
-                    'type' => $variant['type'],
                     'sku' => $sku,
                     'stock_quantity' => $variant['stock_quantity'],
                 ]);
@@ -227,7 +226,6 @@ class ProductController extends Controller
                         $variant->update([
                             'color_id' => $colorId,
                             'size_id' => $variantData['size_id'],
-                            'type' => $variantData['type'],
                             'sku' => $sku,
                             'stock_quantity' => $variantData['stock_quantity'],
                         ]);
@@ -245,7 +243,6 @@ class ProductController extends Controller
                     $newVariant = $product->variants()->create([
                         'color_id' => $colorId,
                         'size_id' => $variantData['size_id'],
-                        'type' => $variantData['type'],
                         'sku' => $sku,
                         'stock_quantity' => $variantData['stock_quantity'],
                     ]);

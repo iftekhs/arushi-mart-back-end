@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\ProductVariantType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -47,7 +46,6 @@ class StoreProductRequest extends FormRequest
             'variants.*.color.images.*.file' => ['required', 'image', 'max:2048'],
 
             'variants.*.size_id' => ['required', 'integer', 'exists:sizes,id'],
-            'variants.*.type' => ['required', 'string', Rule::in(ProductVariantType::values())],
             'variants.*.auto_generate_sku' => ['nullable', 'boolean'],
             'variants.*.sku' => [
                 'required_if:variants.*.auto_generate_sku,false',

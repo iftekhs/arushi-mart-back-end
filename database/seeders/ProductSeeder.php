@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enums\ProductType;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
@@ -318,7 +317,6 @@ class ProductSeeder extends Seeder
         $colors = Color::all();
         $sizes = Size::all();
         $tags = Tag::all();
-        $types = [ProductType::STITCHED->value, ProductType::UNSTITCHED->value];
 
         foreach ($products as $index => $productData) {
             // Choose 2-4 random categories for this product and pick one as default
@@ -365,14 +363,11 @@ class ProductSeeder extends Seeder
 
             while ($createdVariants < $variantCount) {
                 $color = $productColors->random();
-                $type = $types[array_rand($types)];
-
-                // Unstitched products don't have sizes
-                $size = $type === ProductType::STITCHED->value ? $sizes->random() : null;
-                $sizeId = $size ? $size->id : null;
+                $size = $sizes->random();
+                $sizeId = $size->id;
 
                 // Create unique combination key
-                $combinationKey = $color->id . '-' . $sizeId . '-' . $type;
+                $combinationKey = $color->id . '-' . $sizeId;
 
                 // Skip if combination already exists
                 if (in_array($combinationKey, $variantCombinations)) {
@@ -390,7 +385,6 @@ class ProductSeeder extends Seeder
                     'product_id' => $product->id,
                     'color_id' => $color->id,
                     'size_id' => $sizeId,
-                    'type' => $type,
                     'sku' => Str::uuid(),
                     'stock_quantity' => $stockQuantity,
                 ]);
