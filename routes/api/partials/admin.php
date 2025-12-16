@@ -77,6 +77,6 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
     Route::prefix('settings')->group(function () {
         Route::get('/', [SettingController::class, 'index']);
         Route::get('/{setting}', [SettingController::class, 'show']);
-        Route::put('/{path}', [SettingController::class, 'update'])->where('path', '.*');
+        Route::post('/{path}', [SettingController::class, 'update'])->where('path', '.*');
     });
 });

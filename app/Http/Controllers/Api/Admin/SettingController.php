@@ -7,6 +7,8 @@ use App\Http\Resources\SettingResource;
 use App\Models\Setting;
 use App\Services\SettingService;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -26,9 +28,56 @@ class SettingController extends Controller
 
         $validated = $request->validate($rules);
 
+        // Get current value for file handling
+        $oldValue = $settingService->get($path) ?? [];
+
+        // Process file uploads for seo.global
+        if ($path === 'seo.global') {
+            $validated = $this->processFileUploads($validated, $oldValue);
+            $this->deleteOldImages($oldValue, $validated);
+        }
+
         $settingService->set($path, $validated);
 
         return $this->success($settingService->get($path));
+    }
+
+    private function processFileUploads(array $data, array $oldValue = []): array
+    {
+        $imageFields = ['og_image', 'twitter_image', 'favicon', 'apple_icon'];
+
+        foreach ($imageFields as $field) {
+            $value = $data[$field] ?? null;
+
+            if ($value instanceof UploadedFile) {
+                // New upload - store the file
+                $path = $value->store('settings/seo');
+                $data[$field] = '/' . $path;
+            } elseif ($value === null && !isset($data[$field])) {
+                // Keep existing value if field not provided
+                $data[$field] = $oldValue[$field] ?? null;
+            } elseif ($value === null && isset($data[$field])) {
+                // Explicitly set to null (remove image)
+                $data[$field] = null;
+            }
+        }
+
+        return $data;
+    }
+
+    private function deleteOldImages(array $oldValue, array $newValue): void
+    {
+        $imageFields = ['og_image', 'twitter_image', 'favicon', 'apple_icon'];
+
+        foreach ($imageFields as $field) {
+            $oldPath = $oldValue[$field] ?? null;
+            $newPath = $newValue[$field] ?? null;
+
+            // Delete old image if it was replaced with a new one
+            if ($oldPath && $newPath && $oldPath !== $newPath && !filter_var($oldPath, FILTER_VALIDATE_URL)) {
+                Storage::disk('public')->delete(ltrim($oldPath, '/'));
+            }
+        }
     }
 
     private function getValidationRules(string $path): array
@@ -43,6 +92,33 @@ class SettingController extends Controller
                 'maintenance_mode' => ['required', 'boolean'],
                 'scripts' => ['array'],
                 'scripts.*' => ['required', 'string', 'max:2048'],
+            ],
+            'seo.global' => [
+                // Essential
+                'title' => ['nullable', 'string', 'max:255'],
+                'description' => ['nullable', 'string', 'max:500'],
+                'keywords' => ['nullable', 'array'],
+                'keywords.*' => ['nullable', 'string', 'max:100'],
+                
+                // Open Graph
+                'og_title' => ['nullable', 'string', 'max:255'],
+                'og_description' => ['nullable', 'string', 'max:500'],
+                'og_site_name' => ['nullable', 'string', 'max:255'],
+                'og_image' => ['nullable', 'image', 'max:2048'],
+                'og_image_width' => ['nullable', 'integer', 'min:1'],
+                'og_image_height' => ['nullable', 'integer', 'min:1'],
+                'og_image_alt' => ['nullable', 'string', 'max:255'],
+                
+                // Twitter
+                'twitter_title' => ['nullable', 'string', 'max:255'],
+                'twitter_description' => ['nullable', 'string', 'max:500'],
+                'twitter_image' => ['nullable', 'image', 'max:2048'],
+                'twitter_creator' => ['nullable', 'string', 'max:100'],
+                
+                // Branding
+                'application_name' => ['nullable', 'string', 'max:255'],
+                'favicon' => ['nullable', 'image', 'mimes:ico,png', 'max:1024'],
+                'apple_icon' => ['nullable', 'image', 'max:1024'],
             ],
             default => [],
         };

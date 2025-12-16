@@ -51,7 +51,23 @@ class SettingController extends Controller
     return match ($key) {
       'scripts' => $this->settingService->get('application.scripts'),
       'maintenance-mode' => $this->settingService->get('application.maintenance_mode'),
+      'seo-global' => $this->transformSeoImagePaths($this->settingService->get('seo.global')),
       default => null
     };
+  }
+
+  private function transformSeoImagePaths(?array $data): ?array
+  {
+    if (!$data) return $data;
+
+    $imageFields = ['og_image', 'twitter_image', 'favicon', 'apple_icon'];
+    
+    foreach ($imageFields as $field) {
+      if (isset($data[$field])) {
+        $data[$field] = path_to_url($data[$field]);
+      }
+    }
+
+    return $data;
   }
 }

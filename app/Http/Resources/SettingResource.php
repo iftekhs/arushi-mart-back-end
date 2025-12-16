@@ -18,8 +18,26 @@ class SettingResource extends JsonResource
             'id' => $this->id,
             'attributes' => [
                 'key' => $this->key,
-                'value' => $this->value,
+                'value' => $this->transformImagePaths($this->value ?? []),
             ],
         ];
+    }
+
+    /**
+     * Transform image paths in the value for SEO settings
+     */
+    private function transformImagePaths(array $value): array
+    {
+        // Check if this is the seo settings
+        if (isset($value['seo']['global'])) {
+            $imageFields = ['og_image', 'twitter_image', 'favicon', 'apple_icon'];
+            foreach ($imageFields as $field) {
+                if (isset($value['seo']['global'][$field])) {
+                    $value['seo']['global'][$field] = path_to_url($value['seo']['global'][$field]);
+                }
+            }
+        }
+
+        return $value;
     }
 }
