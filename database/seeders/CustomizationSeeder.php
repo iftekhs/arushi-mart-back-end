@@ -13,38 +13,38 @@ class CustomizationSeeder extends Seeder
     public function run(): void
     {
         $customizations = [
-            [
-                'key' => 'top_marquee',
-                'label' => 'Top Marquee',
-                'fields' => [
-                    [
-                        'key' => 'announcements',
-                        'label' => 'Announcements',
-                        'type' => 'array',
-                        'rules' => ['array'],
-                        'items' => [
-                            [
-                                'key' => 'text',
-                                'label' => 'Announcement Text',
-                                'type' => 'text',
-                                'rules' => ['required', 'string', 'max:200'],
-                            ],
-                        ],
-                    ],
-                ],
-                'value' => [
-                    'announcements' => [
-                        ['text' => 'Spring Sale: Up to 30% off selected items!'],
-                        ['text' => 'Free shipping on orders over ₹999 — limited time.'],
-                        ['text' => 'New arrivals: Fresh styles added daily.'],
-                        ['text' => 'Subscribe for exclusive deals and early access.'],
-                        ['text' => 'Easy returns within 15 days — no questions asked.'],
-                        ['text' => 'Earn rewards on every purchase — join our loyalty program!'],
-                        ['text' => 'Secure payments and 24/7 customer support.'],
-                        ['text' => 'Limited stock — grab your favorites before they\'re gone!'],
-                    ],
-                ],
-            ],
+            // [
+            //     'key' => 'top_marquee',
+            //     'label' => 'Top Marquee',
+            //     'fields' => [
+            //         [
+            //             'key' => 'announcements',
+            //             'label' => 'Announcements',
+            //             'type' => 'array',
+            //             'rules' => ['array'],
+            //             'items' => [
+            //                 [
+            //                     'key' => 'text',
+            //                     'label' => 'Announcement Text',
+            //                     'type' => 'text',
+            //                     'rules' => ['required', 'string', 'max:200'],
+            //                 ],
+            //             ],
+            //         ],
+            //     ],
+            //     'value' => [
+            //         'announcements' => [
+            //             ['text' => 'Spring Sale: Up to 30% off selected items!'],
+            //             ['text' => 'Free shipping on orders over ₹999 — limited time.'],
+            //             ['text' => 'New arrivals: Fresh styles added daily.'],
+            //             ['text' => 'Subscribe for exclusive deals and early access.'],
+            //             ['text' => 'Easy returns within 15 days — no questions asked.'],
+            //             ['text' => 'Earn rewards on every purchase — join our loyalty program!'],
+            //             ['text' => 'Secure payments and 24/7 customer support.'],
+            //             ['text' => 'Limited stock — grab your favorites before they\'re gone!'],
+            //         ],
+            //     ],
+            // ],
             [
                 'key' => 'home_page',
                 'label' => 'Home Page',
