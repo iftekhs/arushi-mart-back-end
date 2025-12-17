@@ -85,4 +85,6 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
         Route::get('/export', [\App\Http\Controllers\Api\Admin\SubscriberController::class, 'export']);
         Route::delete('/{subscriber}', [\App\Http\Controllers\Api\Admin\SubscriberController::class, 'destroy']);
     });
+
+    Route::post('/update-password', [\App\Http\Controllers\Auth\AuthController::class, 'updatePassword']);
 });

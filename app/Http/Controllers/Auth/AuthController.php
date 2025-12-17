@@ -139,6 +139,30 @@ class AuthController extends Controller
         ], 200);
     }
 
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'string'],
+            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = $request->user();
+
+        if (!$user->isAdmin()) {
+            return $this->error('Unauthorized', 403);
+        }
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return $this->error('Current password is incorrect', 401);
+        }
+
+        $user->update([
+            'password' => bcrypt($request->new_password),
+        ]);
+
+        return $this->ok('Password updated successfully');
+    }
+
     public function logout(Request $request)
     {
         Auth::logout();
