@@ -79,4 +79,10 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
         Route::get('/{setting}', [SettingController::class, 'show']);
         Route::post('/{path}', [SettingController::class, 'update'])->where('path', '.*');
     });
+
+    Route::prefix('subscribers')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Api\Admin\SubscriberController::class, 'index']);
+        Route::get('/export', [\App\Http\Controllers\Api\Admin\SubscriberController::class, 'export']);
+        Route::delete('/{subscriber}', [\App\Http\Controllers\Api\Admin\SubscriberController::class, 'destroy']);
+    });
 });
