@@ -131,6 +131,7 @@ class ProductController extends Controller
                         'color_id' => $colorId,
                         'path' => $path,
                         'primary' => $image['primary'],
+                        'sort_order' => $image['sortOrder'] ?? $image['sort_order'] ?? 0,
                     ];
                 }
             }
@@ -261,12 +262,13 @@ class ProductController extends Controller
                     foreach ($variantData['color']['images'] as $imageData) {
                         $imageId = $imageData['id'] ?? null;
 
-                        // If image has an ID, keep it and update primary status
+                        // If image has an ID, keep it and update primary status and sort_order
                         if ($imageId) {
                             $image = $product->images()->find($imageId);
                             if ($image) {
                                 $image->update([
                                     'primary' => $imageData['primary'],
+                                    'sort_order' => $imageData['sortOrder'] ?? $imageData['sort_order'] ?? 0,
                                 ]);
                                 $submittedImageIds[] = $imageId;
                             }

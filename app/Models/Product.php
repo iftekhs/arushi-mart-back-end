@@ -44,7 +44,7 @@ class Product extends Model
 
     public function images(): HasMany
     {
-        return $this->hasMany(ProductImage::class);
+        return $this->hasMany(ProductImage::class)->orderBy('sort_order');
     }
 
     public function primaryImage(): HasOne
@@ -156,7 +156,7 @@ class Product extends Model
         static::updated(function ($product) {
             cache()->forget("product.show.{$product->id}");
         });
-         static::deleted(function ($product) {
+        static::deleted(function ($product) {
             cache()->forget("product.show.{$product->id}");
         });
     }

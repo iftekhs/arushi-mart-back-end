@@ -43,6 +43,7 @@ class StoreProductRequest extends FormRequest
 
             'variants.*.color.images' => ['required', 'array', 'min:1'],
             'variants.*.color.images.*.primary' => ['required', 'boolean'],
+            'variants.*.color.images.*.sortOrder' => ['nullable', 'integer', 'min:0'],
             'variants.*.color.images.*.file' => ['required', 'image', 'max:2048'],
 
             'variants.*.size_id' => ['required', 'integer', 'exists:sizes,id'],

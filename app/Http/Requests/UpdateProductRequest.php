@@ -47,6 +47,7 @@ class UpdateProductRequest extends FormRequest
             'variants.*.color.images' => ['nullable', 'array'],
             'variants.*.color.images.*.id' => ['nullable', 'integer', 'exists:product_images,id'],
             'variants.*.color.images.*.primary' => ['required', 'boolean'],
+            'variants.*.color.images.*.sortOrder' => ['nullable', 'integer', 'min:0'],
             'variants.*.color.images.*.file' => ['nullable', 'image', 'max:1024'],
 
             'variants.*.size_id' => ['required', 'integer', 'exists:sizes,id'],
