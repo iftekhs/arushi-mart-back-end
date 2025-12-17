@@ -53,12 +53,22 @@ class SettingController extends Controller
                 // New upload - store the file
                 $path = $value->store('settings/seo');
                 $data[$field] = '/' . $path;
-            } elseif ($value === null && !isset($data[$field])) {
-                // Keep existing value if field not provided
-                $data[$field] = $oldValue[$field] ?? null;
-            } elseif ($value === null && isset($data[$field])) {
-                // Explicitly set to null (remove image)
+            } elseif ($value === '-1') {
+                // Remove image (special value to indicate deletion)
                 $data[$field] = null;
+            } elseif (is_string($value) && $value !== '') {
+                // Normalize full URLs to paths (frontend might send full URL)
+                if (filter_var($value, FILTER_VALIDATE_URL)) {
+                    // Extract path from full URL
+                    $parsedUrl = parse_url($value);
+                    $data[$field] = $parsedUrl['path'] ?? $value;
+                } else {
+                    // Already a path, keep as is
+                    $data[$field] = $value;
+                }
+            } elseif ($value === null || !isset($data[$field])) {
+                // Keep existing value if field not provided or is null
+                $data[$field] = $oldValue[$field] ?? null;
             }
         }
 
@@ -99,26 +109,70 @@ class SettingController extends Controller
                 'description' => ['nullable', 'string', 'max:500'],
                 'keywords' => ['nullable', 'array'],
                 'keywords.*' => ['nullable', 'string', 'max:100'],
-                
+
                 // Open Graph
                 'og_title' => ['nullable', 'string', 'max:255'],
                 'og_description' => ['nullable', 'string', 'max:500'],
                 'og_site_name' => ['nullable', 'string', 'max:255'],
-                'og_image' => ['nullable', 'image', 'max:2048'],
+                'og_image' => ['nullable', function ($attribute, $value, $fail) {
+                    if ($value instanceof \Illuminate\Http\UploadedFile) {
+                        $validator = validator([$attribute => $value], [
+                            $attribute => ['image', 'max:2048']
+                        ]);
+                        if ($validator->fails()) {
+                            $fail($validator->errors()->first($attribute));
+                        }
+                    } elseif (!is_string($value) && $value !== null) {
+                        $fail('The ' . $attribute . ' must be an image or a valid path.');
+                    }
+                }],
                 'og_image_width' => ['nullable', 'integer', 'min:1'],
                 'og_image_height' => ['nullable', 'integer', 'min:1'],
                 'og_image_alt' => ['nullable', 'string', 'max:255'],
-                
+
                 // Twitter
                 'twitter_title' => ['nullable', 'string', 'max:255'],
                 'twitter_description' => ['nullable', 'string', 'max:500'],
-                'twitter_image' => ['nullable', 'image', 'max:2048'],
+                'twitter_image' => ['nullable', function ($attribute, $value, $fail) {
+                    if ($value instanceof \Illuminate\Http\UploadedFile) {
+                        $validator = validator([$attribute => $value], [
+                            $attribute => ['image', 'max:2048']
+                        ]);
+                        if ($validator->fails()) {
+                            $fail($validator->errors()->first($attribute));
+                        }
+                    } elseif (!is_string($value) && $value !== null) {
+                        $fail('The ' . $attribute . ' must be an image or a valid path.');
+                    }
+                }],
                 'twitter_creator' => ['nullable', 'string', 'max:100'],
-                
+
                 // Branding
                 'application_name' => ['nullable', 'string', 'max:255'],
-                'favicon' => ['nullable', 'image', 'mimes:ico,png', 'max:1024'],
-                'apple_icon' => ['nullable', 'image', 'max:1024'],
+                'favicon' => ['nullable', function ($attribute, $value, $fail) {
+                    if ($value instanceof \Illuminate\Http\UploadedFile) {
+                        $validator = validator([$attribute => $value], [
+                            $attribute => ['image', 'mimes:ico,png', 'max:1024']
+                        ]);
+                        if ($validator->fails()) {
+                            $fail($validator->errors()->first($attribute));
+                        }
+                    } elseif (!is_string($value) && $value !== null) {
+                        $fail('The ' . $attribute . ' must be an image or a valid path.');
+                    }
+                }],
+                'apple_icon' => ['nullable', function ($attribute, $value, $fail) {
+                    if ($value instanceof \Illuminate\Http\UploadedFile) {
+                        $validator = validator([$attribute => $value], [
+                            $attribute => ['image', 'max:1024']
+                        ]);
+                        if ($validator->fails()) {
+                            $fail($validator->errors()->first($attribute));
+                        }
+                    } elseif (!is_string($value) && $value !== null) {
+                        $fail('The ' . $attribute . ' must be an image or a valid path.');
+                    }
+                }],
             ],
             default => [],
         };
