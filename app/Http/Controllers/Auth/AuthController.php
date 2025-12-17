@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OtpMail;
 
@@ -35,8 +36,11 @@ class AuthController extends Controller
 
         if (!$user->active()) return $this->error('Your account has been deactivated.', 403);
 
-        $otp = $user->createOtp();
+        if ($user->isAdmin()) {
+            return $this->ok('Please enter your password to continue');
+        }
 
+        $otp = $user->createOtp();
         Mail::to($user->email)->send(new OtpMail($otp));
 
         return $this->ok('If an account exists, an email with a code has been sent');
@@ -94,6 +98,45 @@ class AuthController extends Controller
                 ->where('otp_expires_at', '>=', now())
                 ->exists()
         ]);
+    }
+
+    public function checkAuthType(Request $request)
+    {
+        $request->validate(['email' => ['required', 'email']]);
+
+        $user = User::where('email', strtolower($request->email))->first();
+
+        if (!$user) return $this->success(['auth_type' => 'otp_auth']);
+
+        if ($user->isAdmin()) return $this->success(['auth_type' => 'password_auth']);
+
+        return $this->success(['auth_type' => 'otp_auth']);
+    }
+
+    public function verifyPassword(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['required', 'string'],
+        ]);
+
+        $user = User::where('email', strtolower($request->email))->first();
+
+        if (!$user) return $this->error('Invalid credentials', 401);
+
+        if (!$user->isAdmin()) return $this->error('Invalid credentials', 401);
+
+        if (!$user->active()) return $this->error('Your account has been deactivated.', 403);
+
+        if (!Hash::check($request->password, $user->password)) return $this->error('Invalid credentials', 401);
+
+        Auth::login($user, true);
+
+        $request->session()->regenerate();
+
+        return $this->success([
+            'redirect' => $user->getBaseRedirectUrl(),
+        ], 200);
     }
 
     public function logout(Request $request)
