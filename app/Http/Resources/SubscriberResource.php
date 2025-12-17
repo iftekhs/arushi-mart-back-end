@@ -19,8 +19,7 @@ class SubscriberResource extends JsonResource
             'attributes' => [
                 'email' => $this->email,
             ],
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
+            'createdAt' => $this->created_at
         ];
     }
 }
