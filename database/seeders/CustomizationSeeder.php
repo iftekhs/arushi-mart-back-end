@@ -359,6 +359,152 @@ class CustomizationSeeder extends Seeder
                 ],
             ],
             [
+                'key' => 'privacy_policy_page',
+                'label' => 'Privacy Policy Page',
+                'fields' => [
+                    [
+                        'key' => 'title',
+                        'label' => 'Page Title',
+                        'type' => 'text',
+                        'rules' => ['nullable', 'string', 'max:100'],
+                    ],
+                    [
+                        'key' => 'last_updated',
+                        'label' => 'Last Updated',
+                        'type' => 'text',
+                        'rules' => ['nullable', 'string', 'max:100'],
+                    ],
+                    [
+                        'key' => 'content',
+                        'label' => 'Privacy Policy Content',
+                        'type' => 'markdown',
+                        'rules' => ['nullable', 'string', 'max:10240'],
+                    ],
+                    [
+                        'key' => 'sidebar_image',
+                        'label' => 'Sidebar Image (Optional)',
+                        'type' => 'image',
+                        'rules' => ['nullable', 'image', 'max:2048'],
+                    ],
+                ],
+                'value' => [
+                    'title' => 'Privacy Policy',
+                    'last_updated' => 'December 2025',
+                    'content' => "Your privacy is important to us. It is ArushiMart's policy to respect your privacy regarding any information we may collect from you across our website.
+
+## Information We Collect
+
+We only collect information about you if we have a reason to do so – for example, to provide our Services, to communicate with you, or to make our Services better.
+
+### Personal Information
+
+We collect personal information that you provide to us when you use our Services, such as your name, email address, phone number, shipping address, and any other contact information you provide.
+
+### Usage Data
+
+We collect information about your interactions with our Services, such as the pages you visit, the links you click, and the search terms you use.
+
+## How We Use Information
+
+We use the information we collect in various ways, including to:
+
+- Provide, operate, and maintain our website
+- Improve, personalize, and expand our website
+- Understand and analyze how you use our website
+- Develop new products, services, features, and functionality
+- Communicate with you for customer service, updates, and marketing purposes
+- Process your transactions and manage your orders
+
+## Data Security
+
+We implement appropriate security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure.
+
+## Contact
+
+If you have any questions about how we handle your data, please contact us at privacy@arushimart.com.",
+                    'sidebar_image' => null,
+                ],
+            ],
+            [
+                'key' => 'terms_conditions_page',
+                'label' => 'Terms & Conditions Page',
+                'fields' => [
+                    [
+                        'key' => 'title',
+                        'label' => 'Page Title',
+                        'type' => 'text',
+                        'rules' => ['nullable', 'string', 'max:100'],
+                    ],
+                    [
+                        'key' => 'last_updated',
+                        'label' => 'Last Updated',
+                        'type' => 'text',
+                        'rules' => ['nullable', 'string', 'max:100'],
+                    ],
+                    [
+                        'key' => 'content',
+                        'label' => 'Terms & Conditions Content',
+                        'type' => 'markdown',
+                        'rules' => ['nullable', 'string', 'max:10240'],
+                    ],
+                    [
+                        'key' => 'sidebar_image',
+                        'label' => 'Sidebar Image (Optional)',
+                        'type' => 'image',
+                        'rules' => ['nullable', 'image', 'max:2048'],
+                    ],
+                ],
+                'value' => [
+                    'title' => 'Terms & Conditions',
+                    'last_updated' => 'December 2025',
+                    'content' => "Please read these terms and conditions carefully before using our website.
+
+## Acceptance of Terms
+
+By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement.
+
+## Use License
+
+Permission is granted to temporarily download one copy of the materials on ArushiMart's website for personal, non-commercial transitory viewing only.
+
+This is the grant of a license, not a transfer of title, and under this license you may not:
+
+- Modify or copy the materials
+- Use the materials for any commercial purpose
+- Attempt to decompile or reverse engineer any software contained on the website
+- Remove any copyright or other proprietary notations from the materials
+
+## Product Information
+
+We strive to provide accurate product information. However, we do not warrant that product descriptions or other content is accurate, complete, reliable, current, or error-free.
+
+## Pricing
+
+All prices are subject to change without notice. We reserve the right to modify or discontinue products without notice.
+
+## Orders and Payment
+
+By placing an order, you agree to provide current, complete, and accurate purchase and account information. We reserve the right to refuse or cancel any order.
+
+## Shipping and Delivery
+
+Shipping times are estimates and not guaranteed. We are not responsible for delays caused by shipping carriers or customs.
+
+## Returns and Refunds
+
+Please review our Return Policy for detailed information about returns and refunds.
+
+## Limitation of Liability
+
+ArushiMart shall not be liable for any damages arising from the use or inability to use our website or products.
+
+## Contact
+
+For questions about these Terms & Conditions, please contact us at support@arushimart.com.",
+                    'sidebar_image' => null,
+                ],
+            ],
+            [
                 'key' => 'auth',
                 'label' => 'Authentication Page',
                 'fields' => [
