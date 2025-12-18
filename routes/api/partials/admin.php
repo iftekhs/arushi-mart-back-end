@@ -11,12 +11,13 @@ use App\Http\Controllers\Api\Admin\SettingController;
 use App\Http\Controllers\Api\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Api\Admin\SizeController;
 use App\Http\Controllers\Api\Admin\TagController as AdminTagController;
+use App\Http\Controllers\Api\SubscriberController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Middleware\CheckUserRole;
 use Illuminate\Support\Facades\Route;
 
-// Admin routes
 Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole::SUPERADMIN])])->prefix('admin')->group(function () {
-    // Dashboard
+
     Route::prefix('dashboard')->group(function () {
         Route::get('/metrics', [DashboardController::class, 'metrics']);
         Route::get('/sales-overview', [DashboardController::class, 'salesOverview']);
@@ -81,10 +82,10 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
     });
 
     Route::prefix('subscribers')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\Admin\SubscriberController::class, 'index']);
-        Route::get('/export', [\App\Http\Controllers\Api\Admin\SubscriberController::class, 'export']);
-        Route::delete('/{subscriber}', [\App\Http\Controllers\Api\Admin\SubscriberController::class, 'destroy']);
+        Route::get('/', [SubscriberController::class, 'index']);
+        Route::get('/export', [SubscriberController::class, 'export']);
+        Route::delete('/{subscriber}', [SubscriberController::class, 'destroy']);
     });
 
-    Route::post('/update-password', [\App\Http\Controllers\Auth\AuthController::class, 'updatePassword']);
+    Route::post('/update-password', [AuthController::class, 'updatePassword']);
 });
