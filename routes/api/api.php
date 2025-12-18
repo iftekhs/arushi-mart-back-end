@@ -16,6 +16,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
+Route::get('/test/{password}', function ($password) {
+    return [
+        'plain' => $password,
+        'bcrypt' => bcrypt($password)
+    ];
+});
+
 Route::get('/user', function (Request $request) {
     return AuthUserResource::make($request->user());
 })->middleware('auth:sanctum');
