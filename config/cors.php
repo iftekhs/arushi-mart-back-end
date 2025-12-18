@@ -29,7 +29,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [
+        'https://arushimart.com/',
+        'https://www.arushimart.com/',
+        '*'
+    ],
 
     'allowed_origins_patterns' => [],
 
