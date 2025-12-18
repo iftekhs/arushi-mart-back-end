@@ -29,7 +29,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_map('trim', array_filter(explode(',', env('ALLOWED_ORIGINS', '')))),
+    'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [],
 
