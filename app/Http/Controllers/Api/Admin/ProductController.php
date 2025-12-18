@@ -94,6 +94,10 @@ class ProductController extends Controller
                 $productData['size_guide'] = $request->file('size_guide')->store('size-guides');
             }
 
+            if ($request->hasFile('video')) {
+                $productData['video'] = $request->file('video')->store('products/videos');
+            }
+
             $product = Product::create($productData);
 
             $imagesToCreate = [];
@@ -189,11 +193,22 @@ class ProductController extends Controller
             ];
 
             if ($request->hasFile('size_guide')) {
-                // Delete old size_guide if exists
                 if ($product->size_guide) {
                     Storage::disk('public')->delete($product->size_guide);
                 }
                 $updateData['size_guide'] = $request->file('size_guide')->store('size-guides');
+            }
+
+            if ($request->hasFile('video')) {
+                if ($product->video) {
+                    Storage::disk('public')->delete($product->video);
+                }
+                $updateData['video'] = $request->file('video')->store('products/videos');
+            } elseif ($request->input('video') === '-1') {
+                if ($product->video) {
+                    Storage::disk('public')->delete($product->video);
+                }
+                $updateData['video'] = null;
             }
 
             $product->update($updateData);

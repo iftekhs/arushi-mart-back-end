@@ -29,6 +29,7 @@ class UpdateProductRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:0', 'max:999999'],
             'description' => ['nullable', 'string', 'max:1000'],
             'size_guide' => ['nullable', 'image', 'max:2048'],
+            'video' => ['nullable', 'file', 'mimetypes:video/mp4,video/mpeg', 'max:20480'],
 
             'active' => ['required', 'boolean'],
             'featured' => ['required', 'boolean'],
