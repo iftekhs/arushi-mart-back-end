@@ -30,6 +30,8 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
+        'https://arushimart.com',
+        'https://www.arushimart.com',
         'https://arushimart.com/',
         'https://www.arushimart.com/',
         '*'
