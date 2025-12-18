@@ -29,12 +29,17 @@ return [
 
     'allowed_methods' => ['*'],
 
-    // TEMPORARY: Allow all origins for testing
-    // WARNING: This breaks authentication! Only use for testing.
-    'allowed_origins' => ['*'],
+    // Hardcoded allowed origins for quick testing
+    'allowed_origins' => [
+        'https://arushimart.com',
+        'https://www.arushimart.com',
+        'http://arushimart.com',
+        'http://www.arushimart.com',
+    ],
 
+    // Pattern to match both www and non-www domains
     'allowed_origins_patterns' => [
-        // '/^https?:\/\/(www\.)?arushimart\.com$/',
+        '/^https?:\/\/(www\.)?arushimart\.com$/',
     ],
 
     'allowed_headers' => ['*'],
@@ -43,8 +48,7 @@ return [
 
     'max_age' => 0,
 
-    // IMPORTANT: Must be false when using wildcard '*'
-    // This will break authentication/sessions!
-    'supports_credentials' => false,
+    // MUST be true for authentication/sessions to work
+    'supports_credentials' => true,
 
 ];
