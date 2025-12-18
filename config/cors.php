@@ -29,10 +29,12 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_filter(array_map('trim', explode(',', env('ALLOWED_ORIGINS', '')))),
+    // TEMPORARY: Allow all origins for testing
+    // WARNING: This breaks authentication! Only use for testing.
+    'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [
-        '/^https?:\/\/(www\.)?arushimart\.com$/',
+        // '/^https?:\/\/(www\.)?arushimart\.com$/',
     ],
 
     'allowed_headers' => ['*'],
@@ -41,6 +43,8 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true,
+    // IMPORTANT: Must be false when using wildcard '*'
+    // This will break authentication/sessions!
+    'supports_credentials' => false,
 
 ];
