@@ -35,6 +35,11 @@ return [
         'https://www.arushimart.com',
         'http://arushimart.com',
         'http://www.arushimart.com',
+        //--------------------------------
+        'https://arushimart.com/',
+        'https://www.arushimart.com/',
+        'http://arushimart.com/',
+        'http://www.arushimart.com/',
     ],
 
     // Pattern to match both www and non-www domains
