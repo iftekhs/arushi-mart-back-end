@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use App\Models\ProductVariant;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -78,7 +74,6 @@ class UserController extends Controller
                 'variant' => [
                     'id' => $variant->id,
                     'sku' => $variant->sku,
-                    'type' => $variant->type->value,
                     'stockQuantity' => $availableStock,
                     'color' => [
                         'id' => $variant->color->id,

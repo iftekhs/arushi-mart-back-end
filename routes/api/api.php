@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
+// TODO: remove this route
 Route::get('/test/{password}', function ($password) {
     return [
         'plain' => $password,
