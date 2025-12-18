@@ -50,10 +50,8 @@ class CategoryController extends Controller
     {
         return cache()->remember("category.colors.{$category->id}", 3600, function () use ($category) {
             $colors = Color::whereHas('variants.product', function ($query) use ($category) {
-                $query->where('category_id', $category->id)
-                    ->where('active', true);
+                $query->where('category_id', $category->id);
             })
-                ->where('active', true)
                 ->distinct()
                 ->get();
 

@@ -13,7 +13,6 @@ use App\Http\Resources\AuthUserResource;
 use App\Http\Controllers\Api\CustomizationController as PublicCustomizationController;
 use App\Http\Middleware\TrustedClient;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
