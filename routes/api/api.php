@@ -17,15 +17,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
-// TODO: remove this route
-Route::get('/test/{password}', function ($password) {
-    return [
-        'plain' => $password,
-        'bcrypt' => bcrypt($password),
-        'hash' => Hash::make($password)
-    ];
-});
-
 Route::get('/user', function (Request $request) {
     return AuthUserResource::make($request->user());
 })->middleware('auth:sanctum');
