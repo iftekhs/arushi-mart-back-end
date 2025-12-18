@@ -40,6 +40,9 @@ return [
         'https://www.arushimart.com/',
         'http://arushimart.com/',
         'http://www.arushimart.com/',
+        //--------------------------------
+        'http://127.0.0.1:3000/',
+        'http://127.0.0.1:3000',
     ],
 
     // Pattern to match both www and non-www domains
