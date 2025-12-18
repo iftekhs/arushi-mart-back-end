@@ -29,25 +29,14 @@ return [
 
     'allowed_methods' => ['*'],
 
-    // Hardcoded allowed origins for quick testing
-    'allowed_origins' => [
+    'allowed_origins' => ['*'],
+
+    'allowed_origins_patterns' => [
         'https://arushimart.com',
         'https://www.arushimart.com',
-        'http://arushimart.com',
-        'http://www.arushimart.com',
-        //--------------------------------
-        'https://arushimart.com/',
-        'https://www.arushimart.com/',
-        'http://arushimart.com/',
-        'http://www.arushimart.com/',
         //--------------------------------
         'http://127.0.0.1:3000/',
         'http://127.0.0.1:3000',
-    ],
-
-    // Pattern to match both www and non-www domains
-    'allowed_origins_patterns' => [
-        '/^https?:\/\/(www\.)?arushimart\.com$/',
     ],
 
     'allowed_headers' => ['*'],
@@ -56,7 +45,5 @@ return [
 
     'max_age' => 0,
 
-    // MUST be true for authentication/sessions to work
     'supports_credentials' => true,
-
 ];
