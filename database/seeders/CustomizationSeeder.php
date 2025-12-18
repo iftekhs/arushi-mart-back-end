@@ -65,7 +65,7 @@ class CustomizationSeeder extends Seeder
                                 'key' => 'small_image',
                                 'label' => 'Small Image (Desktop - 1920 x 1080 px)',
                                 'type' => 'image',
-                                'rules' => ['nullable', 'image', 'max:2048'],
+                                'rules' => ['required', 'image', 'max:2048'],
                             ],
                             [
                                 'key' => 'title',
