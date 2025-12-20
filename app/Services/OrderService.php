@@ -22,7 +22,7 @@ class OrderService
         return DB::transaction(function () use ($user, $cartItems, $shippingAddress, $paymentMethod, $shippingMethod) {
             $shippingCost = $this->calculateShipping($shippingMethod);
             $totalAmount = $this->calculateTotal($cartItems, $shippingCost);
-            $orderNumber = 'ORD-' . now()->format('YmdHis') . '-' . strtoupper(Str::random(4));
+            $orderNumber = "AM-" . now()->year . substr(now()->timestamp, -6);
             $shippingAddressSnapshot = $this->generateShippingAddressSnapshot($shippingMethod, $shippingAddress);
 
             // Determine payment status based on payment method
