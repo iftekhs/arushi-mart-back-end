@@ -128,7 +128,6 @@ class CheckoutController extends Controller
                 'variant' => [
                     'id' => $variant->id,
                     'sku' => $variant->sku,
-                    'type' => $variant->type->value,
                     'stockQuantity' => $availableStock,
                     'color' => [
                         'id' => $variant->color->id,

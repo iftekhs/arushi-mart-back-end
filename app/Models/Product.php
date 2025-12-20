@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -149,13 +150,29 @@ class Product extends Model
         return $query;
     }
 
+    public function deleteAllFiles(): bool
+    {
+        if ($this->video) {
+            Storage::delete($this->video);
+        }
+        foreach ($this->images as $image) {
+            Storage::delete($image->path);
+        }
+        return true;
+    }
 
     protected static function boot()
     {
         parent::boot();
+
         static::updated(function ($product) {
             cache()->forget("product.show.{$product->id}");
         });
+
+        static::deleting(function ($product) {
+            $product->deleteAllFiles();
+        });
+
         static::deleted(function ($product) {
             cache()->forget("product.show.{$product->id}");
         });
