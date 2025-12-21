@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\PaymentMethod;
 use App\Enums\ShippingMethod;
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutRequest;
 use App\Http\Resources\OrderResource;
@@ -49,6 +50,7 @@ class CheckoutController extends Controller
                 ['email' => $request->email],
                 [
                     'name' => $request->input('shipping_address.first_name') . ' ' . $request->input('shipping_address.last_name'),
+                    'role' => UserRole::USER,
                     'password' => bcrypt(Str::random(32)),
                 ]
             );
