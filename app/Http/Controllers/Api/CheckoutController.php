@@ -65,6 +65,9 @@ class CheckoutController extends Controller
         }
 
         $user = $request->user();
+
+        if (!$user->isUser()) abort(403);
+
         $shippingAddress = $request->shipping_address_id ?
             $user->shippingAddresses()->findOrFail($request->shipping_address_id)->toArray() :
             $request->shipping_address;

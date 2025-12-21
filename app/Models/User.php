@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->role === UserRole::ADMIN || $this->role === UserRole::SUPERADMIN;
     }
+
+    public function isUser(): bool
+    {
+        return $this->role === UserRole::USER;
+    }
 }
