@@ -53,6 +53,11 @@ class CustomizationService
                         $itemRules = $this->adjustImageRules($itemRules);
                     }
                     
+                    // For markdown fields, use custom validation
+                    if ($itemField['type'] === 'markdown') {
+                        $itemRules = $this->adjustMarkdownRules($itemRules);
+                    }
+                    
                     $rules["{$fullKey}.*.{$itemKey}"] = $itemRules;
                 }
             } else {
@@ -62,6 +67,11 @@ class CustomizationService
                 // For image fields, allow '-1' for removal
                 if ($field['type'] === 'image') {
                     $fieldRules = $this->adjustImageRules($fieldRules);
+                }
+                
+                // For markdown fields, use custom validation
+                if ($field['type'] === 'markdown') {
+                    $fieldRules = $this->adjustMarkdownRules($fieldRules);
                 }
                 
                 $rules[$fullKey] = $fieldRules;
@@ -115,5 +125,27 @@ class CustomizationService
         }
         
         return $rules;
+    }
+
+    /**
+     * Adjust markdown validation rules to use custom MarkdownMaxLength rule
+     */
+    private function adjustMarkdownRules(array $rules): array
+    {
+        $adjustedRules = [];
+        
+        foreach ($rules as $rule) {
+            // Check if it's a max:X rule
+            if (is_string($rule) && preg_match('/^max:(\d+)$/', $rule, $matches)) {
+                $maxLength = (int) $matches[1];
+                // Replace with custom MarkdownMaxLength rule
+                $adjustedRules[] = new \App\Rules\MarkdownMaxLength($maxLength);
+            } else {
+                // Keep other rules as-is
+                $adjustedRules[] = $rule;
+            }
+        }
+        
+        return $adjustedRules;
     }
 }
