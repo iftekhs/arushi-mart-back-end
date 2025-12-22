@@ -36,7 +36,30 @@ class UpdateProductRequest extends FormRequest
             }],
             'description' => ['nullable', 'string', 'max:1000'],
             'size_guide' => ['nullable', 'image', 'max:2048'],
-            'video' => ['nullable', 'file', 'mimetypes:video/mp4,video/mpeg', 'max:20480'],
+            'video' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    // Allow '-1' for deletion
+                    if ($value === '-1') {
+                        return;
+                    }
+                    // Otherwise, validate as a file
+                    if (!$value instanceof \Illuminate\Http\UploadedFile) {
+                        $fail('The video field must be a file.');
+                        return;
+                    }
+                    // Validate file type
+                    $allowedMimes = ['video/mp4', 'video/mpeg'];
+                    if (!in_array($value->getMimeType(), $allowedMimes)) {
+                        $fail('The video field must be a file of type: video/mp4, video/mpeg.');
+                        return;
+                    }
+                    // Validate file size (20MB = 20480 KB)
+                    if ($value->getSize() > 20480 * 1024) {
+                        $fail('The video field must not be greater than 20480 kilobytes.');
+                    }
+                },
+            ],
 
             'active' => ['required', 'boolean'],
             'featured' => ['required', 'boolean'],
