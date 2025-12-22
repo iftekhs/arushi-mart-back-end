@@ -525,6 +525,28 @@ For questions about these Terms & Conditions, please contact us at support@arush
                     'background_image' => null,
                 ],
             ],
+            [
+                'key' => 'receipt',
+                'label' => 'Receipt',
+                'fields' => [
+                    [
+                        'key' => 'shop_address',
+                        'label' => 'Shop Address',
+                        'type' => 'text',
+                        'rules' => ['required', 'string', 'max:255'],
+                    ],
+                    [
+                        'key' => 'shop_phone',
+                        'label' => 'Shop Phone',
+                        'type' => 'text',
+                        'rules' => ['required', 'string', 'max:50'],
+                    ],
+                ],
+                'value' => [
+                    'shop_address' => 'Dhaka, Bangladesh',
+                    'shop_phone' => '+880 1234-567890',
+                ],
+            ],
         ];
 
         foreach ($customizations as $customization) {
