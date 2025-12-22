@@ -19,6 +19,7 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'float',
+        'discount_price' => 'float',
         'active' => 'boolean',
     ];
 

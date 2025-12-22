@@ -25,13 +25,20 @@ class StoreProductRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'price' => ['required', 'numeric', 'min:0', 'max:999999'],
+            'discount_type' => ['nullable', 'in:percentage,fixed'],
+            'discount_price' => ['nullable', 'numeric', 'min:0', function ($attribute, $value, $fail) {
+                $discountType = request()->input('discount_type');
+                if ($discountType === 'percentage' && $value > 100) {
+                    $fail('The discount percentage cannot exceed 100.');
+                }
+            }],
             'description' => ['nullable', 'string', 'max:1000'],
             'size_guide' => ['nullable', 'image', 'max:2048'],
             'video' => ['nullable', 'file', 'mimetypes:video/mp4,video/mpeg', 'max:20480'],
 
             'active' => ['required', 'boolean'],
             'featured' => ['required', 'boolean'],
-            'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where(fn($query) => $query->where('active', true))],
+            'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where(fn($query) => $query->where('active', true))],,
 
             'categories' => ['nullable', 'array'],
             'categories.*' => ['integer', Rule::exists('categories', 'id')->where(fn($query) => $query->where('active', true))],

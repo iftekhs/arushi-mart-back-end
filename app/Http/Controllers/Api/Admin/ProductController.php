@@ -84,6 +84,8 @@ class ProductController extends Controller
             $productData = [
                 'name' => $validated['name'],
                 'price' => $validated['price'],
+                'discount_type' => $validated['discount_type'] ?? null,
+                'discount_price' => $validated['discount_price'] ?? null,
                 'description' => $validated['description'],
                 'active' => $validated['active'],
                 'featured' => $validated['featured'],
@@ -186,6 +188,8 @@ class ProductController extends Controller
             $updateData = [
                 'name' => $validated['name'],
                 'price' => $validated['price'],
+                'discount_type' => $validated['discount_type'] ?? null,
+                'discount_price' => $validated['discount_price'] ?? null,
                 'description' => $validated['description'],
                 'active' => $validated['active'],
                 'featured' => $validated['featured'],

@@ -271,6 +271,12 @@ class CustomizationSeeder extends Seeder
                 'label' => 'Footer Component',
                 'fields' => [
                     [
+                        'key' => 'information',
+                        'label' => 'Information',
+                        'type' => 'markdown',
+                        'rules' => ['nullable', 'string', 'max:1024'],
+                    ],
+                    [
                         'key' => 'about',
                         'label' => 'About',
                         'type' => 'markdown',
@@ -338,6 +344,7 @@ class CustomizationSeeder extends Seeder
                     ]
                 ],
                 'value' => [
+                    'information' => null,
                     'about' => null,
                     'copyright' => '© 2025 - ArushiMart - Bangladesh',
                     'link_sections' => [
