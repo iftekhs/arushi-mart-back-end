@@ -22,7 +22,19 @@ class OrderService
         return DB::transaction(function () use ($user, $cartItems, $shippingAddress, $paymentMethod, $shippingMethod) {
             $shippingCost = $this->calculateShipping($shippingMethod);
             $totalAmount = $this->calculateTotal($cartItems, $shippingCost);
-            $orderNumber = "AM-" . now()->year . substr(now()->timestamp, -6);
+            
+            // Generate incremental order number
+            $lastOrder = Order::orderBy('id', 'desc')->first();
+            if ($lastOrder && $lastOrder->order_number) {
+                // Extract the numeric part from the last order number (e.g., "AM-0001" -> 1)
+                $lastNumber = (int) str_replace('AM-', '', $lastOrder->order_number);
+                $nextNumber = $lastNumber + 1;
+            } else {
+                // Start from 1 if no orders exist
+                $nextNumber = 1;
+            }
+            $orderNumber = 'AM-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+            
             $shippingAddressSnapshot = $this->generateShippingAddressSnapshot($shippingMethod, $shippingAddress);
 
             // Determine payment status based on payment method
