@@ -37,9 +37,24 @@ class SettingController extends Controller
             $this->deleteOldImages($oldValue, $validated);
         }
 
+        // Convert boolean fields for application settings
+        if ($path === 'application') {
+            $validated = $this->processApplicationSettings($validated);
+        }
+
         $settingService->set($path, $validated);
 
         return $this->success($settingService->get($path));
+    }
+
+    private function processApplicationSettings(array $data): array
+    {
+        // Convert maintenance_mode to boolean
+        if (isset($data['maintenance_mode'])) {
+            $data['maintenance_mode'] = (bool) $data['maintenance_mode'];
+        }
+
+        return $data;
     }
 
     private function processFileUploads(array $data, array $oldValue = []): array
