@@ -84,13 +84,10 @@ class OrderSeeder extends Seeder
         };
 
         $shippingAddress = [
-            'first_name' => $user->first_name ?? 'John',
-            'last_name' => $user->last_name ?? 'Doe',
+            'full_name' => $user->name ?? 'John Doe',
             'email' => $user->email,
             'phone' => '017' . rand(10000000, 99999999),
             'address' => rand(1, 999) . ' Random Street',
-            'city' => 'Dhaka',
-            'postal_code' => '12' . rand(10, 99),
             'country' => 'Bangladesh',
         ];
 

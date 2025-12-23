@@ -1,17 +1,58 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background-color: #f8f9fa; padding: 20px; text-align: center; margin-bottom: 20px; }
-        .order-details { margin-bottom: 20px; }
-        .table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .table th, .table td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
-        .total { font-weight: bold; text-align: right; }
-        .footer { text-align: center; color: #666; font-size: 12px; margin-top: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .order-details {
+            margin-bottom: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .table th,
+        .table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .total {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-top: 20px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -45,7 +86,7 @@
                     <td>
                         {{ $item->product_snapshot['color']['name'] ?? '' }}
                         @if(!empty($item->product_snapshot['size']))
-                            / {{ $item->product_snapshot['size']['name'] }}
+                        / {{ $item->product_snapshot['size']['name'] }}
                         @endif
                     </td>
                     <td>{{ $item->quantity }}</td>
@@ -73,12 +114,9 @@
         <div class="shipping-address">
             <h3>Shipping Address</h3>
             <p>
-                {{ $order->shipping_address_snapshot['first_name'] }} {{ $order->shipping_address_snapshot['last_name'] }}<br>
+                {{ $order->shipping_address_snapshot['full_name'] }}<br>
                 {{ $order->shipping_address_snapshot['address'] }}<br>
-                @if(!empty($order->shipping_address_snapshot['apartment']))
-                    {{ $order->shipping_address_snapshot['apartment'] }}<br>
                 @endif
-                {{ $order->shipping_address_snapshot['city'] }} - {{ $order->shipping_address_snapshot['postal_code'] }}<br>
                 Phone: {{ $order->shipping_address_snapshot['phone'] }}
             </p>
         </div>
@@ -89,4 +127,5 @@
         </div>
     </div>
 </body>
+
 </html>
