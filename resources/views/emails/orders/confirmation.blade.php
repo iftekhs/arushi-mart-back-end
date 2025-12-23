@@ -116,7 +116,6 @@
             <p>
                 {{ $order->shipping_address_snapshot['full_name'] }}<br>
                 {{ $order->shipping_address_snapshot['address'] }}<br>
-                @endif
                 Phone: {{ $order->shipping_address_snapshot['phone'] }}
             </p>
         </div>
