@@ -38,7 +38,7 @@ class StoreProductRequest extends FormRequest
 
             'active' => ['required', 'boolean'],
             'featured' => ['required', 'boolean'],
-            'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where(fn($query) => $query->where('active', true))],,
+            'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where(fn($query) => $query->where('active', true))],
 
             'categories' => ['nullable', 'array'],
             'categories.*' => ['integer', Rule::exists('categories', 'id')->where(fn($query) => $query->where('active', true))],

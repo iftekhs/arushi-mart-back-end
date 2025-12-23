@@ -13,7 +13,6 @@ use App\Models\ProductVariant;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class OrderService
 {
