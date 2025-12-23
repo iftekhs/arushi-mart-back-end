@@ -39,7 +39,7 @@ class CheckoutRequest extends FormRequest
             'shipping_address.address' => ['required_with:shipping_address', 'string', 'max:500'],
             'shipping_address.apartment' => ['nullable', 'string', 'max:255'],
             'shipping_address.city' => ['required_with:shipping_address', 'string', 'max:255'],
-            'shipping_address.postal_code' => ['required_with:shipping_address', 'string', 'max:20'],
+            'shipping_address.postal_code' => ['nullable', 'string', 'max:20'],
             'shipping_address.phone' => ['required_with:shipping_address', 'string', 'max:20'],
             'payment_method' => ['required', 'string', Rule::in(PaymentMethod::valuesForUser())],
             'shipping_method' => ['required', 'string', Rule::in(ShippingMethod::valuesForUser())],
