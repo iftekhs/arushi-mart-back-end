@@ -23,8 +23,8 @@ class OrderService
             $shippingCost = $this->calculateShipping($shippingMethod);
             $totalAmount = $this->calculateTotal($cartItems, $shippingCost);
 
-            // Generate incremental order number
-            $lastOrder = Order::orderBy('id', 'desc')->first();
+            // Generate incremental order number with lock to prevent race conditions
+            $lastOrder = Order::orderBy('created_at', 'desc')->lockForUpdate()->first();
             if ($lastOrder && $lastOrder->order_number) {
                 // Extract the numeric part from the last order number (e.g., "AM-0001" -> 1)
                 $lastNumber = (int) str_replace('AM-', '', $lastOrder->order_number);
