@@ -55,7 +55,7 @@ class ProductController extends Controller
                     });
                 })
                 ->withInStock()
-                ->with(['category', 'primaryImage', 'secondaryImage'])
+                ->with(['category', 'primaryImage', 'secondaryImage', 'images', 'variants.color', 'variants.size'])
                 ->take(5)
                 ->get();
 
