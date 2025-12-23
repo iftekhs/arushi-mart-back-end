@@ -50,7 +50,7 @@ class CheckoutController extends Controller
             $user = User::firstOrCreate(
                 ['email' => $request->email],
                 [
-                    'name' => $request->input('shipping_address.first_name') . ' ' . $request->input('shipping_address.last_name'),
+                    'name' => $request->input('shipping_address.full_name'),
                     'role' => UserRole::USER,
                     'status' => UserStatus::ACTIVE,
                     'password' => bcrypt(Str::random(32)),
