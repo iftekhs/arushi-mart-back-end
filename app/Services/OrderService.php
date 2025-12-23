@@ -22,7 +22,7 @@ class OrderService
         return DB::transaction(function () use ($user, $cartItems, $shippingAddress, $paymentMethod, $shippingMethod) {
             $shippingCost = $this->calculateShipping($shippingMethod);
             $totalAmount = $this->calculateTotal($cartItems, $shippingCost);
-            
+
             // Generate incremental order number
             $lastOrder = Order::orderBy('id', 'desc')->first();
             if ($lastOrder && $lastOrder->order_number) {
@@ -34,7 +34,7 @@ class OrderService
                 $nextNumber = 1;
             }
             $orderNumber = 'AM-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
-            
+
             $shippingAddressSnapshot = $this->generateShippingAddressSnapshot($shippingMethod, $shippingAddress);
 
             // Determine payment status based on payment method
@@ -113,7 +113,7 @@ class OrderService
             'size' => [
                 'name' => $size ? $size->name : null,
             ],
-            'image' => $primaryImage ? $primaryImage->path : null,
+            'image' => $primaryImage ? path_to_url($primaryImage->path) : null,
             'category' => [
                 'name' => $product->category->name ?? '',
                 'slug' => $product->category->slug ?? '',
