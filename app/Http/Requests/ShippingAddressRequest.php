@@ -22,12 +22,8 @@ class ShippingAddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
+            'full_name' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:500'],
-            'apartment' => ['nullable', 'string', 'max:255'],
-            'city' => ['required', 'string', 'max:255'],
-            'postal_code' => ['nullable', 'string', 'max:20'],
             'phone' => ['required', 'string', 'max:20'],
         ];
     }

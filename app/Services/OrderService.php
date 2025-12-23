@@ -125,12 +125,8 @@ class OrderService
         if ($shippingMethod === ShippingMethod::ON_SITE) return null;
 
         return $shippingAddress ? [
-            'first_name' => $shippingAddress['first_name'],
-            'last_name' => $shippingAddress['last_name'],
+            'full_name' => $shippingAddress['full_name'],
             'address' => $shippingAddress['address'],
-            'apartment' => $shippingAddress['apartment'] ?? null,
-            'city' => $shippingAddress['city'],
-            'postal_code' => $shippingAddress['postal_code'],
             'phone' => $shippingAddress['phone'],
         ] : null;
     }
