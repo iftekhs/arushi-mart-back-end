@@ -31,8 +31,7 @@ class OrderController extends Controller
         if ($request->has('search')) {
             $search = $request->input('search');
             $query->where('order_number', 'like', "%{$search}%")
-                ->orWhere('shipping_address_snapshot->first_name', 'like', "%{$search}%")
-                ->orWhere('shipping_address_snapshot->last_name', 'like', "%{$search}%")
+                ->orWhere('shipping_address_snapshot->full_name', 'like', "%{$search}%")
                 ->orWhere('shipping_address_snapshot->phone', 'like', "%{$search}%");
         }
 
@@ -129,12 +128,8 @@ class OrderController extends Controller
             'cart_items.*.variant_id' => ['required', 'integer', 'exists:product_variants,id'],
             'cart_items.*.quantity' => ['required', 'integer', 'min:1'],
             'shipping_address' => [$isOnSite ? 'nullable' : 'required', 'array'],
-            'shipping_address.first_name' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:255'],
-            'shipping_address.last_name' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:255'],
+            'shipping_address.full_name' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:255'],
             'shipping_address.address' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:500'],
-            'shipping_address.apartment' => ['nullable', 'string', 'max:255'],
-            'shipping_address.city' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:255'],
-            'shipping_address.postal_code' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:20'],
             'shipping_address.phone' => [$isOnSite ? 'nullable' : 'required', 'string', 'max:20'],
             'payment_method' => ['required', 'string', Rule::in(PaymentMethod::values())],
             'shipping_method' => ['required', 'string', Rule::in(ShippingMethod::values())],
@@ -144,7 +139,7 @@ class OrderController extends Controller
             $user = User::firstOrCreate(
                 ['email' => $validated['email']],
                 [
-                    'name' => $isOnSite ? explode('@', $validated['email'])[0] : $validated['shipping_address']['first_name'] . ' ' . $validated['shipping_address']['last_name'],
+                    'name' => $isOnSite ? explode('@', $validated['email'])[0] : $validated['shipping_address']['full_name'],
                     'role' => UserRole::USER,
                     'status' => UserStatus::ACTIVE,
                     'password' => bcrypt(str()->random(16)),
