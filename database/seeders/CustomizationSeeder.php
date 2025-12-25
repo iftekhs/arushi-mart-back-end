@@ -554,6 +554,21 @@ For questions about these Terms & Conditions, please contact us at support@arush
                     'shop_phone' => '+880 1234-567890',
                 ],
             ],
+            [
+                'key' => 'invoice',
+                'label' => 'Invoice',
+                'fields' => [
+                    [
+                        'key' => 'shop_phone',
+                        'label' => 'Shop Phone',
+                        'type' => 'text',
+                        'rules' => ['required', 'string', 'max:50'],
+                    ],
+                ],
+                'value' => [
+                    'shop_phone' => '+880 1234-567890',
+                ],
+            ],
         ];
 
         foreach ($customizations as $customization) {
