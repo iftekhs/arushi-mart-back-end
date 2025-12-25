@@ -133,13 +133,10 @@ class OrderService
 
     private function calculateShipping(ShippingMethod $method): float
     {
-        $setting = Setting::where('key', 'business')->first();
-        $value = $setting?->value ?? [];
-
         return match ($method) {
-            ShippingMethod::ON_SITE => $value['on_site_fee'] ?? 0.00,
-            ShippingMethod::INSIDE_DHAKA => $value['inside_dhaka_fee'] ?? 60.00,
-            ShippingMethod::OUTSIDE_DHAKA => $value['outside_dhaka_fee'] ?? 120.00,
+            ShippingMethod::ON_SITE => (float)app(SettingService::class)->get('business.on_site_fee') ?? 0.00,
+            ShippingMethod::INSIDE_DHAKA => (float)app(SettingService::class)->get('business.inside_dhaka_fee') ?? 70.00,
+            ShippingMethod::OUTSIDE_DHAKA => (float)app(SettingService::class)->get('business.outside_dhaka_fee') ?? 120.00,
             default => 0.00,
         };
     }

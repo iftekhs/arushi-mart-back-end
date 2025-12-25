@@ -38,9 +38,9 @@ class SettingController extends Controller
   {
     return match ($key) {
       'shipping-fees' => [
-        'on_site_fee' => $this->settingService->get('business.on_site_fee'),
-        'inside_dhaka_fee' => $this->settingService->get('business.inside_dhaka_fee'),
-        'outside_dhaka_fee' => $this->settingService->get('business.outside_dhaka_fee'),
+        'on_site_fee' => (float)$this->settingService->get('business.on_site_fee'),
+        'inside_dhaka_fee' => (float)$this->settingService->get('business.inside_dhaka_fee'),
+        'outside_dhaka_fee' => (float)$this->settingService->get('business.outside_dhaka_fee'),
       ],
       default => null
     };
@@ -61,7 +61,7 @@ class SettingController extends Controller
     if (!$data) return $data;
 
     $imageFields = ['og_image', 'twitter_image', 'favicon', 'apple_icon'];
-    
+
     foreach ($imageFields as $field) {
       if (isset($data[$field])) {
         $data[$field] = path_to_url($data[$field]);
