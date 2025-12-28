@@ -27,5 +27,11 @@ trait HasSlug
                 $model->slug = self::generateUniqueSlug($model->name);
             }
         });
+
+        static::updating(function ($model) {
+            if ($model->isDirty('name')) {
+                $model->slug = self::generateUniqueSlug($model->name);
+            }
+        });
     }
 }
