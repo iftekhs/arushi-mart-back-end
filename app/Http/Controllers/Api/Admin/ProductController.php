@@ -198,19 +198,19 @@ class ProductController extends Controller
 
             if ($request->hasFile('size_guide')) {
                 if ($product->size_guide) {
-                    Storage::disk('public')->delete($product->size_guide);
+                    Storage::delete($product->size_guide);
                 }
                 $updateData['size_guide'] = $request->file('size_guide')->store('size-guides');
             }
 
             if ($request->hasFile('video')) {
                 if ($product->video) {
-                    Storage::disk('public')->delete($product->video);
+                    Storage::delete($product->video);
                 }
                 $updateData['video'] = $request->file('video')->store('products/videos');
             } elseif ($request->input('video') === '-1') {
                 if ($product->video) {
-                    Storage::disk('public')->delete($product->video);
+                    Storage::delete($product->video);
                 }
                 $updateData['video'] = null;
             }
@@ -414,7 +414,7 @@ class ProductController extends Controller
 
             // Delete size guide if exists
             if ($product->size_guide) {
-                Storage::disk('public')->delete($product->size_guide);
+                Storage::delete($product->size_guide);
             }
 
             // Delete the product (cascades to variants, images, etc. via database constraints)

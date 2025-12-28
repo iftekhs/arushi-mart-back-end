@@ -100,7 +100,7 @@ class SettingController extends Controller
 
             // Delete old image if it was replaced with a new one
             if ($oldPath && $newPath && $oldPath !== $newPath && !filter_var($oldPath, FILTER_VALIDATE_URL)) {
-                Storage::disk('public')->delete(ltrim($oldPath, '/'));
+                Storage::delete(ltrim($oldPath, '/'));
             }
         }
     }

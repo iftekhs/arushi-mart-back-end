@@ -115,7 +115,7 @@ class CustomizationController extends Controller
                     foreach ($field['items'] as $itemField) {
                         $itemKey = $itemField['key'] ?? null;
                         if ($itemKey && $itemField['type'] === 'image' && isset($oldItems[$i][$itemKey])) {
-                            Storage::disk('public')->delete(ltrim($oldItems[$i][$itemKey], '/'));
+                            Storage::delete(ltrim($oldItems[$i][$itemKey], '/'));
                         }
                     }
                 }
@@ -129,7 +129,7 @@ class CustomizationController extends Controller
                             $newPath = $newItem[$itemKey] ?? null;
 
                             if ($oldPath && $newPath && $oldPath !== $newPath) {
-                                Storage::disk('public')->delete(ltrim($oldPath, '/'));
+                                Storage::delete(ltrim($oldPath, '/'));
                             }
                         }
                     }
@@ -139,7 +139,7 @@ class CustomizationController extends Controller
                 $newPath = $newValue[$key] ?? null;
 
                 if ($oldPath && $newPath && $oldPath !== $newPath) {
-                    Storage::disk('public')->delete(ltrim($oldPath, '/'));
+                    Storage::delete(ltrim($oldPath, '/'));
                 }
             }
         }
