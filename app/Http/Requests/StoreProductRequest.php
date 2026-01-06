@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\MarkdownMaxLength;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -32,7 +33,7 @@ class StoreProductRequest extends FormRequest
                     $fail('The discount percentage cannot exceed 100.');
                 }
             }],
-            'description' => ['nullable', 'string', 'max:2048'],
+            'description' => ['nullable', 'string', new MarkdownMaxLength(2048)],
             'size_guide' => ['nullable', 'image', 'max:2048'],
             'video' => ['nullable', 'file', 'mimetypes:video/mp4,video/mpeg', 'max:20480'],
 
