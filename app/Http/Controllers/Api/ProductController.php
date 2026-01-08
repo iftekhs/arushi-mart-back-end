@@ -34,7 +34,7 @@ class ProductController extends Controller
             return ProductResource::make(
                 $product->loadExists('variants as in_stock', function ($query) {
                     $query->where('stock_quantity', '>', 0);
-                })->load(['category', 'primaryImage', 'secondaryImage', 'images', 'variants.color', 'variants.size'])
+                })->load(['category', 'primaryImage', 'secondaryImage', 'images.color', 'variants.color', 'variants.size'])
             );
         });
     }
@@ -55,7 +55,7 @@ class ProductController extends Controller
                     });
                 })
                 ->withInStock()
-                ->with(['category', 'primaryImage', 'secondaryImage', 'images', 'variants.color', 'variants.size'])
+                ->with(['category', 'primaryImage', 'secondaryImage', 'images.color', 'variants.color', 'variants.size'])
                 ->take(5)
                 ->get();
 

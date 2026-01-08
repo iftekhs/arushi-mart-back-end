@@ -352,6 +352,7 @@ class ProductController extends Controller
                 'images.color',
             ]);
 
+            cache()->forget("product.show.{$product->id}");
             return ProductResource::make($product);
         });
     }

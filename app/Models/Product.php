@@ -166,10 +166,6 @@ class Product extends Model
     {
         parent::boot();
 
-        static::updated(function ($product) {
-            cache()->forget("product.show.{$product->id}");
-        });
-
         static::deleting(function ($product) {
             $product->deleteAllFiles();
         });
