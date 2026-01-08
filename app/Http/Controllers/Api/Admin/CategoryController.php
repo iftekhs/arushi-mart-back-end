@@ -28,6 +28,13 @@ class CategoryController extends Controller
             $query->where('active', $request->boolean('active'));
         }
 
+        // Filter by parent_id if provided, otherwise show only root categories
+        if ($request->has('parent_id')) {
+            $query->where('parent_id', $request->input('parent_id'));
+        } else {
+            $query->whereNull('parent_id');
+        }
+
         $categories = $query->latest()->paginate(10);
 
         return response()->json(CategoryResource::collection($categories)->response()->getData(true));
@@ -57,9 +64,14 @@ class CategoryController extends Controller
         $category = Category::create($data);
 
         return response()->json([
-            'data' => new CategoryResource($category),
             'message' => 'Category created successfully',
-        ]);
+            'data' => new CategoryResource($category),
+        ], 201);
+    }
+
+    public function show(Category $category): CategoryResource
+    {
+        return new CategoryResource($category);
     }
 
     public function update(UpdateCategoryRequest $request, Category $category): JsonResponse

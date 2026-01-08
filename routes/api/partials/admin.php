@@ -59,7 +59,13 @@ Route::middleware(['auth:sanctum', CheckUserRole::for([UserRole::ADMIN, UserRole
         Route::delete('/{tag}', [AdminTagController::class, 'delete']);
     });
 
-    Route::apiResource('categories', AdminCategoryController::class);
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [AdminCategoryController::class, 'index']);
+        Route::post('/', [AdminCategoryController::class, 'store']);
+        Route::get('/{category}', [AdminCategoryController::class, 'show']);
+        Route::put('/{category}', [AdminCategoryController::class, 'update']);
+        Route::delete('/{category}', [AdminCategoryController::class, 'delete']);
+    });
 
     Route::prefix('orders')->group(function () {
         Route::get('/', [AdminOrderController::class, 'index']);
