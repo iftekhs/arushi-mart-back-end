@@ -16,7 +16,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Category::query()->withCount('products');
+        $query = Category::query()->withCount(['products', 'children']);
 
         if ($request->has('search')) {
             $search = $request->input('search');

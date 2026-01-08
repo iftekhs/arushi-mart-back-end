@@ -25,6 +25,8 @@ class CategoryResource extends JsonResource
                 'active' => (bool) $this->active,
                 'featured' => (bool) $this->featured,
                 'showcased' => (bool) $this->showcased,
+                'products_count' => $this->when(isset($this->products_count), $this->products_count),
+                'children_count' => $this->when(isset($this->children_count), $this->children_count),
             ],
             'relationships' => [
                 'products' => $this->whenLoaded('products', function () {
