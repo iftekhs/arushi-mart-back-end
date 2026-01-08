@@ -28,10 +28,9 @@ class CategoryController extends Controller
             $query->where('active', $request->boolean('active'));
         }
 
-        // Filter by parent_id if provided, otherwise show only root categories
         if ($request->has('parent_id')) {
             $query->where('parent_id', $request->input('parent_id'));
-        } else {
+        } else if ($request->has('root_only') && $request->boolean('root_only')) {
             $query->whereNull('parent_id');
         }
 
