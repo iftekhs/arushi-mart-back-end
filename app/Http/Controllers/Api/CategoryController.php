@@ -26,7 +26,13 @@ class CategoryController extends Controller
         $categories = Cache::tags(['categories'])->remember(
             $this->getCacheKey($filters),
             now()->addMinutes(60),
-            fn() => Category::filter($filters)->get()
+            fn() => Category::filter($filters)
+                ->whereNull('parent_id') // Only get root categories
+                ->with(['categories' => function ($query) {
+                    $query->where('active', true)->orderBy('name');
+                }])
+                ->withCount('categories')
+                ->get()
         );
 
         return CategoryResource::collection($categories);

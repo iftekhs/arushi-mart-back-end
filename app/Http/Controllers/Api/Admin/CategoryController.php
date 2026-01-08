@@ -16,7 +16,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Category::query()->withCount(['products', 'children']);
+        $query = Category::query()->withCount(['products', 'categories']);
 
         if ($request->has('search')) {
             $search = $request->input('search');
@@ -130,7 +130,7 @@ class CategoryController extends Controller
     public function delete(Category $category): JsonResponse
     {
         $productsCount = $category->products()->count();
-        $childrenCount = $category->children()->count();
+        $childrenCount = $category->categories()->count();
 
         if ($productsCount > 0) {
             return response()->json([
