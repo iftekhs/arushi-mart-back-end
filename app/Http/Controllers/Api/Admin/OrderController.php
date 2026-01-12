@@ -25,7 +25,7 @@ class OrderController extends Controller
     public function index(Request $request): JsonResource
     {
         $query = Order::query()
-            ->with('items')
+            ->with(['items', 'user'])
             ->latest();
 
         if ($request->has('search')) {
@@ -69,7 +69,7 @@ class OrderController extends Controller
 
     public function show(Order $order): JsonResource
     {
-        $order->load(['items']);
+        $order->load(['items', 'user']);
         return OrderResource::make($order);
     }
 
@@ -82,7 +82,7 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => 'Order canceled successfully',
-            'data' => OrderResource::make($order->load(['items']))
+            'data' => OrderResource::make($order->load(['items', 'user']))
         ]);
     }
 

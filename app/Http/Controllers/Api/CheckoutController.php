@@ -33,20 +33,44 @@ class CheckoutController extends Controller
         $user = $request->user();
 
         if (!$user) {
-
-            if (!$request->email) $this->error('Email is required for guest checkout', 422, [
-                'email' => ['The email field is required for guest checkout.'],
-            ]);
-
-            $user = User::firstOrCreate(
-                ['email' => $request->email],
-                [
-                    'name' => $request->input('shipping_address.full_name'),
-                    'role' => UserRole::USER,
-                    'status' => UserStatus::ACTIVE,
-                    'password' => bcrypt(Str::random(32)),
-                ]
-            );
+            $email = $request->email;
+            $phone = $request->input('shipping_address.phone');
+            
+            // Normalize phone number to 8801xxxxxxxxx format
+            // If starts with 880, keep as is
+            // If starts with 01, convert to 8801xxxxxxxxx
+            if (str_starts_with($phone, '880')) {
+                $normalizedPhone = $phone;
+            } elseif (str_starts_with($phone, '01')) {
+                $normalizedPhone = '880' . substr($phone, 1);
+            } else {
+                $normalizedPhone = $phone; // Fallback
+            }
+            
+            // If email is provided, use it to find/create user
+            if ($email) {
+                $user = User::firstOrCreate(
+                    ['email' => $email],
+                    [
+                        'name' => $request->input('shipping_address.full_name'),
+                        'phone' => $normalizedPhone,
+                        'role' => UserRole::USER,
+                        'status' => UserStatus::ACTIVE,
+                        'password' => bcrypt(Str::random(32)),
+                    ]
+                );
+            } else {
+                // Otherwise, use phone to find/create user
+                $user = User::firstOrCreate(
+                    ['phone' => $normalizedPhone],
+                    [
+                        'name' => $request->input('shipping_address.full_name'),
+                        'role' => UserRole::USER,
+                        'status' => UserStatus::ACTIVE,
+                        'password' => bcrypt(Str::random(32)),
+                    ]
+                );
+            }
         }
 
         if (!$user->isUser()) abort(403);
@@ -80,8 +104,13 @@ class CheckoutController extends Controller
             ShippingMethod::from($request->shipping_method)
         );
 
-        Mail::to($user->email)->send(new OrderConfirmationMail($order));
+
+        // Only send order confirmation email if user has an email address
+        if ($user->email) {
+            Mail::to($user->email)->send(new OrderConfirmationMail($order));
+        }
         Mail::to(config('app.admin.email'))->send(new NewOrderNotificationMail($order));
+
 
         return OrderResource::make($order);
     }

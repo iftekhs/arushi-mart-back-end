@@ -27,7 +27,7 @@ class CheckoutRequest extends FormRequest
         $isAuthenticated = $this->user();
 
         return [
-            'email' => [Rule::requiredIf(!$isAuthenticated), 'email', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
             'cart_items' => ['required', 'array', 'min:1'],
             'cart_items.*.product_id' => ['required', 'integer'],
             'cart_items.*.variant_id' => ['required', 'integer'],
@@ -36,7 +36,12 @@ class CheckoutRequest extends FormRequest
             'shipping_address' => [!$isAuthenticated ? 'required' : 'required_without:shipping_address_id', 'array'],
             'shipping_address.full_name' => ['required_with:shipping_address', 'string', 'max:255'],
             'shipping_address.address' => ['required_with:shipping_address', 'string', 'max:500'],
-            'shipping_address.phone' => ['required_with:shipping_address', 'string', 'max:20'],
+            'shipping_address.phone' => [
+                'required_with:shipping_address', 
+                'string', 
+                'max:20',
+                'regex:/^(880|0)?1[3-9]\d{8}$/'
+            ],
             'payment_method' => ['required', 'string', Rule::in(PaymentMethod::valuesForUser())],
             'shipping_method' => ['required', 'string', Rule::in(ShippingMethod::valuesForUser())],
         ];
