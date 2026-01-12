@@ -8,6 +8,7 @@ use App\Http\Resources\ColorResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -42,8 +43,19 @@ class CategoryController extends Controller
     {
         $filters = $request->only(['in_stock', 'min_price', 'max_price', 'colors', 'sizes', 'sort']);
 
-        $products = $category->products()
+        $categoryIds = [$category->id];
+        $categoryIds = array_merge($categoryIds, $category->categories()->pluck('id')->toArray());
+
+        $products = Product::query()
             ->active()
+            ->where(function ($query) use ($categoryIds) {
+                // Products where primary category matches
+                $query->whereIn('category_id', $categoryIds)
+                    // OR products where any additional category matches
+                    ->orWhereHas('categories', function ($subQuery) use ($categoryIds) {
+                        $subQuery->whereIn('categories.id', $categoryIds);
+                    });
+            })
             ->filter($filters)
             ->with(['category', 'primaryImage', 'secondaryImage', 'categories', 'variants.color', 'variants.size'])
             ->withInStock()
