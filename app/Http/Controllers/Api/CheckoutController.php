@@ -9,7 +9,6 @@ use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutRequest;
 use App\Http\Resources\OrderResource;
-use App\Mail\OtpMail;
 use App\Models\ProductVariant;
 use App\Models\User;
 use App\Services\OrderService;
@@ -29,19 +28,11 @@ class CheckoutController extends Controller
         protected OrderService $orderService
     ) {}
 
-    public function store(CheckoutRequest $request): JsonResource|JsonResponse
+    private function getUserForOrder(CheckoutRequest $request): User
     {
-        $validationResult = $this->validateCartItems($request->cart_items);
+        $user = $request->user();
 
-        if ($validationResult['adjusted']) {
-            return response()->json([
-                'message' => 'Cart items have been adjusted due to stock availability',
-                'items' => $validationResult['items'],
-                'adjusted' => true,
-            ], 422);
-        }
-
-        if (!$request->user()) {
+        if (!$user) {
 
             if (!$request->email) $this->error('Email is required for guest checkout', 422, [
                 'email' => ['The email field is required for guest checkout.'],
@@ -56,19 +47,26 @@ class CheckoutController extends Controller
                     'password' => bcrypt(Str::random(32)),
                 ]
             );
-
-            $otp = $user->createOtp();
-
-            Mail::to($user->email)->send(new OtpMail($otp));
-
-            return $this->success([
-                'requiresVerification' => true,
-            ]);
         }
 
-        $user = $request->user();
-
         if (!$user->isUser()) abort(403);
+
+        return $user;
+    }
+
+    public function store(CheckoutRequest $request): JsonResource|JsonResponse
+    {
+        $validationResult = $this->validateCartItems($request->cart_items);
+
+        if ($validationResult['adjusted']) {
+            return response()->json([
+                'message' => 'Cart items have been adjusted due to stock availability',
+                'items' => $validationResult['items'],
+                'adjusted' => true,
+            ], 422);
+        }
+
+        $user = $this->getUserForOrder($request);
 
         $shippingAddress = $request->shipping_address_id ?
             $user->shippingAddresses()->findOrFail($request->shipping_address_id)->toArray() :
