@@ -119,6 +119,16 @@ class ProductSeeder extends Seeder
             ['name' => 'Darkish', 'hex_code' => '#1A3E3E'],
             ['name' => 'Snowy Plains', 'hex_code' => '#E8DDD3'],
             ['name' => 'Winsorborne', 'hex_code' => '#5C2E2E'],
+            ['name' => 'Midnight Moss', 'hex_code' => '#354230'],
+            ['name' => 'Antique Parchment', 'hex_code' => '#D9C5B2'],
+            ['name' => 'Ironstone', 'hex_code' => '#4A4440'],
+            ['name' => 'Velvet Damson', 'hex_code' => '#4B2C32'],
+            ['name' => 'Silver Birch', 'hex_code' => '#A9A9A1'],
+            ['name' => 'Gilded Ochre', 'hex_code' => '#B58B4C'],
+            ['name' => 'Stormy Cove', 'hex_code' => '#4F5D65'],
+            ['name' => 'Heathered Rye', 'hex_code' => '#8D7B6D'],
+            ['name' => 'Obsidian Salt', 'hex_code' => '#2E3033'],
+            ['name' => 'Caspian Mist', 'hex_code' => '#8B9B9A'],
         ];
 
         foreach ($colors as $color) {
@@ -319,11 +329,10 @@ class ProductSeeder extends Seeder
         $tags = Tag::all();
 
         foreach ($products as $index => $productData) {
-            // Choose 2-4 random categories for this product and pick one as default
+            // 1. Setup Categories and Tags
             $randomCategories = $categories->random(rand(2, 4));
             $defaultCategoryId = $randomCategories->random()->id;
 
-            // Create product with default category_id
             $product = Product::create([
                 'name' => $productData['name'],
                 'slug' => Str::slug($productData['name']) . '-' . ($index + 1),
@@ -335,57 +344,58 @@ class ProductSeeder extends Seeder
                 'size_guide' => 'https://ucgljov7fm.ufs.sh/f/T0RTWqKG9qUSQOK4GwzwqGf1nTu9D2YpdJxygcstAaK6jlWN'
             ]);
 
-            // Attach the chosen categories
             $product->categories()->attach($randomCategories->pluck('id'));
+            $product->tags()->attach($tags->random(rand(2, 5))->pluck('id'));
 
-            // Attach 2-5 random tags
-            $randomTags = $tags->random(rand(2, 5));
-            $product->tags()->attach($randomTags->pluck('id'));
-
-            // Select 3-4 random colors for this product
-            $productColors = $colors->random(rand(3, 4));
-            $colorId = $productColors->random()->id;
-
-            foreach ($productData['images'] as $i => $imageUrl) {
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'color_id' => $colorId,
-                    'path' => $imageUrl,
-                    'primary' => $i === 0, // First image is primary
-                    'sort_order' => $i,
-                ]);
+            // 2. FORCE 10 COLORS FOR THE FIRST PRODUCT
+            // Otherwise, pick a random amount between 3 and 5 for variety
+            if ($index === 0) {
+                $productColors = $colors->random(10);
+                $variantCount = rand(20, 30); // More variants needed to cover 10 colors
+            } else {
+                $productColors = $colors->random(min($colors->count(), rand(3, 5)));
+                $variantCount = rand(6, 12);
             }
 
-            // Create 6-12 variants per product
-            $variantCount = rand(6, 12);
+            // 3. Attach Images for EVERY color
+            foreach ($productColors as $color) {
+                foreach ($productData['images'] as $i => $imageUrl) {
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'color_id'   => $color->id,
+                        'path'       => $imageUrl,
+                        'primary'    => $i === 0,
+                        'sort_order' => $i,
+                    ]);
+                }
+            }
+
+            // 4. Create Variants
             $createdVariants = 0;
             $variantCombinations = [];
 
-            while ($createdVariants < $variantCount) {
+            // Safety: prevent infinite loop if we run out of color/size combinations
+            $maxPossible = $productColors->count() * $sizes->count();
+            $targetVariants = min($variantCount, $maxPossible);
+
+            while ($createdVariants < $targetVariants) {
                 $color = $productColors->random();
                 $size = $sizes->random();
-                $sizeId = $size->id;
 
-                // Create unique combination key
-                $combinationKey = $color->id . '-' . $sizeId;
+                $combinationKey = $color->id . '-' . $size->id;
 
-                // Skip if combination already exists
                 if (in_array($combinationKey, $variantCombinations)) {
                     continue;
                 }
 
                 $variantCombinations[] = $combinationKey;
-
-                // Ensure at least one variant has stock
-                $stockQuantity = ($createdVariants === 0)
-                    ? rand(20, 100)
-                    : rand(0, 80);
+                $stockQuantity = ($createdVariants === 0) ? rand(20, 100) : rand(0, 80);
 
                 $variant = ProductVariant::create([
-                    'product_id' => $product->id,
-                    'color_id' => $color->id,
-                    'size_id' => $sizeId,
-                    'sku' => Str::uuid(),
+                    'product_id'     => $product->id,
+                    'color_id'       => $color->id,
+                    'size_id'        => $size->id,
+                    'sku'            => Str::uuid(),
                     'stock_quantity' => $stockQuantity,
                 ]);
 
@@ -396,7 +406,7 @@ class ProductSeeder extends Seeder
                 $createdVariants++;
             }
 
-            $this->command->info("✓ Created product: {$product->name} with {$variantCount} variants and images");
+            $this->command->info("✓ Created product: {$product->name} with {$productColors->count()} colors and {$createdVariants} variants.");
         }
 
         $this->command->info('✓ Created 10 products with all relationships');
