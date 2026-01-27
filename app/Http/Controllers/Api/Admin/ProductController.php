@@ -102,8 +102,36 @@ class ProductController extends Controller
 
             $product = Product::create($productData);
 
-            $imagesToCreate = [];
+            // Extract unique colors and their images
+            $colorImagesMap = [];
+            foreach ($validated['variants'] as $variant) {
+                $colorId = $variant['color']['id'];
+                // Only process images for this color if we haven't already
+                if (!isset($colorImagesMap[$colorId]) && isset($variant['color']['images'])) {
+                    $colorImagesMap[$colorId] = $variant['color']['images'];
+                }
+            }
 
+            // Upload images per color (not per variant)
+            $imagesToCreate = [];
+            foreach ($colorImagesMap as $colorId => $images) {
+                foreach ($images as $image) {
+                    $uploadedFile = $image['file'];
+                    $path = $uploadedFile->store('products');
+
+                    $imagesToCreate[] = [
+                        'color_id' => $colorId,
+                        'path' => $path,
+                        'primary' => $image['primary'],
+                        'sort_order' => $image['sortOrder'] ?? $image['sort_order'] ?? 0,
+                    ];
+                }
+            }
+
+            // Create all images
+            $product->images()->createMany($imagesToCreate);
+
+            // Now create all variants
             foreach ($validated['variants'] as $variant) {
                 $colorId = $variant['color']['id'];
 
@@ -127,22 +155,7 @@ class ProductController extends Controller
                     $finalSku = $this->generateSku($product->name, $color->name, $newVariant->id);
                     $newVariant->update(['sku' => $finalSku]);
                 }
-
-                foreach ($variant['color']['images'] as $image) {
-                    $uploadedFile = $image['file'];
-
-                    $path = $uploadedFile->store('products');
-
-                    $imagesToCreate[] = [
-                        'color_id' => $colorId,
-                        'path' => $path,
-                        'primary' => $image['primary'],
-                        'sort_order' => $image['sortOrder'] ?? $image['sort_order'] ?? 0,
-                    ];
-                }
             }
-
-            $product->images()->createMany($imagesToCreate);
 
             if (!empty($validated['categories'])) {
                 $product->categories()->sync($validated['categories']);
@@ -222,6 +235,47 @@ class ProductController extends Controller
             $submittedImageIds = [];
             $imagesToCreate = [];
 
+            // Extract unique colors and their images to avoid duplicate processing
+            $colorImagesMap = [];
+            foreach ($validated['variants'] as $variantData) {
+                $colorId = $variantData['color']['id'];
+                // Only process images for this color if we haven't already
+                if (!isset($colorImagesMap[$colorId]) && isset($variantData['color']['images'])) {
+                    $colorImagesMap[$colorId] = $variantData['color']['images'];
+                }
+            }
+
+            // Process images per color (not per variant)
+            foreach ($colorImagesMap as $colorId => $images) {
+                foreach ($images as $imageData) {
+                    $imageId = $imageData['id'] ?? null;
+
+                    // If image has an ID, keep it and update primary status and sort_order
+                    if ($imageId) {
+                        $image = $product->images()->find($imageId);
+                        if ($image) {
+                            $image->update([
+                                'primary' => $imageData['primary'],
+                                'sort_order' => $imageData['sortOrder'] ?? $imageData['sort_order'] ?? 0,
+                            ]);
+                            $submittedImageIds[] = $imageId;
+                        }
+                    } else if (isset($imageData['file'])) {
+                        // Upload new image
+                        $uploadedFile = $imageData['file'];
+                        $path = $uploadedFile->store('products');
+
+                        $imagesToCreate[] = [
+                            'color_id' => $colorId,
+                            'path' => $path,
+                            'primary' => $imageData['primary'],
+                            'sort_order' => $imageData['sortOrder'] ?? $imageData['sort_order'] ?? 0,
+                        ];
+                    }
+                }
+            }
+
+            // Now process all variants
             foreach ($validated['variants'] as $variantData) {
                 $colorId = $variantData['color']['id'];
                 $variantId = $variantData['id'] ?? null;
@@ -274,35 +328,6 @@ class ProductController extends Controller
                     }
 
                     $submittedVariantIds[] = $newVariant->id;
-                }
-
-                // Handle images for this color (if provided)
-                if (isset($variantData['color']['images'])) {
-                    foreach ($variantData['color']['images'] as $imageData) {
-                        $imageId = $imageData['id'] ?? null;
-
-                        // If image has an ID, keep it and update primary status and sort_order
-                        if ($imageId) {
-                            $image = $product->images()->find($imageId);
-                            if ($image) {
-                                $image->update([
-                                    'primary' => $imageData['primary'],
-                                    'sort_order' => $imageData['sortOrder'] ?? $imageData['sort_order'] ?? 0,
-                                ]);
-                                $submittedImageIds[] = $imageId;
-                            }
-                        } else if (isset($imageData['file'])) {
-                            // Upload new image
-                            $uploadedFile = $imageData['file'];
-                            $path = $uploadedFile->store('products');
-
-                            $imagesToCreate[] = [
-                                'color_id' => $colorId,
-                                'path' => $path,
-                                'primary' => $imageData['primary'],
-                            ];
-                        }
-                    }
                 }
             }
 
